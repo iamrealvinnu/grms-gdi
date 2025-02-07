@@ -1,19 +1,27 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+﻿# Introduction 
+GDI Nexus Relationship Management System (GRMS) is an advanced relationship manament system that incorporation best pracises for customer relationship managment across various industries. It utilizes AI technology to provide better performance and user experience. 
 
 # Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+1. Clone the repository
+2. The folder structure is as follows
+	```shell
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+    ├── Requirements - Contains requirements for the project (They may be also maintained on AzureDevOps project backlog)
+    ├── Design - Contains the design artifacts for the project
+        ├── Wireframes - Wireframes for the application
+	    ├── Ux - Ux for the project
+	    ├── Database - Database artifacts
+	    ├── Middleware - Middleware artifacts
+    ├── Test - User acceptance testing artifacts
+    ├── Deployment - Deployment artifacts
+    ├── Development - Code base for the application
+        ├── Frontend - Front-end code base
+        ├── Middleware - Middleware code base
+    └── README.md
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+    ```
 
+# Learn more
 If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
 - [ASP.NET Core](https://github.com/aspnet/Home)
 - [Visual Studio Code](https://github.com/Microsoft/vscode)
