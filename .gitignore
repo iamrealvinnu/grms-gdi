@@ -12,3 +12,5 @@
 /.vs/GDI Nexus Relationship Management System/v17/DocumentLayout.backup.json
 /.vs/GDI Nexus Relationship Management System/v17/DocumentLayout.json
 *.v2
+/Development/Middleware/GDINexus.Grms/ClassLibrary.Core/bin/Debug/net9.0
+/Development/Middleware/GDINexus.Grms/ClassLibrary.Core/obj
