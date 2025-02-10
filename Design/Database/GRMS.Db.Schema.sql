@@ -65,6 +65,27 @@ CREATE TABLE [Utility].[ReferenceItem](
 	CONSTRAINT [FK_Utility_ReferenceItem_Reference] FOREIGN KEY ([ReferenceId]) REFERENCES [Utility].[Reference] ([Id]) ON DELETE CASCADE
 )
 
+-- ADDRESS TABLE
+CREATE TABLE [Utility].[Address](      
+	[Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL, 
+	[Address1] [NVARCHAR](512 NOT NULL, 
+	[Address2] [NVARCHAR](256 NULL, 
+	[City] [NVARCHAR](256 NOT NULL, 
+	[County] [NVARCHAR](256 NULL, 
+	[StateId] [UNIQUEIDENTIFIER] NOT NULL, 
+	[Zip] [NVARCHAR](256 NOT NULL, 
+	[CountryId] [UNIQUEIDENTIFIER] NOT NULL, [AddressTypeId] [UNIQUEIDENTIFIER] NOT NULL, 
+	[Latitude] [DECIMAL](9,6) NULL, 
+	[Longitude] [DECIMAL](9,6) NULL, 
+	[CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()), 
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()), 
+	[Udf1] [NVARCHAR](512 NULL, 
+	[Udf2] [NVARCHAR](512 NULL, 
+	[Udf3] [NVARCHAR](512 NULL,
+	CONSTRAINT [FK_Utility_State_Address_ReferenceItem] FOREIGN KEY ([ReferenceItemId]) REFERENCES [Utility].[ReferenceItem] ([Id]),
+	CONSTRAINT [FK_Utility_Country_Address_ReferenceItem] FOREIGN KEY ([ReferenceItemId]) REFERENCES [Utility].[ReferenceItem] ([Id])
+)
+
 -- USER SCHEMA
 CREATE SCHEMA [User] 
 GO
@@ -87,14 +108,15 @@ CREATE TABLE [User].[Users](
 	[LockoutEndDateUtc] [DATETIME] NULL,
 	[LockoutEnabled] [BIT] NOT NULL,
 	[AccessFailedCount] [INT] NOT NULL,
-	[CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate())
-	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate())
+	[CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
 	[DeletedOn] [DATETIME] NULL,
 	[DeactivatedDate] [DATETIME] NULL,  
 	[ReportsTo] [UNIQUEIDENTIFIER] NULL,
 	[Udf1] [NVARCHAR](512) NULL,
 	[Udf2] [NVARCHAR](512) NULL,
 	[Udf3] [NVARCHAR](512) NULL,
+	CONSTRAINT [FK_ReportsTo_Users_Users] FOREIGN KEY ([ReportsTo]) REFERENCES [User].[Users] ([Id])
 )
 
 -- USERPROFILE TABLE
@@ -117,7 +139,42 @@ CREATE TABLE [User].[UserProfile](
 	[Udf3] [NVARCHAR](1024) NULL 
 )
 
+CREATE TABLE [User].[UserClaim](      
+	[UserId] [UNIQUEIDENTIFIER] NOT NULL, 
+	[ClaimType] [NVARCHAR](256) NOT NULL, 
+	[ClaimValue] [NVARCHAR](256) NOT NULL, 
+	[CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+	CONSTRAINT [PK_User_UserClaim] PRIMARY KEY CLUSTERED ([UserId], [ClaimType], [ClaimValue])
+)
 
+CREATE TABLE [User].[UserAddress](      
+	[UserId] [UNIQUEIDENTIFIER] NOT NULL, 
+	[AddressId] [UNIQUEIDENTIFIER] NOT NULL, 
+	[Preffered] [BIT] NOT NULL, 
+	CONSTRAINT [PK_User_UserAddress] PRIMARY KEY CLUSTERED ([UserId], [AddressId])
+)
+
+CREATE TABLE [User].[UserRefreshToken](      
+	[UserId] [UNIQUEIDENTIFIER] NOT NULL, 
+	[Code] [NVARCHAR](900) NOT NULL, 
+	[Expiration] [DATETIME] NOT NULL, 
+    CONSTRAINT [PK_User_UserRefreshToken] PRIMARY KEY CLUSTERED ([UserId], [Code])
+)
+
+-- ACCOUNT SCHEMA
+CREATE SCHEMA [ACCOUNT] 
+GO
+
+-- TODO ADD ACCOUNT TABLE 
+-- TODO ADD CONTACT TABLE
+
+-- MARKETING SCHEMA
+CREATE SCHEMA [MARKETING] 
+GO
+
+-- TODO ADD CAMPAIGN TABLE 
+-- TODO ADD LEAD TABLE
 
 -- COMMIT/ROLLBACK TRANSACTION
 IF @@TRANCOUNT > 0
