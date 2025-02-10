@@ -14,3 +14,5 @@
 *.v2
 /Development/Middleware/GDINexus.Grms/ClassLibrary.Core/bin/Debug/net9.0
 /Development/Middleware/GDINexus.Grms/ClassLibrary.Core/obj
+/Development/Middleware/GDINexus.Grms/ClassLibrary.Repository/bin/Debug/net9.0
+/Development/Middleware/GDINexus.Grms/ClassLibrary.Repository/obj
