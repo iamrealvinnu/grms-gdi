@@ -4,7 +4,7 @@
 // NAME:			UserRefreshToken.cs
 // AUTHOR:			Girish Girigowda
 // COMPANY:			GDI Nexus
-// DATE:			01/17/2025
+// DATE:			01/27/2025
 // PURPOSE:			User Refresh Token Value Object
 //
 
