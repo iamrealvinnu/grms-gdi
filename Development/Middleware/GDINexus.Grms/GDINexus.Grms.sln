@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35514.174 d17.12
+VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9CBB5DD1-B52D-4A31-A0EC-30B37F8BF3C4}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{1576C96F-AB4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary.Domain", "ClassLibrary.Domain\ClassLibrary.Domain.csproj", "{56FB7527-0AE8-436B-AAD3-5BD3CACE1184}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary.Core", "ClassLibrary.Core\ClassLibrary.Core.csproj", "{7823021C-4D83-40B6-B44F-BE257DD44113}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,11 +26,16 @@ Global
 		{56FB7527-0AE8-436B-AAD3-5BD3CACE1184}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56FB7527-0AE8-436B-AAD3-5BD3CACE1184}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56FB7527-0AE8-436B-AAD3-5BD3CACE1184}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7823021C-4D83-40B6-B44F-BE257DD44113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7823021C-4D83-40B6-B44F-BE257DD44113}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7823021C-4D83-40B6-B44F-BE257DD44113}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7823021C-4D83-40B6-B44F-BE257DD44113}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{56FB7527-0AE8-436B-AAD3-5BD3CACE1184} = {FCD63E5F-6A83-4B7D-A0B9-61C5BB98A38F}
+		{7823021C-4D83-40B6-B44F-BE257DD44113} = {FCD63E5F-6A83-4B7D-A0B9-61C5BB98A38F}
 	EndGlobalSection
 EndGlobal

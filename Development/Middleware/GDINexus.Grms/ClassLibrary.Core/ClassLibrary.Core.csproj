@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
+    <PackageReference Include="RulesEngine" Version="5.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Exception\" />
+    <Folder Include="Communication\" />
+    <Folder Include="Workflow\" />
+    <Folder Include="Response\" />
+    <Folder Include="Repository\" />
+    <Folder Include="Security\" />
+  </ItemGroup>
+
+</Project>

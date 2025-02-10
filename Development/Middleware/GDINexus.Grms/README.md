@@ -26,4 +26,30 @@ GDI Nexus Relationship Management System (GRMS) is a AI based relationship manag
 			+ 2.1.7.3 Add a class file *UserClaim.cs* this will be your _UserClaim value object_. It inherits from *ValueObject* you will use it to store various claims
 			+ 2.1.7.4 Add a class file *UserAddress.cs* this will be your _UserAddress value object_. It inherits from *ValueObject* you will use it to store various addresses
 			+ 2.1.7.5 Add a class file *UserRefreshToken.cs* this will be your _UserRefreshToken  value object_. It inherits from *ValueObject* you will use it to store various refresh tokens
+		+ 2.1.8 Add new project `ClassLibrary.Core` of template type `Class Library` using language **C#** utilizing **.NET framework 9.0**. Your cross-cutting features are stored here. 
+			+ 2.1.8.1 Once the project has been created delete the default Class1.cs file if it created one
+			+ 2.1.8.2 Open the _Package Manager Console_ make sure the **Default project** is `ClassLibrary.Core`. Run the various pakages you want by running the respective command in your package manager console
+				+ 2.1.8.2.1 Run command `install-package Microsoft.EntityFrameworkCore -version 9.0.1`: Entity Framework Core package
+				+ 2.1.8.2.2 Run command `install-package RulesEngine -version 5.0.4`: Workflow rules engine for the application
+			+ 2.1.8.3 Add a folder called `Security`. We will store all the security that we will use across various modules
+				+ 2.1.8.3.1 Add a class file *RsaEncryptor.cs* this will be your RSA Encryption code
+			+ 2.1.8.4 Add a folder called `Exception`. We will store all the exceptions that we will use across various modules
+				+ 2.1.8.4.1 Add a class file *CannotPerformOperationException.cs* this will be expections for cannot perform operations
+				+ 2.1.8.4.2 Add a class file *InvalidHashException.cs* this will be expections for cannot perform operations
+				+ 2.1.8.4.3 Add a class file *ApiException.cs* this will be the expections for API's
+			+ 2.1.8.5 Add a folder called `Repository`. We will store all the respository interfaces and supporting objects
+				+ 2.1.8.5.1 Add a class file *Specification.cs* this will contain the specification static methods
+				+ 2.1.8.5.2 Add a class file *SpecificationEvaluator.cs* this will contain the specification evaluvation static methods
+				+ 2.1.8.5.3 Add a class file *IRepository.cs* this will contain the repository interface
+				+ 2.1.8.5.4 Add a class file *IUnitOfWorkRepository.cs* this will contain the unit of work repository interface
+				+ 2.1.8.5.5 Add a class file *IUnitOfWork.cs* this will contain the unit of work interface
+			+ 2.1.8.6 Add a folder called `Response`. We will store all the response interfaces and supporting objects
+				+ 2.1.8.6.1 Add a class file *IResponse.cs* this will contain the response interface
+				+ 2.1.8.6.2 Add a class file *IErrorResponse.cs* this will contain the error reponse interface
+				+ 2.1.8.6.3 Add a class file *ISuccessResponse.cs* this will contain the success reponse interface
+				+ 2.1.8.6.4 Add a class file *IDataResponse.cs* this will contain the data reponse interface
+			+ 2.1.8.7 Add a folder called `Workflow`. We will store the workflow interfaces here
+				+ 2.1.8.7.1 Add a class file *IWorkflowService.cs* this will provide the workflow interface
+			+ 2.1.8.8 Add a folder called `Communication`. We will store the communication interfaces here
+				+ 2.1.8.8.1 Add a class file *IEmailService.cs* this will provide the email service interface
 	
