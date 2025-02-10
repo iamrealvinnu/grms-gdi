@@ -60,6 +60,17 @@ public class UserClaim : ValueObject<UserClaim>
     public required string ClaimValue { get; set; }
 
     /// <summary>
+    ///     The CreatedOnUtc.
+    /// </summary>
+    public DateTime CreatedOnUtc { get; set; }
+
+
+    /// <summary>
+    ///     The ChangedOnUtc.
+    /// </summary>
+    public DateTime ChangedOnUtc { get; set; }
+
+    /// <summary>
     ///     The User.
     /// </summary>
     [JsonIgnore]

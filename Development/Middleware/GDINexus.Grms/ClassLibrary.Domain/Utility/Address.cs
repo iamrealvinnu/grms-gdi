@@ -61,8 +61,8 @@ public class Address : ValueObject<Address>
     /// <param name="zip">The Zip.</param>
     /// <param name="countryId">The CountryId.</param>
     /// <param name="addressTypeId">The AddressTypeId.</param>
-    /// <param name="createdOn">The CreatedOn.</param>
-    /// <param name="changedOn">The ChangedOn.</param>
+    /// <param name="createdOn">The CreatedOnUtc.</param>
+    /// <param name="changedOn">The ChangedOnUtc.</param>
     public Address(Guid id, string address1, string city, Guid stateId, string zip, Guid countryId,
         Guid addressTypeId,
         DateTime createdOn, DateTime changedOn) : this(id, address1, city, stateId, zip, countryId, addressTypeId)
@@ -82,8 +82,8 @@ public class Address : ValueObject<Address>
     /// <param name="zip">The Zip.</param>
     /// <param name="countryId">The CountryId.</param>
     /// <param name="addressTypeId">The AddressTypeId.</param>
-    /// <param name="createdOn">The CreatedOn.</param>
-    /// <param name="changedOn">The ChangedOn.</param>
+    /// <param name="createdOn">The CreatedOnUtc.</param>
+    /// <param name="changedOn">The ChangedOnUtc.</param>
     public Address(Guid id, string address1, string address2, string city, Guid stateId, string zip, Guid countryId,
         Guid addressTypeId,
         DateTime createdOn, DateTime changedOn) : this(id, address1, city, stateId, zip, countryId, addressTypeId,
@@ -160,13 +160,13 @@ public class Address : ValueObject<Address>
 
 
     /// <summary>
-    ///     The CreatedOn.
+    ///     The CreatedOnUtc.
     /// </summary>
     public DateTime CreatedOn { get; set; }
 
 
     /// <summary>
-    ///     The ChangedOn.
+    ///     The ChangedOnUtc.
     /// </summary>
     public DateTime ChangedOn { get; set; }
 

@@ -40,16 +40,16 @@ public class ReferenceItem : ValueObject<ReferenceItem>
     /// <param name="referenceId">The ReferenceId.</param>
     /// <param name="code">The Code.</param>
     /// <param name="description">The Description.</param>
-    /// <param name="createdOn">The CreatedOn.</param>
-    /// <param name="changedOn">The ChangedOn.</param>
-    public ReferenceItem(Guid referenceId, string code, string description, DateTime createdOn,
-        DateTime changedOn) : this()
+    /// <param name="createdOnUtc">The CreatedOnUtc.</param>
+    /// <param name="changedOnUtc">The ChangedOnUtc.</param>
+    public ReferenceItem(Guid referenceId, string code, string description, DateTime createdOnUtc,
+        DateTime changedOnUtc) : this()
     {
         ReferenceId = referenceId;
         Code = code;
         Description = description;
-        CreatedOn = createdOn;
-        ChangedOn = changedOn;
+        CreatedOnUtc = createdOnUtc;
+        ChangedOnUtc = changedOnUtc;
     }
 
     /// <summary>
@@ -82,15 +82,15 @@ public class ReferenceItem : ValueObject<ReferenceItem>
 
 
     /// <summary>
-    ///     The CreatedOn.
+    ///     The CreatedOnUtc.
     /// </summary>
-    public DateTime CreatedOn { get; set; }
+    public DateTime CreatedOnUtc { get; set; }
 
 
     /// <summary>
-    ///     The ChangedOn.
+    ///     The ChangedOnUtc.
     /// </summary>
-    public DateTime ChangedOn { get; set; }
+    public DateTime ChangedOnUtc { get; set; }
 
 
     /// <summary>

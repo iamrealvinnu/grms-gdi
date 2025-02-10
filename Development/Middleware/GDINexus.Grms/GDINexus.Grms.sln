@@ -16,6 +16,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary.Domain", "Clas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary.Core", "ClassLibrary.Core\ClassLibrary.Core.csproj", "{7823021C-4D83-40B6-B44F-BE257DD44113}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary.Repository", "ClassLibrary.Repository\ClassLibrary.Repository.csproj", "{7FD364EF-4215-4100-804C-44F05C456816}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary.Application", "ClassLibrary.Application\ClassLibrary.Application.csproj", "{19718877-B917-4F2D-8BAB-074B91E8956E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +34,14 @@ Global
 		{7823021C-4D83-40B6-B44F-BE257DD44113}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7823021C-4D83-40B6-B44F-BE257DD44113}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7823021C-4D83-40B6-B44F-BE257DD44113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FD364EF-4215-4100-804C-44F05C456816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FD364EF-4215-4100-804C-44F05C456816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FD364EF-4215-4100-804C-44F05C456816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FD364EF-4215-4100-804C-44F05C456816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19718877-B917-4F2D-8BAB-074B91E8956E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19718877-B917-4F2D-8BAB-074B91E8956E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19718877-B917-4F2D-8BAB-074B91E8956E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19718877-B917-4F2D-8BAB-074B91E8956E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,5 +49,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{56FB7527-0AE8-436B-AAD3-5BD3CACE1184} = {FCD63E5F-6A83-4B7D-A0B9-61C5BB98A38F}
 		{7823021C-4D83-40B6-B44F-BE257DD44113} = {FCD63E5F-6A83-4B7D-A0B9-61C5BB98A38F}
+		{7FD364EF-4215-4100-804C-44F05C456816} = {FCD63E5F-6A83-4B7D-A0B9-61C5BB98A38F}
+		{19718877-B917-4F2D-8BAB-074B91E8956E} = {FCD63E5F-6A83-4B7D-A0B9-61C5BB98A38F}
 	EndGlobalSection
 EndGlobal

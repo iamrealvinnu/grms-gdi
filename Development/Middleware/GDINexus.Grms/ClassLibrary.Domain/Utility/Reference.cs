@@ -33,15 +33,15 @@ namespace ClassLibrary.Domain.Utility;
         /// <param name="id">The Id.</param>
         /// <param name="name">The Name.</param>
         /// <param name="countryCode">The CountryCode.</param>
-        /// <param name="createdOn">The CreatedOn.</param>
-        /// <param name="changedOn">The ChangedOn.</param>
-        public Reference(Guid id, string name, string countryCode, DateTime createdOn, DateTime changedOn) : this()
+        /// <param name="createdOnUtc">The CreatedOnUtc.</param>
+        /// <param name="changedOnUtc">The ChangedOnUtc.</param>
+        public Reference(Guid id, string name, string countryCode, DateTime createdOnUtc, DateTime changedOnUtc) : this()
         {
             Id = id;
             Name = name;
             CountryCode = countryCode;
-            CreatedOn = createdOn;
-            ChangedOn = changedOn;
+            CreatedOnUtc = createdOnUtc;
+            ChangedOnUtc = changedOnUtc;
         }
 
         /// <summary>
@@ -69,15 +69,15 @@ namespace ClassLibrary.Domain.Utility;
 
 
         /// <summary>
-        ///     The CreatedOn.
+        ///     The CreatedOnUtc.
         /// </summary>
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOnUtc { get; set; }
 
 
         /// <summary>
-        ///     The ChangedOn.
+        ///     The ChangedOnUtc.
         /// </summary>
-        public DateTime ChangedOn { get; set; }
+        public DateTime ChangedOnUtc { get; set; }
 
         /// <summary>
         ///     Reference items.

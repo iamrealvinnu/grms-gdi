@@ -116,15 +116,15 @@ public class User : Entity<Guid>, IAggregateRoot
 
 
     /// <summary>
-    ///     The CreatedOn.
+    ///     The CreatedOnUtc.
     /// </summary>
-    public DateTime CreatedOn { get; set; }
+    public DateTime CreatedOnUtc { get; set; }
 
 
     /// <summary>
-    ///     The ChangedOn.
+    ///     The ChangedOnUtc.
     /// </summary>
-    public DateTime ChangedOn { get; set; }
+    public DateTime ChangedOnUtc { get; set; }
 
 
     /// <summary>
