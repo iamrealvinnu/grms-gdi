@@ -21,7 +21,12 @@ CREATE TABLE [Account].[Account](
 	[EmailConfirmed] [BIT] NULL,
 	[PhoneNumber] [NVARCHAR](256) NULL,
 	[PhoneNumberConfirmed] [BIT] NULL,
-
+    [Url] [NVARCHAR](256) NULL,
+    [OwnershipTypeId] [UNIQUEIDENTIFIER] NOT NULL,
+    [NumberOfEmployees] [INT] NULL,
+    [CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [DoNotCall] [BIT] NULL,
+    [DoNotEmail] [BIT] NULL,
     [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
     [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
     [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
@@ -30,21 +35,8 @@ CREATE TABLE [Account].[Account](
     [Udf1] [NVARCHAR](1024) NULL,
     [Udf2] [NVARCHAR](1024) NULL,
     [Udf3] [NVARCHAR](1024) NULL,
-
-   
-    [Website] [NVARCHAR](255) NULL,
-    [Ownership] [NVARCHAR](100) NULL,
-    [Employees] [NVARCHAR](50) NULL,
-    [ShippingAddressStreet] [NVARCHAR](512) NULL,
-    [ShippingAddressCity] [NVARCHAR](100) NULL,
-    [ShippingAddressState] [INT] NULL,
-    [ShippingAddressPostalcode] [NVARCHAR](50) NULL,
-    [ShippingAddressCountry] [INT] NULL,
-    [CampaignId] [UNIQUEIDENTIFIER] NULL,
-    [Picture] [NVARCHAR](1024) NULL,
-    [DoNotCall] [BIT] NULL,
-    [EmailOptOut] [BIT] NULL,
-    [InvalidEmail] [BIT] NULL,
+    -- ADD JOIN TABLE FOR ADDRESS SIMILAR TO [User].[UserAddress]
+    -- FIX CONSTRAINT
     CONSTRAINT FK_Accounts_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[UserProfile](UserId),
     CONSTRAINT FK_Accounts_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId),
     CONSTRAINT FK_Accounts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[UserProfile](UserId),
