@@ -1,5 +1,5 @@
--- create table contacts
-CREATE TABLE[Contacts](
+-- CONTACT TABLE
+CREATE TABLE [Account].[Contact](  
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
     [FirstName] [NVARCHAR](256) NOT NULL, 
 	[LastName] [NVARCHAR](256) NOT NULL, 
