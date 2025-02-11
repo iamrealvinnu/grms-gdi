@@ -1,3 +1,7 @@
+-- CAMPAIGN TABLE
+CREATE TABLE [Marketing].[Campaign](  
+)    
+
 -- CONTACT TABLE
 CREATE TABLE [Account].[Contact](  
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
