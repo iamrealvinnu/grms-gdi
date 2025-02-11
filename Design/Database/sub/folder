@@ -1,17 +1,16 @@
 -- create table contacts
 CREATE TABLE[Contacts](
-    [ContactId] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
-    [Deleted] [BIT] NOT NULL,
-    [CreatedBy] [UNIQUEIDENTIFIER] NULL,
-    [DateEntered] [DATETIME] NOT NULL,
-    [ModifiedUserId] [UNIQUEIDENTIFIER] NULL,
-    [DateModified] [DATETIME] NOT NULL,
-    [DateModifiedUtc] [DATETIME] NULL,
+    [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
     [FirstName] [NVARCHAR](256) NULL,
     [LastName] [NVARCHAR](256) NULL,
     [Email1] [NVARCHAR](255) NULL,
     [Email2] [NVARCHAR](255) NULL,
     [Phone] [NVARCHAR](50) NULL,
+    
+    [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+    
     [CampaignId] [UNIQUEIDENTIFIER] NULL,
     [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
     [Udf1] [NVARCHAR](1024) NULL,
