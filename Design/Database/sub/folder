@@ -1,0 +1,95 @@
+-- CAMPAIGN TABLE
+CREATE TABLE [Marketing].[Campaign](  
+)  
+
+-- LEAD TABLE
+CREATE TABLE [Marketing].[Lead](  
+)  
+
+
+-- ACCOUNT TABLE
+CREATE TABLE [Account].[Account](
+    [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+    [Name] [NVARCHAR](256) NOT NULL,
+
+    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
+    [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+    [Udf1] [NVARCHAR](1024) NULL,
+    [Udf2] [NVARCHAR](1024) NULL,
+    [Udf3] [NVARCHAR](1024) NULL,
+
+    [TeamId] [UNIQUEIDENTIFIER] NULL,
+    [AccountNumber] [NVARCHAR](100) NULL,
+   
+    [AccountType] [INT] NULL,
+    [ParentId] [UNIQUEIDENTIFIER] NULL,
+    [Industry] [INT] NULL,
+    [AnnualRevenue] [DECIMAL] NULL,
+    [Phone] [NVARCHAR](50) NULL,
+    [BillingAddressStreet] [TEXT] NULL,
+    [BillingAddressCity] [NVARCHAR](100) NULL,
+    [BillingAddressState] [NVARCHAR](100) NULL,
+    [BillingAddressPostalcode] [NVARCHAR](50) NULL,
+    [BillingAddressCountry] [NVARCHAR](100) NULL,
+    [Description] [TEXT] NULL,
+    [PhoneOffice] [NVARCHAR](50) NULL,
+    [Email1] [NVARCHAR](255) NULL,
+    [Email2] [NVARCHAR](255) NULL,
+    [Website] [NVARCHAR](255) NULL,
+    [Ownership] [NVARCHAR](100) NULL,
+    [Employees] [NVARCHAR](50) NULL,
+    [ShippingAddressStreet] [NVARCHAR](512) NULL,
+    [ShippingAddressCity] [NVARCHAR](100) NULL,
+    [ShippingAddressState] [INT] NULL,
+    [ShippingAddressPostalcode] [NVARCHAR](50) NULL,
+    [ShippingAddressCountry] [INT] NULL,
+    [CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [Picture] [NVARCHAR](1024) NULL,
+    [DoNotCall] [BIT] NULL,
+    [EmailOptOut] [BIT] NULL,
+    [InvalidEmail] [BIT] NULL,
+    CONSTRAINT FK_Accounts_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[UserProfile](UserId),
+    CONSTRAINT FK_Accounts_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId),
+    CONSTRAINT FK_Accounts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[UserProfile](UserId),
+    CONSTRAINT FK_Accounts_TeamId FOREIGN KEY (TeamId) REFERENCES Teams(TeamId),
+    CONSTRAINT FK_Accounts_ParentId FOREIGN KEY (ParentId) REFERENCES [User].[Accounts](AccountId),
+    CONSTRAINT FK_Accounts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id)
+)
+
+-- CONTACT TABLE
+CREATE TABLE [Account].[Contact](  
+    [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+    [FirstName] [NVARCHAR](256) NOT NULL, 
+	[LastName] [NVARCHAR](256) NOT NULL, 
+	[Degree] [NVARCHAR](128) NULL, 
+	[Title] [NVARCHAR](256) NULL, 
+	[Suffix] [NVARCHAR](256) NULL, 
+	[Prefix] [NVARCHAR](256) NULL, 
+	[PrefferedName] [NVARCHAR](256) NULL, 
+	[Dob] [DATE] NULL, 
+    [Email] [NVARCHAR](256) NULL,
+	[EmailConfirmed] [BIT] NULL,
+	[PhoneNumber] [NVARCHAR](256) NULL,
+	[PhoneNumberConfirmed] [BIT] NULL,
+	[MobileNumber] [NVARCHAR](256) NULL,
+	[MobileNumberConfirmed] [BIT] NULL,
+    [CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [DoNotCall] [BIT] NULL,
+    [DoNotEmail] [BIT] NULL,
+    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
+    [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+    [Udf1] [NVARCHAR](1024) NULL,
+    [Udf2] [NVARCHAR](1024) NULL,
+    [Udf3] [NVARCHAR](1024) NULL,
+    CONSTRAINT FK_User_Contact_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[Users](UserId),
+    CONSTRAINT FK_User_Contact_ModifiedBy FOREIGN KEY (ModifiedBy) REFERENCES [User].[Users](UserId),
+    CONSTRAINT FK_Campaign_Contacts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id),
+    CONSTRAINT FK_User_Contacts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[Users](UserId)
+)
+
