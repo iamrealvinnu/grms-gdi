@@ -1,21 +1,25 @@
 -- create table contacts
 CREATE TABLE[Contacts](
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
-    [FirstName] [NVARCHAR](256) NULL,
-    [LastName] [NVARCHAR](256) NULL,
+    [FirstName] [NVARCHAR](256) NOT NULL, 
+	[LastName] [NVARCHAR](256) NOT NULL, 
+	[Degree] [NVARCHAR](128) NULL, 
+	[Title] [NVARCHAR](256) NULL, 
+	[Suffix] [NVARCHAR](256) NULL, 
+	[Prefix] [NVARCHAR](256) NULL, 
+	[PrefferedName] [NVARCHAR](256) NULL, 
+	[Dob] [DATE] NULL, 
     [Email] [NVARCHAR](256) NULL,
 	[EmailConfirmed] [BIT] NULL,
 	[PhoneNumber] [NVARCHAR](256) NULL,
 	[PhoneNumberConfirmed] [BIT] NULL,
 	[MobileNumber] [NVARCHAR](256) NULL,
 	[MobileNumberConfirmed] [BIT] NULL,
-    
+    [CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
     [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
     [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
 	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
-    
-    [CampaignId] [UNIQUEIDENTIFIER] NULL,
-    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
     [Udf1] [NVARCHAR](1024) NULL,
     [Udf2] [NVARCHAR](1024) NULL,
     [Udf3] [NVARCHAR](1024) NULL,
@@ -23,7 +27,7 @@ CREATE TABLE[Contacts](
     CONSTRAINT FK_Contacts_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId),
     CONSTRAINT FK_Contacts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id),
     CONSTRAINT FK_Contacts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[UserProfile](UserId)
-);
+)
 
 --Create table accounts
 CREATE TABLE [Accounts](
