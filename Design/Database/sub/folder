@@ -18,15 +18,16 @@ CREATE TABLE [Account].[Contact](
     [CampaignId] [UNIQUEIDENTIFIER] NULL,
     [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
     [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
     [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
 	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
     [Udf1] [NVARCHAR](1024) NULL,
     [Udf2] [NVARCHAR](1024) NULL,
     [Udf3] [NVARCHAR](1024) NULL,
-    CONSTRAINT FK_Contacts_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[UserProfile](UserId),
-    CONSTRAINT FK_Contacts_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId),
-    CONSTRAINT FK_Contacts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id),
-    CONSTRAINT FK_Contacts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[UserProfile](UserId)
+    CONSTRAINT FK_User_Contact_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[Users](UserId),
+    CONSTRAINT FK_User_Contact_ModifiedBy FOREIGN KEY (ModifiedBy) REFERENCES [User].[Users](UserId),
+    CONSTRAINT FK_Campaign_Contacts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id),
+    CONSTRAINT FK_User_Contacts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[Users](UserId)
 )
 
 --Create table accounts
