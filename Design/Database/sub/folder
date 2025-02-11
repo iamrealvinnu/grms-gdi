@@ -1,25 +1,17 @@
 -- CAMPAIGN TABLE
 CREATE TABLE [Marketing].[Campaign](  
-)    
+)  
 
--- CONTACT TABLE
-CREATE TABLE [Account].[Contact](  
+-- LEAD TABLE
+CREATE TABLE [Marketing].[Lead](  
+)  
+
+
+-- ACCOUNT TABLE
+CREATE TABLE [Account].[Account](
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
-    [FirstName] [NVARCHAR](256) NOT NULL, 
-	[LastName] [NVARCHAR](256) NOT NULL, 
-	[Degree] [NVARCHAR](128) NULL, 
-	[Title] [NVARCHAR](256) NULL, 
-	[Suffix] [NVARCHAR](256) NULL, 
-	[Prefix] [NVARCHAR](256) NULL, 
-	[PrefferedName] [NVARCHAR](256) NULL, 
-	[Dob] [DATE] NULL, 
-    [Email] [NVARCHAR](256) NULL,
-	[EmailConfirmed] [BIT] NULL,
-	[PhoneNumber] [NVARCHAR](256) NULL,
-	[PhoneNumberConfirmed] [BIT] NULL,
-	[MobileNumber] [NVARCHAR](256) NULL,
-	[MobileNumberConfirmed] [BIT] NULL,
-    [CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [Name] [NVARCHAR](256) NOT NULL,
+
     [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
     [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
     [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
@@ -28,25 +20,10 @@ CREATE TABLE [Account].[Contact](
     [Udf1] [NVARCHAR](1024) NULL,
     [Udf2] [NVARCHAR](1024) NULL,
     [Udf3] [NVARCHAR](1024) NULL,
-    CONSTRAINT FK_User_Contact_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[Users](UserId),
-    CONSTRAINT FK_User_Contact_ModifiedBy FOREIGN KEY (ModifiedBy) REFERENCES [User].[Users](UserId),
-    CONSTRAINT FK_Campaign_Contacts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id),
-    CONSTRAINT FK_User_Contacts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[Users](UserId)
-)
 
---Create table accounts
-CREATE TABLE [Accounts](
-    [AccountId] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
-    [Deleted] [BIT] NOT NULL,
-    [CreatedBy] [UNIQUEIDENTIFIER] NULL,
-    [DateEntered] [DATETIME] NOT NULL,
-    [ModifiedUserId] [UNIQUEIDENTIFIER] NULL,
-    [DateModified] [DATETIME] NOT NULL,
-    [DateModifiedUtc] [DATETIME] NULL,
-    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
     [TeamId] [UNIQUEIDENTIFIER] NULL,
     [AccountNumber] [NVARCHAR](100) NULL,
-    [Name] [NVARCHAR](255) NOT NULL,
+   
     [AccountType] [INT] NULL,
     [ParentId] [UNIQUEIDENTIFIER] NULL,
     [Industry] [INT] NULL,
@@ -80,5 +57,39 @@ CREATE TABLE [Accounts](
     CONSTRAINT FK_Accounts_TeamId FOREIGN KEY (TeamId) REFERENCES Teams(TeamId),
     CONSTRAINT FK_Accounts_ParentId FOREIGN KEY (ParentId) REFERENCES [User].[Accounts](AccountId),
     CONSTRAINT FK_Accounts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id)
-);
+)
+
+-- CONTACT TABLE
+CREATE TABLE [Account].[Contact](  
+    [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+    [FirstName] [NVARCHAR](256) NOT NULL, 
+	[LastName] [NVARCHAR](256) NOT NULL, 
+	[Degree] [NVARCHAR](128) NULL, 
+	[Title] [NVARCHAR](256) NULL, 
+	[Suffix] [NVARCHAR](256) NULL, 
+	[Prefix] [NVARCHAR](256) NULL, 
+	[PrefferedName] [NVARCHAR](256) NULL, 
+	[Dob] [DATE] NULL, 
+    [Email] [NVARCHAR](256) NULL,
+	[EmailConfirmed] [BIT] NULL,
+	[PhoneNumber] [NVARCHAR](256) NULL,
+	[PhoneNumberConfirmed] [BIT] NULL,
+	[MobileNumber] [NVARCHAR](256) NULL,
+	[MobileNumberConfirmed] [BIT] NULL,
+    [CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [DoNotCall] [BIT] NULL,
+    [DoNotEmail] [BIT] NULL,
+    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
+    [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+    [Udf1] [NVARCHAR](1024) NULL,
+    [Udf2] [NVARCHAR](1024) NULL,
+    [Udf3] [NVARCHAR](1024) NULL,
+    CONSTRAINT FK_User_Contact_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[Users](UserId),
+    CONSTRAINT FK_User_Contact_ModifiedBy FOREIGN KEY (ModifiedBy) REFERENCES [User].[Users](UserId),
+    CONSTRAINT FK_Campaign_Contacts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id),
+    CONSTRAINT FK_User_Contacts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[Users](UserId)
+)
 
