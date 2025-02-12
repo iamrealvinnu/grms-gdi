@@ -69,6 +69,29 @@ CREATE TABLE[Utility].[ReferenceItem](
 	CONSTRAINT[FK_Reference_ReferenceItem_Reference] FOREIGN KEY([ReferenceId]) REFERENCES[Utility].[Reference]([Id]) ON DELETE CASCADE
 )
 
+-- ADDRESS TABLE
+CREATE TABLE [Utility].[Address](      
+	[Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL, 
+	[Address1] [NVARCHAR](512) NOT NULL, 
+	[Address2] [NVARCHAR](256) NULL, 
+	[City] [NVARCHAR](256) NOT NULL, 
+	[County] [NVARCHAR](256) NULL, 
+	[StateId] [UNIQUEIDENTIFIER] NOT NULL, 
+	[Zip] [NVARCHAR](256) NOT NULL, 
+	[CountryId] [UNIQUEIDENTIFIER] NOT NULL, 
+	[AddressTypeId] [UNIQUEIDENTIFIER] NOT NULL, 
+	[Latitude] [DECIMAL](9,6) NULL, 
+	[Longitude] [DECIMAL](9,6) NULL, 
+	[CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()), 
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()), 
+	[Udf1] [NVARCHAR](512) NULL, 
+	[Udf2] [NVARCHAR](512) NULL, 
+	[Udf3] [NVARCHAR](512) NULL,
+	CONSTRAINT [FK_State_Address_ReferenceItem] FOREIGN KEY ([StateId]) REFERENCES [Utility].[ReferenceItem] ([Id]),
+	CONSTRAINT [FK_Country_Address_ReferenceItem] FOREIGN KEY ([CountryId]) REFERENCES [Utility].[ReferenceItem] ([Id]),
+	CONSTRAINT [FK_AddressType_Address_ReferenceItem] FOREIGN KEY ([AddressTypeId]) REFERENCES [Utility].[ReferenceItem] ([Id])
+)
+
 -- USER SCHEMA
 EXEC('CREATE SCHEMA [User]')
 GO
@@ -139,7 +162,8 @@ CREATE TABLE[User].[UserAddress](
 	[AddressId][UNIQUEIDENTIFIER] NOT NULL,
 	[Preffered][BIT] NOT NULL,
 	CONSTRAINT[PK_UserId_AddressId] PRIMARY KEY CLUSTERED([UserId], [AddressId]),
-	CONSTRAINT[FK_User_UserAddress_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE
+	CONSTRAINT[FK_UserAddress_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE,
+	CONSTRAINT[FK_UserAddress_Address] FOREIGN KEY([AddressId]) REFERENCES[User].[Users]([Id]) ON DELETE NO ACTION
 )
 
 CREATE TABLE[User].[UserRefreshToken](
