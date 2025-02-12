@@ -191,6 +191,26 @@ CREATE TABLE [Marketing].[Campaign](
     CONSTRAINT FK_Campaigns_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId)
 );
 -- TODO ADD LEAD TABLE
+CREATE TABLE [Marketing].[Lead](
+    [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+    [Deleted] [BIT] NOT NULL,
+    [CreatedBy] [UNIQUEIDENTIFIER] NULL,
+    [DateEntered] [DATETIME] NOT NULL,
+    [ModifiedUserId] [UNIQUEIDENTIFIER] NULL,
+    [DateModified] [DATETIME] NOT NULL,
+    [DateModifiedUtc] [DATETIME] NULL,
+    [FirstName] [VARCHAR](100) NULL,
+    [LastName] [VARCHAR](100) NULL,
+    [Email1] [VARCHAR](255) NULL,
+    [Email2] [VARCHAR](255) NULL,
+    [Phone] [VARCHAR](50) NULL,
+    [CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
+    CONSTRAINT FK_Lead_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[UserProfile](UserId),
+    CONSTRAINT FK_Lead_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId),
+    CONSTRAINT FK_Lead_CampaignId FOREIGN KEY (CampaignId) REFERENCES [Marketing].[Campaign](Id),
+    CONSTRAINT FK_Lead_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[Users](Id)
+);
 
 
 -- ACCOUNT SCHEMA
