@@ -177,6 +177,19 @@ EXEC('CREATE SCHEMA [MARKETING]')
 GO
 
 -- TODO ADD CAMPAIGN TABLE
+CREATE TABLE [Marketing].[Campaign](
+    [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+    [Deleted] [BIT] NOT NULL,
+    [CreatedBy] [UNIQUEIDENTIFIER] NULL,
+    [DateEntered] [DATETIME] NOT NULL,
+    [ModifiedUserId] [UNIQUEIDENTIFIER] NULL,
+    [DateModified] [DATETIME] NOT NULL,
+    [DateModifiedUtc] [DATETIME] NULL,
+    [Name] [VARCHAR](255) NULL,
+    [Description] [TEXT] NULL,
+    CONSTRAINT FK_Campaigns_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[UserProfile](UserId),
+    CONSTRAINT FK_Campaigns_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId)
+);
 -- TODO ADD LEAD TABLE
 
 
