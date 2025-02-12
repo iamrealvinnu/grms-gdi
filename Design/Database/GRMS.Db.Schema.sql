@@ -11,6 +11,10 @@ USE MASTER
 GO
 -- DROP DB
 IF EXISTS(SELECT * FROM sys.databases WHERE NAME='GRMSDEV')
+	ALTER DATABASE [GRMSDEV] SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+GO
+
+IF EXISTS(SELECT * FROM sys.databases WHERE NAME='GRMSDEV')
 	DROP DATABASE [GRMSDEV]
 GO
 
@@ -35,7 +39,7 @@ BEGIN TRANSACTION
 GO
 
 -- UTILITY SCHEMA
-CREATE SCHEMA [Utility] 
+EXEC ('CREATE SCHEMA [Utility]') 
 GO
 
 -- REFERENCE TABLE
@@ -49,133 +53,140 @@ CREATE TABLE [Utility].[Reference](
 	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate())
 )
 
--- REFERENCEITEM TABLE
-CREATE TABLE [Utility].[ReferenceItem](      
-	[Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
-	[ReferenceId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[Code] [NVARCHAR](256) NOT NULL, 
-	[Description] [NVARCHAR](512) NOT NULL, 
-	[Archived] [DATETIME] NULL, 
-	[CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()), 
-	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()), 
-	[Udf1] [NVARCHAR](512) NULL, 
-	[Udf2] [NVARCHAR](512) NULL, 
-	[Udf3] [NVARCHAR](512) NULL, 
-	[SortOrder] [NVARCHAR](512) NULL,
-	CONSTRAINT [FK_Utility_ReferenceItem_Reference] FOREIGN KEY ([ReferenceId]) REFERENCES [Utility].[Reference] ([Id]) ON DELETE CASCADE
+--REFERENCEITEM TABLE
+CREATE TABLE[Utility].[ReferenceItem](
+	[Id][UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+	[ReferenceId][UNIQUEIDENTIFIER] NOT NULL,
+	[Code][NVARCHAR](256) NOT NULL,
+	[Description][NVARCHAR](512) NOT NULL,
+	[Archived][DATETIME] NULL,
+	[CreatedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[Udf1][NVARCHAR](512) NULL,
+	[Udf2][NVARCHAR](512) NULL,
+	[Udf3][NVARCHAR](512) NULL,
+	[SortOrder][NVARCHAR](512) NULL,
+	CONSTRAINT[FK_Reference_ReferenceItem_Reference] FOREIGN KEY([ReferenceId]) REFERENCES[Utility].[Reference]([Id]) ON DELETE CASCADE
 )
 
 -- ADDRESS TABLE
-CREATE TABLE [Utility].[Address](      
-	[Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL, 
-	[Address1] [NVARCHAR](512 NOT NULL, 
-	[Address2] [NVARCHAR](256 NULL, 
-	[City] [NVARCHAR](256 NOT NULL, 
-	[County] [NVARCHAR](256 NULL, 
-	[StateId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[Zip] [NVARCHAR](256 NOT NULL, 
-	[CountryId] [UNIQUEIDENTIFIER] NOT NULL, [AddressTypeId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[Latitude] [DECIMAL](9,6) NULL, 
-	[Longitude] [DECIMAL](9,6) NULL, 
-	[CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()), 
-	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()), 
-	[Udf1] [NVARCHAR](512 NULL, 
-	[Udf2] [NVARCHAR](512 NULL, 
-	[Udf3] [NVARCHAR](512 NULL,
-	CONSTRAINT [FK_Utility_State_Address_ReferenceItem] FOREIGN KEY ([ReferenceItemId]) REFERENCES [Utility].[ReferenceItem] ([Id]),
-	CONSTRAINT [FK_Utility_Country_Address_ReferenceItem] FOREIGN KEY ([ReferenceItemId]) REFERENCES [Utility].[ReferenceItem] ([Id])
+CREATE TABLE[Utility].[Address]
+(
+	[Id][UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+	[Address1] [NVARCHAR] (512) NOT NULL,
+	[Address2] [NVARCHAR] (256) NULL, 
+	[City][NVARCHAR](256) NOT NULL,
+	[County][NVARCHAR](256) NULL,
+	[StateId][UNIQUEIDENTIFIER] NOT NULL,
+	[Zip][NVARCHAR](256) NOT NULL,
+	[CountryId][UNIQUEIDENTIFIER] NOT NULL, [AddressTypeId][UNIQUEIDENTIFIER] NOT NULL,
+	[Latitude][DECIMAL](9, 6) NULL,
+	[Longitude][DECIMAL](9, 6) NULL,
+	[CreatedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[Udf1][NVARCHAR](512) NULL,
+	[Udf2][NVARCHAR](512) NULL,
+	[Udf3][NVARCHAR](512) NULL,
+	CONSTRAINT[FK_State_Address_ReferenceItem] FOREIGN KEY([StateId]) REFERENCES[Utility].[ReferenceItem]([Id]),
+	CONSTRAINT[FK_Country_Address_ReferenceItem] FOREIGN KEY([CountryId]) REFERENCES[Utility].[ReferenceItem]([Id])
 )
 
 -- USER SCHEMA
-CREATE SCHEMA [User] 
+EXEC('CREATE SCHEMA [User]')
 GO
 
 -- USER TABLE
-CREATE TABLE [User].[Users](  
-	[Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
-	[UserName] [NVARCHAR](256) NOT NULL,
-	[Email] [NVARCHAR](256) NOT NULL,
-	[EmailConfirmed] [BIT] NOT NULL,
-	[PasswordHash] [NVARCHAR](512) NOT NULL,
-	[SecurityStamp] [NVARCHAR](256) NOT NULL,
-	[PhoneNumber] [NVARCHAR](256) NULL,
-	[PhoneNumberConfirmed] [BIT] NOT NULL,
-	[MobileNumber] [NVARCHAR](256) NULL,
-	[MobileNumberConfirmed] [BIT] NOT NULL,
-	[NationalId] [NVARCHAR](512) NULL,
-	[NationalIdVerificationDate] [DATETIME] NULL,
-	[TwoFactorEnabled] [BIT] NOT NULL,
-	[LockoutEndDateUtc] [DATETIME] NULL,
-	[LockoutEnabled] [BIT] NOT NULL,
-	[AccessFailedCount] [INT] NOT NULL,
-	[CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
-	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
-	[DeletedOn] [DATETIME] NULL,
-	[DeactivatedDate] [DATETIME] NULL,  
-	[ReportsTo] [UNIQUEIDENTIFIER] NULL,
-	[Udf1] [NVARCHAR](512) NULL,
-	[Udf2] [NVARCHAR](512) NULL,
-	[Udf3] [NVARCHAR](512) NULL,
-	CONSTRAINT [FK_ReportsTo_Users_Users] FOREIGN KEY ([ReportsTo]) REFERENCES [User].[Users] ([Id])
+CREATE TABLE[User].[Users](
+	[Id][UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+	[UserName][NVARCHAR](256) NOT NULL,
+	[Email][NVARCHAR](256) NOT NULL,
+	[EmailConfirmed][BIT] NOT NULL,
+	[PasswordHash][NVARCHAR](512) NOT NULL,
+	[SecurityStamp][NVARCHAR](256) NOT NULL,
+	[PhoneNumber][NVARCHAR](256) NULL,
+	[PhoneNumberConfirmed][BIT] NOT NULL,
+	[MobileNumber][NVARCHAR](256) NULL,
+	[MobileNumberConfirmed][BIT] NOT NULL,
+	[NationalId][NVARCHAR](512) NULL,
+	[NationalIdVerificationDate][DATETIME] NULL,
+	[TwoFactorEnabled][BIT] NOT NULL,
+	[LockoutEndDate][DATETIME] NULL,
+	[LockoutEnabled][BIT] NOT NULL,
+	[AccessFailedCount][INT] NOT NULL,
+	[CreatedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[DeletedOn][DATETIME] NULL,
+	[DeactivatedDate][DATETIME] NULL,
+	[ReportsTo][UNIQUEIDENTIFIER] NULL,
+	[Udf1][NVARCHAR](512) NULL,
+	[Udf2][NVARCHAR](512) NULL,
+	[Udf3][NVARCHAR](512) NULL,
+	CONSTRAINT[FK_ReportsTo_Users_Users] FOREIGN KEY([ReportsTo]) REFERENCES[User].[Users]([Id])
 )
 
 -- USERPROFILE TABLE
-CREATE TABLE [User].[UserProfile](  
-	[UserId] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL, 
-	[FirstName] [NVARCHAR](256) NOT NULL, 
-	[LastName] [NVARCHAR](256) NOT NULL, 
-	[Degree] [NVARCHAR](128) NULL, 
-	[UserTypeId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[Title] [NVARCHAR](256) NULL, 
-	[Suffix] [NVARCHAR](256) NULL, 
-	[Prefix] [NVARCHAR](256) NULL, 
-	[PrefferedName] [NVARCHAR](256) NULL, 
-	[Dob] [DATE] NULL, 
-	[GenderId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[CountryId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[PictureUrl] [NVARCHAR](1024) NULL, 
-	[Udf1] [NVARCHAR](1024) NULL, 
-	[Udf2] [NVARCHAR](1024) NULL, 
-	[Udf3] [NVARCHAR](1024) NULL 
+CREATE TABLE[User].[UserProfile](
+	[UserId][UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+	[FirstName][NVARCHAR](256) NOT NULL,
+	[LastName][NVARCHAR](256) NOT NULL,
+	[Degree][NVARCHAR](128) NULL,
+	[UserTypeId][UNIQUEIDENTIFIER] NOT NULL,
+	[Title][NVARCHAR](256) NULL,
+	[Suffix][NVARCHAR](256) NULL,
+	[Prefix][NVARCHAR](256) NULL,
+	[PrefferedName][NVARCHAR](256) NULL,
+	[Dob][DATE] NULL,
+	[GenderId][UNIQUEIDENTIFIER] NOT NULL,
+	[PictureUrl][NVARCHAR](1024) NULL,
+	[Udf1][NVARCHAR](1024) NULL,
+	[Udf2][NVARCHAR](1024) NULL,
+	[Udf3][NVARCHAR](1024) NULL,
+	CONSTRAINT[FK_User_UserProfile_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE,
+	CONSTRAINT[FK_UserType_UserProfile_ReferenceItem] FOREIGN KEY([UserTypeId]) REFERENCES[Utility].[ReferenceItem]([Id]),
+	CONSTRAINT[FK_Gender_UserProfile_ReferenceItem] FOREIGN KEY([GenderId]) REFERENCES[Utility].[ReferenceItem]([Id])
 )
 
-CREATE TABLE [User].[UserClaim](      
-	[UserId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[ClaimType] [NVARCHAR](256) NOT NULL, 
-	[ClaimValue] [NVARCHAR](256) NOT NULL, 
-	[CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
-	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
-	CONSTRAINT [PK_User_UserClaim] PRIMARY KEY CLUSTERED ([UserId], [ClaimType], [ClaimValue])
+CREATE TABLE[User].[UserClaim](
+	[UserId][UNIQUEIDENTIFIER] NOT NULL,
+	[ClaimType][NVARCHAR](128) NOT NULL,
+	[ClaimValue][NVARCHAR](128) NOT NULL,
+	[CreatedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	CONSTRAINT[PK_UserId_ClaimType_ClaimValue] PRIMARY KEY CLUSTERED([UserId], [ClaimType], [ClaimValue]),
+	CONSTRAINT[FK_User_UserClaim_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE
 )
 
-CREATE TABLE [User].[UserAddress](      
-	[UserId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[AddressId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[Preffered] [BIT] NOT NULL, 
-	CONSTRAINT [PK_User_UserAddress] PRIMARY KEY CLUSTERED ([UserId], [AddressId])
+CREATE TABLE[User].[UserAddress](
+	[UserId][UNIQUEIDENTIFIER] NOT NULL,
+	[AddressId][UNIQUEIDENTIFIER] NOT NULL,
+	[Preffered][BIT] NOT NULL,
+	CONSTRAINT[PK_UserId_AddressId] PRIMARY KEY CLUSTERED([UserId], [AddressId]),
+	CONSTRAINT[FK_User_UserAddress_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE
 )
 
-CREATE TABLE [User].[UserRefreshToken](      
-	[UserId] [UNIQUEIDENTIFIER] NOT NULL, 
-	[Code] [NVARCHAR](900) NOT NULL, 
-	[Expiration] [DATETIME] NOT NULL, 
-    CONSTRAINT [PK_User_UserRefreshToken] PRIMARY KEY CLUSTERED ([UserId], [Code])
+CREATE TABLE[User].[UserRefreshToken](
+	[UserId][UNIQUEIDENTIFIER] NOT NULL,
+	[Code][NVARCHAR](1024) NOT NULL,
+	[Expiration][DATETIME] NOT NULL,
+	CONSTRAINT[PK_UserId_Code] PRIMARY KEY CLUSTERED([UserId], [Code]),
+	CONSTRAINT[FK_User_UserRefreshToken_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE
 )
 
 -- MARKETING SCHEMA
-CREATE SCHEMA [MARKETING] 
+EXEC('CREATE SCHEMA [MARKETING]')
 GO
 
--- TODO ADD CAMPAIGN TABLE 
+-- TODO ADD CAMPAIGN TABLE
 -- TODO ADD LEAD TABLE
 
 
 -- ACCOUNT SCHEMA
-CREATE SCHEMA [ACCOUNT] 
+EXEC('CREATE SCHEMA [ACCOUNT]')
 GO
 
--- TODO ADD ACCOUNT TABLE 
+-- TODO ADD ACCOUNT TABLE
 -- TODO ADD CONTACT TABLE
+
 
 -- COMMIT/ROLLBACK TRANSACTION
 IF @@TRANCOUNT > 0
