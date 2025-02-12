@@ -185,7 +185,78 @@ EXEC('CREATE SCHEMA [ACCOUNT]')
 GO
 
 -- TODO ADD ACCOUNT TABLE
+ACCOUNT TABLE
+CREATE TABLE [Account].[Account](
+    [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+    [ParentId] [UNIQUEIDENTIFIER] NULL,
+    [Name] [NVARCHAR](256) NOT NULL,
+    [Description] [NVARCHAR](256) NULL, 
+    [AccountNumber] [NVARCHAR](48) NULL,
+    [AccountTypeId] [UNIQUEIDENTIFIER] NOT NULL,
+    [Industry] [UNIQUEIDENTIFIER] NOT NULL,
+    [AnnualRevenue] [DECIMAL] NULL,
+    [Email] [NVARCHAR](256) NULL,
+	[EmailConfirmed] [BIT] NULL,
+	[PhoneNumber] [NVARCHAR](256) NULL,
+	[PhoneNumberConfirmed] [BIT] NULL,
+    [Url] [NVARCHAR](256) NULL,
+    [OwnershipTypeId] [UNIQUEIDENTIFIER] NOT NULL,
+    [NumberOfEmployees] [INT] NULL,
+    [CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [DoNotCall] [BIT] NULL,
+    [DoNotEmail] [BIT] NULL,
+    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
+    [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+    [Udf1] [NVARCHAR](1024) NULL,
+    [Udf2] [NVARCHAR](1024) NULL,
+    [Udf3] [NVARCHAR](1024) NULL,
+    -- ADD JOIN TABLE FOR ADDRESS SIMILAR TO [User].[UserAddress]
+    -- FIX CONSTRAINT
+    CONSTRAINT FK_Accounts_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[UserProfile](UserId),
+    CONSTRAINT FK_Accounts_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId),
+    CONSTRAINT FK_Accounts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[UserProfile](UserId),
+    CONSTRAINT FK_Accounts_TeamId FOREIGN KEY (TeamId) REFERENCES Teams(TeamId),
+    CONSTRAINT FK_Accounts_ParentId FOREIGN KEY (ParentId) REFERENCES [User].[Accounts](AccountId),
+    CONSTRAINT FK_Accounts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id)
+)
+
 -- TODO ADD CONTACT TABLE
+CONTACT TABLE
+CREATE TABLE [Account].[Contact](  
+    [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+    [FirstName] [NVARCHAR](256) NOT NULL, 
+	[LastName] [NVARCHAR](256) NOT NULL, 
+	[Degree] [NVARCHAR](128) NULL, 
+	[Title] [NVARCHAR](256) NULL, 
+	[Suffix] [NVARCHAR](256) NULL, 
+	[Prefix] [NVARCHAR](256) NULL, 
+	[PrefferedName] [NVARCHAR](256) NULL, 
+	[Dob] [DATE] NULL, 
+    [Email] [NVARCHAR](256) NULL,
+	[EmailConfirmed] [BIT] NULL,
+	[PhoneNumber] [NVARCHAR](256) NULL,
+	[PhoneNumberConfirmed] [BIT] NULL,
+	[MobileNumber] [NVARCHAR](256) NULL,
+	[MobileNumberConfirmed] [BIT] NULL,
+    [CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [DoNotCall] [BIT] NULL,
+    [DoNotEmail] [BIT] NULL,
+    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
+    [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
+    [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+    [Udf1] [NVARCHAR](1024) NULL,
+    [Udf2] [NVARCHAR](1024) NULL,
+    [Udf3] [NVARCHAR](1024) NULL,
+    CONSTRAINT FK_User_Contact_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[Users](UserId),
+    CONSTRAINT FK_User_Contact_ModifiedBy FOREIGN KEY (ModifiedBy) REFERENCES [User].[Users](UserId),
+    CONSTRAINT FK_Campaign_Contacts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id),
+    CONSTRAINT FK_User_Contacts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[Users](UserId)
+)
 
 
 -- COMMIT/ROLLBACK TRANSACTION
