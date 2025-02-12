@@ -47,10 +47,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.Email)
             .IsRequired()
             .HasMaxLength(256);
-        builder.Property(e => e.LockoutEndDateUtc).HasColumnType("datetime");
+        builder.Property(e => e.LockoutEndDate).HasColumnType("datetime");
         builder.Property(e => e.MobileNumber).HasMaxLength(256);
         builder.Property(e => e.NationalId).HasMaxLength(512).IsRequired(false);
-        builder.Property(e => e.NationalIdVerificationDateUtc).HasColumnType("datetime").IsRequired(false);
+        builder.Property(e => e.NationalIdVerificationDate).HasColumnType("datetime").IsRequired(false);
         builder.Property(e => e.PasswordHash)
             .IsRequired()
             .HasMaxLength(512);
@@ -91,6 +91,13 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("FK_User_Users_UserRefreshToken");
+
+        // One to One optional relationship
+        builder.HasOne(d => d.ReportsTo)
+            .WithMany()
+            .HasForeignKey(d => d.ReportsToId)
+            .HasForeignKey("FK_ReportsTo_Users_Users")
+            .IsRequired(false);
 
         // TODO: Seed data will be handled in the application layer
         // Load data for initialization

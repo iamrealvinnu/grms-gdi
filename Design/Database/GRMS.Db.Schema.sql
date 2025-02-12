@@ -117,11 +117,11 @@ CREATE TABLE[User].[Users](
 	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
 	[DeletedOn][DATETIME] NULL,
 	[DeactivatedDate][DATETIME] NULL,
-	[ReportsTo][UNIQUEIDENTIFIER] NULL,
+	[ReportsToId][UNIQUEIDENTIFIER] NULL,
 	[Udf1][NVARCHAR](512) NULL,
 	[Udf2][NVARCHAR](512) NULL,
 	[Udf3][NVARCHAR](512) NULL,
-	CONSTRAINT[FK_ReportsTo_Users_Users] FOREIGN KEY([ReportsTo]) REFERENCES[User].[Users]([Id])
+	CONSTRAINT[FK_ReportsTo_Users_Users] FOREIGN KEY([ReportsToId]) REFERENCES[User].[Users]([Id])
 )
 
 -- USERPROFILE TABLE

@@ -86,9 +86,9 @@ public class User : Entity<Guid>, IAggregateRoot
     public string? NationalId { get; set; }
 
     /// <summary>
-    ///     The NationalIdVerificationDateUtc.
+    ///     The NationalIdVerificationDate.
     /// </summary>
-    public DateTime? NationalIdVerificationDateUtc { get; set; }
+    public DateTime? NationalIdVerificationDate { get; set; }
 
 
     /// <summary>
@@ -98,9 +98,9 @@ public class User : Entity<Guid>, IAggregateRoot
 
 
     /// <summary>
-    ///     The LockoutEndDateUtc.
+    ///     The LockoutEndDate.
     /// </summary>
-    public DateTime? LockoutEndDateUtc { get; set; }
+    public DateTime? LockoutEndDate { get; set; }
 
 
     /// <summary>
@@ -137,7 +137,11 @@ public class User : Entity<Guid>, IAggregateRoot
     ///     The DeactivatedDate.
     /// </summary>
     public DateTime? DeactivatedDate { get; set; }
-
+    
+    /// <summary>
+    ///     The ReportsToId.
+    /// </summary>
+    public Guid? ReportsToId { get; set; }
 
     /// <summary>
     ///     The Udf1.
@@ -171,8 +175,13 @@ public class User : Entity<Guid>, IAggregateRoot
     /// </summary>
     public virtual ICollection<UserAddress> Addresses { get; set; }
 
-    // <summary>
+    /// <summary>
     /// The RefreshTokens
     /// </summary>
     public virtual ICollection<UserRefreshToken> RefreshTokens { get; set; }
+
+    /// <summary>
+    /// The ReportsTo
+    /// </summary>
+    public virtual User? ReportsTo { get; set; }
 }
