@@ -36,6 +36,6 @@ public class UserAddressConfiguration : IEntityTypeConfiguration<UserAddress>
             .WithMany(p => p.UserAddresses)
             .HasForeignKey(d => d.AddressId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_User_UserAddress_Utility_Address");
+            .HasConstraintName("FK_Address_UserAddress_Address");
     }
 }

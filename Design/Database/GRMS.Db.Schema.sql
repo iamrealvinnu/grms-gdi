@@ -162,8 +162,8 @@ CREATE TABLE[User].[UserAddress](
 	[AddressId][UNIQUEIDENTIFIER] NOT NULL,
 	[Preffered][BIT] NOT NULL,
 	CONSTRAINT[PK_UserId_AddressId] PRIMARY KEY CLUSTERED([UserId], [AddressId]),
-	CONSTRAINT[FK_UserAddress_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE,
-	CONSTRAINT[FK_UserAddress_Address] FOREIGN KEY([AddressId]) REFERENCES[User].[Users]([Id]) ON DELETE NO ACTION
+	CONSTRAINT[FK_User_UserAddress_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE,
+	CONSTRAINT[FK_Address_UserAddress_Address] FOREIGN KEY([AddressId]) REFERENCES[User].[Users]([Id]) ON DELETE NO ACTION
 )
 
 CREATE TABLE[User].[UserRefreshToken](

@@ -69,8 +69,8 @@ internal class FakeDataGenerator
             .RuleFor(u => u.Title, f => f.Name.JobTitle())
             .RuleFor(u => u.Dob, f => f.Date.Past(85))
             .RuleFor(u => u.UserTypeId, f => Guid.Parse("58C49479-EC65-4DE2-86E7-033C546291AC"))
-            .RuleFor(u => u.GenderId, f => Guid.Parse("58C49479-EC65-4DE2-86E7-033C546291AE"))
-            .RuleFor(u => u.CountryId, f => Guid.Parse("58C49479-EC65-4DE2-86E7-033C546291AA"));
+            .RuleFor(u => u.GenderId, f => Guid.Parse("58C49479-EC65-4DE2-86E7-033C546291AE"));
+            //.RuleFor(u => u.CountryId, f => Guid.Parse("58C49479-EC65-4DE2-86E7-033C546291AA"));
 
         var fakeClaims = new Faker<UserClaim>("en_US")
             .RuleFor(u => u.UserId, f => id)

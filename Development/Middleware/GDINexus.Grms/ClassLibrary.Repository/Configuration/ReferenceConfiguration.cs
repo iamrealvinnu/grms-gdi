@@ -54,6 +54,6 @@ public class ReferenceConfiguration : IEntityTypeConfiguration<Reference>
             .WithOne(p => p.Reference)
             .HasForeignKey(d => d.ReferenceId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_Utility_Reference_ReferenceItem");
+            .HasConstraintName("FK_Reference_ReferenceItem_Reference");
     }
 }

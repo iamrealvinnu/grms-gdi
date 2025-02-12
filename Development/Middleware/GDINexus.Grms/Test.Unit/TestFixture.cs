@@ -36,7 +36,7 @@ public class TestFixture : TestBedFixture, IDisposable
     public TestFixture()
     {
         // TODO: Replace with your file location.
-        var dbFileNamePath = @"C:\WRK\Files\GDIGRMS.db";
+        var dbFileNamePath = @"C:\WRK\Files\GDIGRMSDEV.db";
 
         // Replace with your server version and type.
         // Use 'MariaDbServerVersion' for MariaDB.
