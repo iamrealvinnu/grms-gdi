@@ -69,28 +69,6 @@ CREATE TABLE[Utility].[ReferenceItem](
 	CONSTRAINT[FK_Reference_ReferenceItem_Reference] FOREIGN KEY([ReferenceId]) REFERENCES[Utility].[Reference]([Id]) ON DELETE CASCADE
 )
 
--- ADDRESS TABLE
-CREATE TABLE[Utility].[Address]
-(
-	[Id][UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
-	[Address1] [NVARCHAR] (512) NOT NULL,
-	[Address2] [NVARCHAR] (256) NULL, 
-	[City][NVARCHAR](256) NOT NULL,
-	[County][NVARCHAR](256) NULL,
-	[StateId][UNIQUEIDENTIFIER] NOT NULL,
-	[Zip][NVARCHAR](256) NOT NULL,
-	[CountryId][UNIQUEIDENTIFIER] NOT NULL, [AddressTypeId][UNIQUEIDENTIFIER] NOT NULL,
-	[Latitude][DECIMAL](9, 6) NULL,
-	[Longitude][DECIMAL](9, 6) NULL,
-	[CreatedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
-	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
-	[Udf1][NVARCHAR](512) NULL,
-	[Udf2][NVARCHAR](512) NULL,
-	[Udf3][NVARCHAR](512) NULL,
-	CONSTRAINT[FK_State_Address_ReferenceItem] FOREIGN KEY([StateId]) REFERENCES[Utility].[ReferenceItem]([Id]),
-	CONSTRAINT[FK_Country_Address_ReferenceItem] FOREIGN KEY([CountryId]) REFERENCES[Utility].[ReferenceItem]([Id])
-)
-
 -- USER SCHEMA
 EXEC('CREATE SCHEMA [User]')
 GO
@@ -137,10 +115,10 @@ CREATE TABLE[User].[UserProfile](
 	[PrefferedName][NVARCHAR](256) NULL,
 	[Dob][DATE] NULL,
 	[GenderId][UNIQUEIDENTIFIER] NOT NULL,
-	[PictureUrl][NVARCHAR](1024) NULL,
-	[Udf1][NVARCHAR](1024) NULL,
-	[Udf2][NVARCHAR](1024) NULL,
-	[Udf3][NVARCHAR](1024) NULL,
+	[PictureUrl][NVARCHAR](512) NULL,
+	[Udf1][NVARCHAR](512) NULL,
+	[Udf2][NVARCHAR](512) NULL,
+	[Udf3][NVARCHAR](512) NULL,
 	CONSTRAINT[FK_User_UserProfile_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE,
 	CONSTRAINT[FK_UserType_UserProfile_ReferenceItem] FOREIGN KEY([UserTypeId]) REFERENCES[Utility].[ReferenceItem]([Id]),
 	CONSTRAINT[FK_Gender_UserProfile_ReferenceItem] FOREIGN KEY([GenderId]) REFERENCES[Utility].[ReferenceItem]([Id])
@@ -173,53 +151,68 @@ CREATE TABLE[User].[UserRefreshToken](
 )
 
 -- MARKETING SCHEMA
-EXEC('CREATE SCHEMA [MARKETING]')
+EXEC('CREATE SCHEMA [Marketing]')
 GO
 
--- TODO ADD CAMPAIGN TABLE
 -- CAMPAIGN TABLE
 CREATE TABLE [Marketing].[Campaign](
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
-    [Deleted] [BIT] NOT NULL,
-    [CreatedBy] [UNIQUEIDENTIFIER] NULL,
-    [DateEntered] [DATETIME] NOT NULL,
-    [ModifiedUserId] [UNIQUEIDENTIFIER] NULL,
-    [DateModified] [DATETIME] NOT NULL,
-    [DateModifiedUtc] [DATETIME] NULL,
-    [Name] [VARCHAR](255) NULL,
-    [Description] [TEXT] NULL,
-    CONSTRAINT FK_Campaigns_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[UserProfile](UserId),
-    CONSTRAINT FK_Campaigns_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId)
-);
--- TODO ADD LEAD TABLE
+	[Name] [VARCHAR](256) NOT NULL,	
+    [Description] [NVARCHAR](1024) NULL,   
+	[StartDate][DATETIME] NOT NULL,
+	[EndDate][DATETIME] NOT NULL,
+	[CreatedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[DeletedOn][DATETIME] NULL,
+	[CreatedById] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedById] [UNIQUEIDENTIFIER] NOT NULL,
+	[Udf1][NVARCHAR](512) NULL,
+	[Udf2][NVARCHAR](512) NULL,
+	[Udf3][NVARCHAR](512) NULL,
+    CONSTRAINT FK_CreatedBy_Marketing_Users FOREIGN KEY (CreatedById) REFERENCES [User].[Users]([Id]),
+    CONSTRAINT FK_ModifiedBy_Marketing_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
+)
+
 -- LEAD TABLE
 CREATE TABLE [Marketing].[Lead](
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
-    [Deleted] [BIT] NOT NULL,
-    [CreatedBy] [UNIQUEIDENTIFIER] NULL,
-    [DateEntered] [DATETIME] NOT NULL,
-    [ModifiedUserId] [UNIQUEIDENTIFIER] NULL,
-    [DateModified] [DATETIME] NOT NULL,
-    [DateModifiedUtc] [DATETIME] NULL,
-    [FirstName] [VARCHAR](100) NULL,
-    [LastName] [VARCHAR](100) NULL,
-    [Email1] [VARCHAR](255) NULL,
-    [Email2] [VARCHAR](255) NULL,
-    [Phone] [VARCHAR](50) NULL,
-    [CampaignId] [UNIQUEIDENTIFIER] NULL,
-    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
-    CONSTRAINT FK_Lead_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[UserProfile](UserId),
-    CONSTRAINT FK_Lead_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId),
-    CONSTRAINT FK_Lead_CampaignId FOREIGN KEY (CampaignId) REFERENCES [Marketing].[Campaign](Id),
-    CONSTRAINT FK_Lead_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[Users](Id)
-);
-
+	[FirstName][NVARCHAR](256) NOT NULL,
+	[LastName][NVARCHAR](256) NOT NULL,
+	[Degree][NVARCHAR](128) NULL,
+	[Title][NVARCHAR](256) NULL,
+	[Suffix][NVARCHAR](256) NULL,
+	[Prefix][NVARCHAR](256) NULL,
+	[PrefferedName][NVARCHAR](256) NULL,
+	[Dob][DATE] NULL,
+	[Company] [NVARCHAR](512) NULL,
+	[Email] [NVARCHAR](256) NULL,
+	[EmailConfirmed] [BIT] NULL,
+	[PhoneNumber] [NVARCHAR](256) NULL,
+	[PhoneNumberConfirmed] [BIT] NULL,
+	[MobileNumber] [NVARCHAR](256) NULL,
+	[MobileNumberConfirmed] [BIT] NULL,
+	[DoNotCall] [BIT] NULL,
+    [DoNotEmail] [BIT] NULL,
+	[CampaignId] [UNIQUEIDENTIFIER] NULL,
+    [AssignedToId] [UNIQUEIDENTIFIER] NULL,
+	[CreatedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[DeletedOn][DATETIME] NULL,
+	[CreatedById] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedById] [UNIQUEIDENTIFIER] NOT NULL,
+	[Udf1][NVARCHAR](512) NULL,
+	[Udf2][NVARCHAR](512) NULL,
+	[Udf3][NVARCHAR](512) NULL,
+	CONSTRAINT[FK_Campaign_Lead_Campaign] FOREIGN KEY([CampaignId]) REFERENCES[Marketing].[Campaign]([Id]),
+	CONSTRAINT FK_AssignedTo_Lead_Users FOREIGN KEY (AssignedToId) REFERENCES [User].[Users]([Id]),
+	CONSTRAINT FK_CreatedBy_Lead_Users FOREIGN KEY (CreatedById) REFERENCES [User].[Users]([Id]),
+    CONSTRAINT FK_ModifiedBy_Lead_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
+)
 
 -- ACCOUNT SCHEMA
-EXEC('CREATE SCHEMA [ACCOUNT]')
+EXEC('CREATE SCHEMA [Account]')
 GO
 
--- TODO ADD ACCOUNT TABLE
 -- ACCOUNT TABLE
 CREATE TABLE [Account].[Account](
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
@@ -240,28 +233,29 @@ CREATE TABLE [Account].[Account](
     [CampaignId] [UNIQUEIDENTIFIER] NULL,
     [DoNotCall] [BIT] NULL,
     [DoNotEmail] [BIT] NULL,
-    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
-    [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
-    [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
-    [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
-	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
-    [Udf1] [NVARCHAR](1024) NULL,
-    [Udf2] [NVARCHAR](1024) NULL,
-    [Udf3] [NVARCHAR](1024) NULL,
+    [AssignedToId] [UNIQUEIDENTIFIER] NULL,
+    [CreatedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[DeletedOn][DATETIME] NULL,
+	[CreatedById] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedById] [UNIQUEIDENTIFIER] NOT NULL,
+	[Udf1][NVARCHAR](512) NULL,
+	[Udf2][NVARCHAR](512) NULL,
+	[Udf3][NVARCHAR](512) NULL,
     -- ADD JOIN TABLE FOR ADDRESS SIMILAR TO [User].[UserAddress]
-    -- FIX CONSTRAINT
-    CONSTRAINT FK_Accounts_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[UserProfile](UserId),
-    CONSTRAINT FK_Accounts_ModifiedUserId FOREIGN KEY (ModifiedUserId) REFERENCES [User].[UserProfile](UserId),
-    CONSTRAINT FK_Accounts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[UserProfile](UserId),
-    CONSTRAINT FK_Accounts_TeamId FOREIGN KEY (TeamId) REFERENCES Teams(TeamId),
-    CONSTRAINT FK_Accounts_ParentId FOREIGN KEY (ParentId) REFERENCES [User].[Accounts](AccountId),
-    CONSTRAINT FK_Accounts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id)
+	CONSTRAINT[FK_Parent_Account_Account] FOREIGN KEY([ParentId]) REFERENCES[Account].[Account]([Id]),
+	CONSTRAINT[FK_AccountType_Account_ReferenceItem] FOREIGN KEY([AccountTypeId]) REFERENCES[Utility].[ReferenceItem]([Id]),
+	CONSTRAINT[FK_OwnershipType_Account_ReferenceItem] FOREIGN KEY([OwnershipTypeId]) REFERENCES[Utility].[ReferenceItem]([Id]),
+	CONSTRAINT[FK_Campaign_Account_Campaign] FOREIGN KEY([CampaignId]) REFERENCES[Marketing].[Campaign]([Id]),
+	CONSTRAINT FK_AssignedTo_Account_Users FOREIGN KEY (AssignedToId) REFERENCES [User].[Users]([Id]),
+	CONSTRAINT FK_CreatedBy_Account_Users FOREIGN KEY (CreatedById) REFERENCES [User].[Users]([Id]),
+    CONSTRAINT FK_ModifiedBy_Account_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
 )
 
--- TODO ADD CONTACT TABLE
 -- CONTACT TABLE
 CREATE TABLE [Account].[Contact](  
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+	[AccountId] [UNIQUEIDENTIFIER] NOT NULL,
     [FirstName] [NVARCHAR](256) NOT NULL, 
 	[LastName] [NVARCHAR](256) NOT NULL, 
 	[Degree] [NVARCHAR](128) NULL, 
@@ -279,18 +273,20 @@ CREATE TABLE [Account].[Contact](
     [CampaignId] [UNIQUEIDENTIFIER] NULL,
     [DoNotCall] [BIT] NULL,
     [DoNotEmail] [BIT] NULL,
-    [AssignedUserId] [UNIQUEIDENTIFIER] NULL,
-    [CreatedBy] [UNIQUEIDENTIFIER] NOT NULL,
-    [ModifiedBy] [UNIQUEIDENTIFIER] NOT NULL,
-    [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
-	[ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
-    [Udf1] [NVARCHAR](1024) NULL,
-    [Udf2] [NVARCHAR](1024) NULL,
-    [Udf3] [NVARCHAR](1024) NULL,
-    CONSTRAINT FK_User_Contact_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES [User].[Users](UserId),
-    CONSTRAINT FK_User_Contact_ModifiedBy FOREIGN KEY (ModifiedBy) REFERENCES [User].[Users](UserId),
-    CONSTRAINT FK_Campaign_Contacts_CampaignId FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id),
-    CONSTRAINT FK_User_Contacts_AssignedUserId FOREIGN KEY (AssignedUserId) REFERENCES [User].[Users](UserId)
+    [AssignedToId] [UNIQUEIDENTIFIER] NULL,
+	[CreatedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[ChangedOnUtc][DATETIME] NOT NULL DEFAULT(getutcdate()),
+	[DeletedOn][DATETIME] NULL,
+	[CreatedById] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedById] [UNIQUEIDENTIFIER] NOT NULL,
+	[Udf1][NVARCHAR](512) NULL,
+	[Udf2][NVARCHAR](512) NULL,
+	[Udf3][NVARCHAR](512) NULL,
+	CONSTRAINT[FK_Account_Contact_Account] FOREIGN KEY([AccountId]) REFERENCES[Account].[Account]([Id]),
+	CONSTRAINT[FK_Campaign_Contact_Campaign] FOREIGN KEY([CampaignId]) REFERENCES[Marketing].[Campaign]([Id]),
+	CONSTRAINT FK_AssignedTo_Contact_Users FOREIGN KEY (AssignedToId) REFERENCES [User].[Users]([Id]),
+	CONSTRAINT FK_CreatedBy_Contact_Users FOREIGN KEY (CreatedById) REFERENCES [User].[Users]([Id]),
+    CONSTRAINT FK_ModifiedBy_Contact_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
 )
 
 

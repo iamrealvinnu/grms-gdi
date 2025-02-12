@@ -111,3 +111,33 @@ GDI Nexus Relationship Management System (GRMS) is a AI based relationship manag
 						+ 2.1.10.12.1.4.1 Add a class file *CreatedUserNotification.cs* this will containt the notification for the created user command
 					+ 2.1.10.12.1.5 Add a folder called `Workflow`. We will have all the user Workflows here
 						+ 2.1.10.12.1.5.1 Add a class file *CreatedUserWelcomeEmailWorkflowAction.cs* this will contain the workflow action for a created user welcome email
+3. Add folder `Test`. This is the folder where you will store your **Test's**, there are automated unit and integration tests to run against your code. 
+	+ 3.1 Add new project `Test.Unit` of template type `xUnit Test` using language **C#** utilizing **.NET framework 9.0**
+		+ 3.1.1 Once the project has been created delete the default UnitTest1.cs file if it created one
+		+ 3.1.2 Open the _Package Manager Console_ make sure the **Default project** is `Test.Unit`. Run the various pakages you want by running the respective command in your package manager console
+			+ 3.1.2.1 Run command `install-package Bogus -version 35.6.1`: Bogus is a package that you will use to generate fake data
+			+ 3.1.2.2 Run command `install-package Xunit.Microsoft.DependencyInjection -version 9.0.0`: Dependency injection for test bed
+			+ 3.1.2.3 Run command `install-package Microsoft.Extensions.DependencyInjection -version 9.0.1`: Dependency injection for settings
+			+ 3.1.2.4 Run command `install-package Microsoft.Extensions.Configuration -version 9.0.1`: Dependency injection for configuration
+			+ 3.1.2.5 Run command `install-package Microsoft.Extensions.Configuration.FileExtensions -version 9.0.1`: Dependency injection for file configuration
+			+ 3.1.2.6 Run command `install-package Microsoft.Extensions.Configuration.Json -version 9.0.1`: To read JSON configuration files
+			+ 3.1.2.7 Run command `install-package Microsoft.Extensions.Configuration.EnvironmentVariables -version 9.0.1`: To read environment variables
+			+ 3.1.2.8 Run command `install-package Microsoft.Extensions.Identity.Core -version 9.0.1`: Identity implementation for the application
+			+ 3.1.2.9 Run command `install-Package Microsoft.EntityFrameworkCore.Sqlite -Version 9.0.1`: EF for SQL Lite
+		+ 3.1.3 Add project references by Right click on _Dependencies_ in the solution explorer for the project and clicking on _Add Project Reference_
+			+ 3.1.3.1 Add project reference to *ClassLibrary.Domain*
+			+ 3.1.3.2 Add project reference to *ClassLibrary.Core* 
+			+ 3.1.3.3 Add project reference to *ClassLibrary.Application* 
+			+ 3.1.3.4 Add project reference to *ClassLibrary.Repository* 
+		+ 3.1.4 Add a class file *TestFixture.cs*. This is base class for _Test Fixture_ for the tests
+		+ 3.1.5 Add a class file *FakeDataGenerator.cs*. This is where _fake data_ for the application is generated
+		+ 3.1.6 Add a JSON file *testsettings.json*. This file will store configuration information such as DB connection info, logging, mail server etc. Once this file is created **_right click > Properties > Copy to output Directory = always_**
+		+ 3.1.7 Add a class file *TestPriorityAttribute.cs*. This is the attribute file for test priority
+		+ 3.1.8 Add a class file *PriorityOrderer.cs*. This is priority orderer for test
+		+ 3.1.9 Add a folder called `Domain`. This is where you will add your domain object tests
+			+ 3.1.9.1 Add a class file *UserTests.cs* you will write your tests to test the *User domain object*. At this point you shoule be able to write tests and run them using the *Unit Test Runner* and the test should pass.
+		+ 3.1.10 Add a folder called `Repository`. This is where you will add your respository tests
+			+ 3.1.10.1 Add a class file *EfMigrationTests.cs* you will write your tests to test the *EF Migrations*. At this point you shoule be able to write tests and run them using the *Unit Test Runner* and the test should pass.
+			+ 3.1.10.2 Add a class file *ReferenceRepositoryTests.cs* you will write your tests to test the *Reference Repository*. At this point you shoule be able to write tests and run them using the *Unit Test Runner* and the test should pass.
+			+ 3.1.10.3 Add a class file *UserRepositoryTests.cs* you will write your tests to test the *User Repository*. At this point you shoule be able to write tests and run them using the *Unit Test Runner* and the test should pass.
+4. Add folder `Api`. This is the folder where you will store your **API's**, these API's will utilize _ClassLibrary_ assests to support its processing. 
