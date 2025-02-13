@@ -276,6 +276,16 @@ CREATE TABLE [Account].[Account](
     CONSTRAINT FK_ModifiedBy_Account_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
 )
 
+-- ACCOUNT ADDRESS JOIN TABLE 
+CREATE TABLE [Account].[AccountAddress](
+    [AccountId] [UNIQUEIDENTIFIER] NOT NULL,
+    [AddressId] [UNIQUEIDENTIFIER] NOT NULL,
+    [Preffered] [BIT] NOT NULL,
+    CONSTRAINT [PK_AccountId_AddressId] PRIMARY KEY CLUSTERED([AccountId], [AddressId]),
+    CONSTRAINT [FK_Account_AccountAddress_Account] FOREIGN KEY([AccountId]) REFERENCES [Account].[Account]([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Address_AccountAddress_Address] FOREIGN KEY([AddressId]) REFERENCES [Utility].[Address]([Id]) ON DELETE CASCADE
+)
+
 -- CONTACT TABLE
 CREATE TABLE [Account].[Contact](  
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
