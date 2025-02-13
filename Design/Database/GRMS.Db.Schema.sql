@@ -323,7 +323,7 @@ CREATE TABLE [Account].[Contact](
     CONSTRAINT FK_ModifiedBy_Contact_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
 )
 
-
+--Add
 -- COMMIT/ROLLBACK TRANSACTION
 IF @@TRANCOUNT > 0
   -- ROLLBACK 		
