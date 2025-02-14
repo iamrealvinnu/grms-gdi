@@ -35,15 +35,14 @@ public class UserProfile : ValueObject<UserProfile>
     /// <param name="lastName">The LastName.</param>
     /// <param name="userTypeId">The UserTypeId.</param>
     /// <param name="genderId">The GenderId.</param>
-    /// <param name="countryId">The CountryId.</param>
-    public UserProfile(string firstName, string lastName, Guid userTypeId, Guid genderId,
-        Guid countryId)
+    public UserProfile(string firstName, string lastName, Guid userTypeId, Guid genderId
+       )
     {
         FirstName = firstName;
         LastName = lastName;
         UserTypeId = userTypeId;
         GenderId = genderId;
-        CountryId = countryId;
+        //CountryId = countryId;
     }
 
     /// <summary>
@@ -109,10 +108,10 @@ public class UserProfile : ValueObject<UserProfile>
     /// </summary>
     public Guid GenderId { get; set; }
 
-    /// <summary>
-    ///     The CountryId.
-    /// </summary>
-    public Guid CountryId { get; set; }
+    // /// <summary>
+    // ///     The CountryId.
+    // /// </summary>
+    // public Guid CountryId { get; set; }
 
     /// <summary>
     ///     The PictureUrl.
@@ -147,10 +146,10 @@ public class UserProfile : ValueObject<UserProfile>
     /// </summary>
     public virtual ReferenceItem Gender { get; set; }
 
-    /// <summary>
-    ///     Country.
-    /// </summary>
-    public virtual ReferenceItem Country { get; set; }
+    // /// <summary>
+    // ///     Country.
+    // /// </summary>
+    // public virtual ReferenceItem Country { get; set; }
     
     /// <summary>
     ///     UserType.

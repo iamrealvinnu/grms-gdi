@@ -63,16 +63,16 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .WithMany(p => p.UserProfileUserType)
             .HasForeignKey(d => d.UserTypeId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_User_UserProfile_Utility_ReferenceItem_UserType");
+            .HasConstraintName("FK_UserType_UserProfile_ReferenceItem");
         builder.HasOne(d => d.Gender)
             .WithMany(p => p.UserProfileGender)
             .HasForeignKey(d => d.GenderId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_User_UserProfile_Utility_ReferenceItem_Gender");
-        builder.HasOne(d => d.Country)
-            .WithMany(p => p.UserProfileCountry)
-            .HasForeignKey(d => d.CountryId)
-            .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_User_UserProfile_Utility_ReferenceItem_Country");
+            .HasConstraintName("FK_Gender_UserProfile_ReferenceItem");
+        // builder.HasOne(d => d.Country)
+        //     .WithMany(p => p.UserProfileCountry)
+        //     .HasForeignKey(d => d.CountryId)
+        //     .OnDelete(DeleteBehavior.ClientSetNull)
+        //     .HasConstraintName("FK_User_UserProfile_Utility_ReferenceItem_Country");
     }
 }

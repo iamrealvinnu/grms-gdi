@@ -69,28 +69,28 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasOne(d => d.Profile)
             .WithOne(p => p.User)
             .HasForeignKey<UserProfile>(d => d.UserId)
-            .HasConstraintName("FK_User_Users_UserProfile");
+            .HasConstraintName("FK_User_UserProfile_Users");
 
         // Many to One relationship 
         builder.HasMany(d => d.Claims)
             .WithOne(p => p.User)
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_User_Users_UserClaim");
+            .HasConstraintName("FK_User_UserClaim_Users");
 
         // Many to One relationship 
         builder.HasMany(d => d.Addresses)
             .WithOne(p => p.User)
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_User_Users_Utility_UserAddress");
+            .HasConstraintName("FK_User_UserAddress_Users");
 
         // Many to One relationship 
         builder.HasMany(d => d.RefreshTokens)
             .WithOne(p => p.User)
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_User_Users_UserRefreshToken");
+            .HasConstraintName("FK_User_UserRefreshToken_Users");
 
         // One to One optional relationship
         builder.HasOne(d => d.ReportsTo)

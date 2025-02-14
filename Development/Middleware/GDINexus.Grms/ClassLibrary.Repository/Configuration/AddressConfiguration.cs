@@ -57,16 +57,16 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
             .WithMany(p => p.AddressType)
             .HasForeignKey(d => d.AddressTypeId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_Utility_Address_ReferenceItem_AddressType");
+            .HasConstraintName("FK_AddressType_Address_ReferenceItem");
         builder.HasOne(d => d.State)
             .WithMany(p => p.AddressState)
             .HasForeignKey(d => d.StateId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_UtilityAddress_ReferenceItem_State");
+            .HasConstraintName("FK_State_Address_ReferenceItem");
         builder.HasOne(d => d.Country)
             .WithMany(p => p.AddressCountry)
             .HasForeignKey(d => d.CountryId)
             .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_UtilityAddress_ReferenceItem_Country");
+            .HasConstraintName("FK_Country_Address_ReferenceItem");
     }
 }

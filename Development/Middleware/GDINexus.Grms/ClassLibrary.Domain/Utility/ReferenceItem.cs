@@ -26,7 +26,7 @@ public class ReferenceItem : ValueObject<ReferenceItem>
     /// </summary>
     public ReferenceItem()
     {
-        UserProfileCountry = new HashSet<UserProfile>();
+        //UserProfileCountry = new HashSet<UserProfile>();
         UserProfileGender = new HashSet<UserProfile>();
         UserProfileUserType = new HashSet<UserProfile>();
         AddressState = new HashSet<Address>();
@@ -121,11 +121,11 @@ public class ReferenceItem : ValueObject<ReferenceItem>
     [JsonIgnore]
     public virtual Reference Reference { get; set; }
 
-    /// <summary>
-    ///     The UserProfileCountry.
-    /// </summary>
-    [JsonIgnore]
-    public virtual ICollection<UserProfile> UserProfileCountry { get; set; }
+    // /// <summary>
+    // ///     The UserProfileCountry.
+    // /// </summary>
+    // [JsonIgnore]
+    // public virtual ICollection<UserProfile> UserProfileCountry { get; set; }
 
     /// <summary>
     ///     The UserProfileGender.
