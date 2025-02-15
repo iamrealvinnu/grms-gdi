@@ -10,6 +10,8 @@
 
 #endregion
 
+using ClassLibrary.Domain.User;
+
 namespace ClassLibrary.Domain.Marketing;
 
 /// <summary>
@@ -23,7 +25,7 @@ public class Campaign : Entity<Guid>, IAggregateRoot
     /// </summary>
     public Campaign()
     {
-        Lead = new HashSet<Lead>();
+        Leads = new HashSet<Lead>();
 
     }
 
@@ -89,5 +91,8 @@ public class Campaign : Entity<Guid>, IAggregateRoot
     /// </summary>
     public string? Udf3 { get; set; }
 
-
- }
+    /// <summary>
+    /// The Leads
+    /// </summary>
+    public virtual ICollection<Lead> Leads { get; set; }
+}
