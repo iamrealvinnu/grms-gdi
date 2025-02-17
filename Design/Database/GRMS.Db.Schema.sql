@@ -174,6 +174,80 @@ CREATE TABLE[User].[UserRefreshToken](
 	CONSTRAINT[FK_User_UserRefreshToken_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE
 )
 
+-- STORED PROCEDURES
+-- Insert Failed Login Attempt
+CREATE PROCEDURE [User].InsertFailedLoginAttempt
+    @UserID UNIQUEIDENTIFIER
+AS
+BEGIN
+    DECLARE @CurrentAttemptCount INT;
+    DECLARE @IsLocked BIT;
+    DECLARE @AttemptTime DATETIME = GETDATE();
+
+    -- Get the current count of failed attempts
+    SELECT @CurrentAttemptCount = AccessFailedCount
+    FROM [User].[Users]
+    WHERE Id = @UserID;
+
+    -- Increment the attempt count
+    SET @CurrentAttemptCount = @CurrentAttemptCount + 1;
+
+	-- Lock the account if the number of failed attempts exceeds 5
+    IF @CurrentAttemptCount >= 5
+    BEGIN
+        -- Set LockoutEndDate to 15 minutes from now
+        UPDATE [User].[Users]
+        SET AccessFailedCount = @CurrentAttemptCount,
+            LockoutEndDate = DATEADD(MINUTE, 15, @AttemptTime),
+            LockoutEnabled = 1
+        WHERE Id = @UserID;
+    END
+    ELSE
+    BEGIN
+        -- Update AccessFailedCount without locking the account
+        UPDATE [User].[Users]
+        SET AccessFailedCount = @CurrentAttemptCount
+        WHERE Id = @UserID;
+    END
+END
+GO
+
+-- Check Lock Status
+CREATE PROCEDURE [User].CheckLockStatus
+    @UserID UNIQUEIDENTIFIER,
+    @IsLocked BIT OUTPUT
+AS
+BEGIN
+    DECLARE @LockoutEndDate DATETIME;
+
+    SELECT @LockoutEndDate = LockoutEndDate
+    FROM [User].[Users]
+    WHERE Id = @UserID;
+
+    IF @LockoutEndDate IS NOT NULL AND @LockoutEndDate > GETDATE()
+    BEGIN
+        SET @IsLocked = 1;
+    END
+    ELSE
+    BEGIN
+        SET @IsLocked = 0;
+    END
+END
+GO
+
+-- Reset Failed Login Attempts
+CREATE PROCEDURE [User].ResetFailedLoginAttempts
+    @UserID UNIQUEIDENTIFIER
+AS
+BEGIN
+    UPDATE [User].[Users]
+    SET AccessFailedCount = 0,
+        LockoutEndDate = NULL,
+        LockoutEnabled = 0
+    WHERE Id = @UserID;
+END
+GO
+
 -- MARKETING SCHEMA
 EXEC('CREATE SCHEMA [Marketing]')
 GO
