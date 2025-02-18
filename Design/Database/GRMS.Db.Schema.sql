@@ -182,35 +182,39 @@ AS
 BEGIN
     DECLARE @CurrentAttemptCount INT;
     DECLARE @IsLocked BIT;
-    DECLARE @AttemptTime DATETIME = GETDATE();
+    DECLARE @AttemptTime DATETIME;
 
-    -- Get the current count of failed attempts
+    SET @AttemptTime = GETDATE();
+
     SELECT @CurrentAttemptCount = AccessFailedCount
     FROM [User].[Users]
     WHERE Id = @UserID;
 
-    -- Increment the attempt count
+-- Increment the attempt count
     SET @CurrentAttemptCount = @CurrentAttemptCount + 1;
 
-	-- Lock the account if the number of failed attempts exceeds 5
+-- Lock the account if the number of failed attempts exceeds 5
+ 
     IF @CurrentAttemptCount >= 5
     BEGIN
-        -- Set LockoutEndDate to 15 minutes from now
+        SET @IsLocked = 1;
+-- Set LockoutEndDate to 15 minutes from now
         UPDATE [User].[Users]
         SET AccessFailedCount = @CurrentAttemptCount,
-            LockoutEndDate = DATEADD(MINUTE, 15, @AttemptTime),
-            LockoutEnabled = 1
+            LockoutEndDate = DATEADD(minute, 30, @AttemptTime),
+            LockoutEnabled = @IsLocked
         WHERE Id = @UserID;
     END
     ELSE
     BEGIN
-        -- Update AccessFailedCount without locking the account
+        SET @IsLocked = 0;
+-- Update AccessFailedCount without locking the account
         UPDATE [User].[Users]
-        SET AccessFailedCount = @CurrentAttemptCount
+        SET AccessFailedCount = @CurrentAttemptCount,
+            LockoutEnabled = @IsLocked
         WHERE Id = @UserID;
     END
-END
-GO
+END;
 
 -- Check Lock Status
 CREATE PROCEDURE [User].CheckLockStatus
