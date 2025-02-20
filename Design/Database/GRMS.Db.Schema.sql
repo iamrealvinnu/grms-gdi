@@ -65,7 +65,7 @@ CREATE TABLE[Utility].[ReferenceItem](
 	[Udf1][NVARCHAR](512) NULL,
 	[Udf2][NVARCHAR](512) NULL,
 	[Udf3][NVARCHAR](512) NULL,
-	[SortOrder][NVARCHAR](512) NULL,
+	[SortOrder][INT] NULL,
 	CONSTRAINT[FK_Reference_ReferenceItem_Reference] FOREIGN KEY([ReferenceId]) REFERENCES[Utility].[Reference]([Id]) ON DELETE CASCADE
 )
 
