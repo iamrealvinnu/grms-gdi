@@ -402,6 +402,17 @@ CREATE TABLE [Account].[Contact](
 )
 
 -- Sprint2 
+CREATE PROCEDURE usp_UpdateUserProfile
+    @UserId UNIQUEIDENTIFIER,
+    @UserName NVARCHAR(256),
+    @Email NVARCHAR(256),
+    @Dob DATE,
+    @PhoneNumber NVARCHAR(256),
+    @MobileNumber NVARCHAR(256),
+    @AddressId UNIQUEIDENTIFIER
+AS
+BEGIN
+    BEGIN TRANSACTION;
 -- Update Password in the Users table
 UPDATE [User].[Users]
 SET [PasswordHash] = 'new password hash', [ChangedOnUtc] = GETUTCDATE()
@@ -421,7 +432,13 @@ WHERE [UserId] = 'user unique identifier';
 UPDATE [User].[UserAddress]
 SET [AddressId] = 'new address id', [Preffered] = 'new preferred status'
 WHERE [UserId] = 'user unique identifier' AND [AddressId] = 'current address id';
+
+COMMIT TRANSACTION;
+END;
+GO
+
 --
+
 CREATE FUNCTION dbo.ValidatePassword(@Password NVARCHAR(512))
 RETURNS BIT
 AS
@@ -496,6 +513,8 @@ BEGIN
 END;
 GO
 -- 
+
+
 -- COMMIT/ROLLBACK TRANSACTION
 IF @@TRANCOUNT > 0
   -- ROLLBACK 		
