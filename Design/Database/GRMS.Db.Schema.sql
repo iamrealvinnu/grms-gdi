@@ -436,7 +436,16 @@ WHERE [UserId] = 'user unique identifier' AND [AddressId] = 'current address id'
 COMMIT TRANSACTION;
 END;
 GO
-
+--
+--Execute SP
+EXEC usp_UpdateUserProfile
+    @UserId = 'user unique identifier',
+    @UserName = 'new username',
+    @Email = 'new email@example.com',
+    @Dob = '1990-01-01',
+    @PhoneNumber = 'new phone number',
+    @MobileNumber = 'new mobile number',
+    @AddressId = 'new address id'
 --
 
 CREATE FUNCTION dbo.ValidatePassword(@Password NVARCHAR(512))
