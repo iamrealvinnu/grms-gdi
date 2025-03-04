@@ -401,6 +401,7 @@ CREATE TABLE [Account].[Contact](
     CONSTRAINT FK_ModifiedBy_Contact_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
 )
 
+-- Sprint2 
 -- Update Password in the Users table
 UPDATE [User].[Users]
 SET [PasswordHash] = 'new password hash', [ChangedOnUtc] = GETUTCDATE()
@@ -421,6 +422,80 @@ UPDATE [User].[UserAddress]
 SET [AddressId] = 'new address id', [Preffered] = 'new preferred status'
 WHERE [UserId] = 'user unique identifier' AND [AddressId] = 'current address id';
 --
+CREATE FUNCTION dbo.ValidatePassword(@Password NVARCHAR(512))
+RETURNS BIT
+AS
+BEGIN
+    DECLARE @IsValid BIT = 1;
+
+    -- Check if the password length is at least 8 characters
+    IF LEN(@Password) < 8
+        SET @IsValid = 0;
+
+    -- Check if the password contains at least one uppercase letter
+    IF @Password NOT LIKE '%[A-Z]%'
+        SET @IsValid = 0;
+
+    -- Check if the password contains at least one lowercase letter
+    IF @Password NOT LIKE '%[a-z]%'
+        SET @IsValid = 0;
+
+    -- Check if the password contains at least one digit
+    IF @Password NOT LIKE '%[0-9]%'
+        SET @IsValid = 0;
+
+    -- Check if the password contains at least one special character
+    IF @Password NOT LIKE '%[!@#$%^&*()]%'
+        SET @IsValid = 0;
+
+    RETURN @IsValid;
+END;
+GO
+--
+CREATE TRIGGER trgValidatePassword
+ON [User].[Users]
+INSTEAD OF INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @IsValid BIT;
+    DECLARE @Password NVARCHAR(512);
+    DECLARE @UserId UNIQUEIDENTIFIER;
+
+    -- Retrieve the password from the inserted or updated row
+    SELECT @Password = [PasswordHash], @UserId = [Id]
+    FROM inserted;
+
+    -- Validate the password
+    SET @IsValid = dbo.ValidatePassword(@Password);
+
+    -- If the password is not valid, raise an error
+    IF @IsValid = 0
+    BEGIN
+        RAISERROR('Password does not meet strength requirements.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+    ELSE
+    BEGIN
+        -- If the password is valid, proceed with the insert or update
+        IF EXISTS (SELECT 1 FROM [User].[Users] WHERE [Id] = @UserId)
+        BEGIN
+            -- Update existing row
+            UPDATE [User].[Users]
+            SET [PasswordHash] = @Password,
+                [ChangedOnUtc] = GETUTCDATE()
+            WHERE [Id] = @UserId;
+        END
+        ELSE
+        BEGIN
+            -- Insert new row
+            INSERT INTO [User].[Users]([Id], [PasswordHash], [ChangedOnUtc], ... )
+            SELECT [Id], [PasswordHash], GETUTCDATE(), ...
+            FROM inserted;
+        END
+    END
+END;
+GO
+-- 
 -- COMMIT/ROLLBACK TRANSACTION
 IF @@TRANCOUNT > 0
   -- ROLLBACK 		
