@@ -401,7 +401,26 @@ CREATE TABLE [Account].[Contact](
     CONSTRAINT FK_ModifiedBy_Contact_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
 )
 
---Add
+-- Update Password in the Users table
+UPDATE [User].[Users]
+SET [PasswordHash] = 'new password hash', [ChangedOnUtc] = GETUTCDATE()
+WHERE [Id] = 'user unique identifier';
+
+-- Update Contact Number (PhoneNumber and MobileNumber) in the Users table
+UPDATE [User].[Users]
+SET [PhoneNumber] = 'new phone#', [MobileNumber] = 'new mobile #', [ChangedOnUtc] = GETUTCDATE()
+WHERE [Id] = 'user unique identifier';
+
+-- Update Date of Birth (Dob) in the UserProfile table
+UPDATE [User].[UserProfile]
+SET [Dob] = 'new DOB'
+WHERE [UserId] = 'user unique identifier';
+
+-- Update Address in the UserAddress table
+UPDATE [User].[UserAddress]
+SET [AddressId] = 'new address id', [Preffered] = 'new preferred status'
+WHERE [UserId] = 'user unique identifier' AND [AddressId] = 'current address id';
+--
 -- COMMIT/ROLLBACK TRANSACTION
 IF @@TRANCOUNT > 0
   -- ROLLBACK 		
