@@ -311,6 +311,27 @@ CREATE TABLE [Marketing].[Lead](
     CONSTRAINT FK_ModifiedBy_Lead_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
 )
 
+-- OPPORTUNITY TABLE
+CREATE TABLE [Marketing].[Opportunity](
+    [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
+    [LeadId] [UNIQUEIDENTIFIER] NOT NULL,
+    [OpportunityName] [NVARCHAR](256) NOT NULL,
+    [OpportunityStatus] [NVARCHAR](50) NOT NULL,
+    [EstimatedValue] [DECIMAL](18, 2) NULL,
+    [CloseDate] [DATETIME] NULL,
+    [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+    [ChangedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
+    [DeletedOn] [DATETIME] NULL,
+    [CreatedById] [UNIQUEIDENTIFIER] NOT NULL,
+    [ModifiedById] [UNIQUEIDENTIFIER] NOT NULL,
+    [Udf1] [NVARCHAR](512) NULL,
+    [Udf2] [NVARCHAR](512) NULL,
+    [Udf3] [NVARCHAR](512) NULL,
+    CONSTRAINT FK_Lead_Opportunity FOREIGN KEY (LeadId) REFERENCES [Marketing].[Lead](Id),
+    CONSTRAINT FK_CreatedBy_Opportunity_Users FOREIGN KEY (CreatedById) REFERENCES [User].[Users](Id),
+    CONSTRAINT FK_ModifiedBy_Opportunity_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users](Id)
+);
+
 -- ACCOUNT SCHEMA
 EXEC('CREATE SCHEMA [Account]')
 GO
