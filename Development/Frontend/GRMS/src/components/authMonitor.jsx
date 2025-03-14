@@ -11,8 +11,8 @@ import { useEffect } from "react"; // React hook to handle side effects
 import { toast, ToastContainer } from "react-toastify"; // Import Toastify for notifications
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS for styling notifications
 
-// Define auto-logout time (5 minutes = 300,000 milliseconds)
-const AUTO_LOGOUT_TIME = 5 * 60 * 1000;
+// Define auto-logout time (15 minutes = 900,000 milliseconds)
+const AUTO_LOGOUT_TIME = 15 * 60 * 1000;
 
 // Function to reset activity timer (stores the latest activity time in localStorage)
 const resetActivityTimer = () => {

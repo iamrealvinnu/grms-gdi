@@ -1,12 +1,12 @@
 //
-// NAME:			  App.jsx
+// NAME:			  Profile.jsx
 // AUTHOR:			Krishna Murthy
 // COMPANY:			GDI Nexus
 // DATE:			  02/12/2025
-// PURPOSE:			All component import To User's Dispaly
+// PURPOSE:			User's Profile Page 
 //
 
-
+// Imports
 import React from "react";
 import withAuth from '../withAuth'; // Higher-order component (HOC) for authentication
 import { FiEdit } from "react-icons/fi"; // Importing edit icon
