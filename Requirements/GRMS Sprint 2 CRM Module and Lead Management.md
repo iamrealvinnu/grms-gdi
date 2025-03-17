@@ -1,4 +1,4 @@
-# Sprint2 Planning for CRM Module and Lead Management 
+# Sprint2 Planning for Planning for Enhanced User Management and Campaign Capabilities
 
 ## Sprint Duration: 
 2 weeks
