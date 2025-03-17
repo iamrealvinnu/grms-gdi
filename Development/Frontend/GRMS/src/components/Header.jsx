@@ -127,7 +127,7 @@ function Header() {
                   setProfileDropdownOpen(false);
                 }}
               >
-                Market Management ▼
+                Marketing Management ▼
               </button>
               {marketDropDownOpen && (
                 <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-35 mt-2">

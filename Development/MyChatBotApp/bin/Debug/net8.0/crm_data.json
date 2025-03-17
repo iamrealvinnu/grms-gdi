@@ -1,0 +1,19 @@
+{
+    "Customers": [
+        {
+            "Id": 1,
+            "Name": "John Doe",
+            "Email": "john.doe@example.com",
+            "Phone": "123-456-7890"
+        },
+        {
+            "Id": 2,
+            "Name": "Jane Smith",
+            "Email": "jane.smith@example.com",
+            "Phone": "987-654-3210"
+        }
+    ],
+    "Leads": [],
+    "Meetings": [],
+    "SalesReports": []
+}
