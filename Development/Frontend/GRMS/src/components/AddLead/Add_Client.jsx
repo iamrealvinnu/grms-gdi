@@ -1,6 +1,35 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 function Add_Client() {
+  const [tableIndustryData, setTableIndustryData] = useState([]);
+
+  const industriesTypes =
+    tableIndustryData.find((item) => item.name === "Industry Types")
+      ?.referenceItems || [];
+
+  const fetchTableData = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      setTableIndustryData(response.data.data);
+      console.log("fetched tableData:", response.data.data);
+    } catch (error) {
+      console.error("Error fetching Table data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTableData();
+  }, []);
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       {/* Company Details Section */}
@@ -46,14 +75,16 @@ function Add_Client() {
           {/* Industry Dropdown */}
           <div className="w-full md:w-[48%]">
             <label className="block font-medium text-gray-700">Industry</label>
-            <select className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white">
-              <option value="" disabled selected>
-                Select Industry
-              </option>
-              <option value="Medical">Medical</option>
-              <option value="Finance">Finance</option>
-              <option value="Technology">Technology</option>
-              <option value="Education">Education</option>
+            <select
+              name="industryId"
+              className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
+            >
+              <option value=""disabled selected>Select Industry</option>
+              {industriesTypes.map((industriesType) => (
+                <option key={industriesType.id} value={industriesType.id}>
+                  {industriesType.description}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -187,9 +218,7 @@ function Add_Client() {
 
             {/* Discussion */}
             <div className="w-full col-span-2">
-              <label className="block font-medium text-gray-700">
-                Notes:
-              </label>
+              <label className="block font-medium text-gray-700">Notes:</label>
               <input
                 type="text"
                 // placeholder="Discussion"

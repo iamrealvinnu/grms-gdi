@@ -14,12 +14,23 @@ namespace MyChatBotApp.Backend
             _crmData = crmData ?? throw new ArgumentNullException(nameof(crmData));
         }
 
-        [KernelFunction]  // Add this attribute
-        public string GetCustomerDetails(string customerName)
+        [KernelFunction]
+        public string GetCustomerDetails(string message)
         {
-            if (string.IsNullOrWhiteSpace(customerName))
+            if (string.IsNullOrWhiteSpace(message))
             {
                 return "Invalid customer name.";
+            }
+
+            // Clean up "find me" or "find" from the message
+            string customerName = message
+                .Replace("find me", "", StringComparison.OrdinalIgnoreCase)
+                .Replace("find", "", StringComparison.OrdinalIgnoreCase)
+                .Trim();
+
+            if (string.IsNullOrWhiteSpace(customerName))
+            {
+                return "Please tell me a customer name to find!";
             }
 
             var customer = _crmData?.Customers?.FirstOrDefault(c =>
@@ -27,7 +38,7 @@ namespace MyChatBotApp.Backend
 
             return customer != null
                 ? $"Customer Details: Name={customer.Name}, Email={customer.Email}, Phone={customer.Phone}"
-                : "Customer not found.";
+                : $"Customer '{customerName}' not found, dude!";
         }
     }
 }

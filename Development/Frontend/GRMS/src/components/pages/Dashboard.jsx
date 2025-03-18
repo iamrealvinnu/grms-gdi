@@ -11,12 +11,14 @@ import React, { useEffect, useState } from 'react'; // Importing React and hooks
 import withAuth from '../withAuth'; // Higher-order component (HOC) for authentication
 import { jwtDecode } from 'jwt-decode'; // Library for decoding JWT tokens
 import { useNavigate } from 'react-router-dom';
+import ChatbotUI from "../CHATBOT/ChatbotUI";
 
 const Dashboard = () => {
   // State variables for storing user name, date, and day
   const [userName, setUserName] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [currentDay, setCurrentDay] = useState('');
+  const [isChatOpen,setIsChatOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,8 +45,10 @@ const Dashboard = () => {
     setCurrentDay(today.toLocaleDateString('en-US', { weekday: 'long' }));
   }, []); // Empty dependency array ensures this runs only once when component mounts
 
+  const toggleChat = () => setIsChatOpen(!isChatOpen);
+
   return (
-    <div className="p-5">
+    <div className="p-5 relative">
       {/* Welcome Message Section */}
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold">Welcome, {userName}</h1>
@@ -79,6 +83,11 @@ const Dashboard = () => {
           <p className="text-2xl font-bold">8</p>
         </div>
         
+      </div>
+
+       {/* Chatbot positioned at bottom-right */}
+       <div className="fixed bottom-4 right-4 z-50">
+        <ChatbotUI closeChat={toggleChat} isChatOpen={isChatOpen} userName={userName} />
       </div>
     </div>
   );

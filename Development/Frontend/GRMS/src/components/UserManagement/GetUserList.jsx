@@ -22,7 +22,6 @@ const GetUserList = () => {
   const [countries, setCountries] = useState({});
   const [userTypes, setUserTypes] = useState({});
   const [claimTypes, setClaimTypes] = useState({});
-  const { userId } = useParams();
   const navigate = useNavigate();
   const [sortColumn, setSortColumn] = useState("userName");
   const [sortOrder, setSortOrder] = useState("asc");
@@ -106,15 +105,6 @@ const GetUserList = () => {
     }
   };
 
-  const filteredUsers = useMemo(() => {
-    const lowercasedSearch = search.toLowerCase();
-    return users.filter(
-      (user) =>
-        user.userName?.toLowerCase().includes(lowercasedSearch) ||
-        user.email?.toLowerCase().includes(lowercasedSearch)
-    );
-  }, [search, users]);
-
   const handleSort = (column) => {
     setSortOrder((prevOrder) =>
       sortColumn === column ? (prevOrder === "asc" ? "desc" : "asc") : "asc"
@@ -194,9 +184,11 @@ const GetUserList = () => {
                 >
                   Last Name {sortColumn === "profile.lastName" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
                 </th>
+                <th className="px-4 py-2 border">Mobile Number</th>
                 <th className="px-4 py-2 border">Country</th>
                 <th className="px-4 py-2 border">Gender</th>
                 <th className="px-4 py-2 border">User Type</th>
+                <th className="px-4 py-2 border">Phone Number</th>
                 <th className="px-4 py-2 border">Claim Type</th>
                 <th className="px-4 py-2 border">Actions</th>
               </tr>
@@ -208,9 +200,11 @@ const GetUserList = () => {
                   <td className="py-2 px-4 border">{user.email || "N/A"}</td>
                   <td className="py-2 px-4 border">{user.profile?.firstName || "N/A"}</td>
                   <td className="py-2 px-4 border">{user.profile?.lastName || "N/A"}</td>
+                  <td className="py-2 px-4 border">{user.mobileNumber || "N/A"}</td>
                   <td className="py-2 px-4 border">{countries[user.profile?.countryId] || "N/A"}</td>
                   <td className="py-2 px-4 border">{genders[user.profile?.genderId] || "N/A"}</td>
                   <td className="py-2 px-4 border">{userTypes[user.profile?.userTypeId] || "N/A"}</td>
+                  <td className="py-2 px-4 border">{user.phoneNumber || "N/A"}</td>
                   <td className="py-2 px-4 border">
                     {user.claims
                       ?.map((claim) => claimTypes[claim.claimValue] || "N/A")

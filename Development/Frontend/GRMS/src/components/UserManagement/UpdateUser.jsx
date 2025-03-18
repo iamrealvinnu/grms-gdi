@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import withAuth from '../withAuth';
 
 function UpdateUser() {
   const [user, setUser] = useState({
@@ -60,11 +61,12 @@ function UpdateUser() {
         userTypeId: userData.profile?.userTypeId || "",
         genderId: userData.profile?.genderId || "",
         countryId: userData.profile?.countryId || "",
-        phoneNumber: userData.profile?.phoneNumber || "",
-        mobileNumber: userData.profile?.mobileNumber || "",
+        phoneNumber: userData.phoneNumber ?? "",
+        mobileNumber: userData.mobileNumber ?? "",
         claims: userData.claims?.map((claim) => claim.claimValue) || [],
       });
       setLoading(false);
+      console.log('fetch User data:',response.data)
     } catch (error) {
       setError(error.message);
       setLoading(false);
@@ -333,4 +335,4 @@ function UpdateUser() {
   );
 }
 
-export default UpdateUser;
+export default withAuth(UpdateUser);

@@ -14,9 +14,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { jwtDecode } from "jwt-decode"; // Library for decoding JWT tokens
+import withAuth from "../withAuth";
 
 function MarketingCreate() {
-  const [formData, setFormData] = useState({
+  const [formMarketingData, setFormMarketingData] = useState({
     name: "",
     description: "",
     startDate: "",
@@ -48,7 +49,7 @@ function MarketingCreate() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormMarketingData({ ...formMarketingData, [name]: value });
     setErrors({ ...errors, [name]: "" });
   };
 
@@ -56,19 +57,19 @@ function MarketingCreate() {
     let isValid = true;
     let newErrors = {};
 
-    if (!formData.name) {
+    if (!formMarketingData.name) {
       newErrors.name = "Campaign name is required.";
       isValid = false;
     }
-    if (!formData.description) {
+    if (!formMarketingData.description) {
       newErrors.description = "Campaign description is required.";
       isValid = false;
     }
-    if (!formData.startDate) {
+    if (!formMarketingData.startDate) {
       newErrors.startDate = "Campaign StartDate is required.";
       isValid = false;
     }
-    if (!formData.endDate) {
+    if (!formMarketingData.endDate) {
       newErrors.endDate = " Campaign endDate must be filled.";
       isValid = false;
     }
@@ -85,7 +86,7 @@ function MarketingCreate() {
       const token = localStorage.getItem("accessToken");
 
       const requestData = {
-        ...formData,
+        ...formMarketingData,
         createdById: user // Ensure this matches the required ID format
       };
 
@@ -102,7 +103,7 @@ function MarketingCreate() {
 
       if (response.status === 201 || response.status === 200) {
         toast.success("Campaign created successfully!");
-        setFormData({ name: "", description: "", startDate: "", endDate: "" });
+        setFormMarketingData({ name: "", description: "", startDate: "", endDate: "" });
       } else {
         toast.error("Failed to create campaign.");
       }
@@ -113,7 +114,7 @@ function MarketingCreate() {
   };
 
   const clearDate = (field) => {
-    setFormData((prevState) => ({
+    setFormMarketingData((prevState) => ({
       ...prevState,
       [field]: "",
     }));
@@ -134,7 +135,7 @@ function MarketingCreate() {
             <input
               type="text"
               name="name"
-              value={formData.name}
+              value={formMarketingData.name}
               onChange={handleChange}
               className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
             />
@@ -149,7 +150,7 @@ function MarketingCreate() {
             </label>
             <textarea
               name="description"
-              value={formData.description}
+              value={formMarketingData.description}
               onChange={handleChange}
               className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
               rows="4" // Adjust the number of rows as needed
@@ -168,7 +169,7 @@ function MarketingCreate() {
               <input
                 type="date"
                 name="startDate"
-                value={formData.startDate}
+                value={formMarketingData.startDate}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
               />
@@ -191,7 +192,7 @@ function MarketingCreate() {
               <input
                 type="date"
                 name="endDate"
-                value={formData.endDate}
+                value={formMarketingData.endDate}
                 onChange={handleChange}
                 className="px-4 py-2 w-full border rounded-lg focus:ring focus:ring-blue-300"
               />
@@ -220,4 +221,4 @@ function MarketingCreate() {
   );
 }
 
-export default MarketingCreate;
+export default withAuth(MarketingCreate);

@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles/chatbot.css";
+import "./styles/Message.css";
 
 const Message = ({ sender, text }) => {
     return (

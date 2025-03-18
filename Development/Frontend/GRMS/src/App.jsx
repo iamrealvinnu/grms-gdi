@@ -20,10 +20,11 @@ import GetUserList from "./components/UserManagement/GetUserList";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ResetPassword from "./components/pages/ResetPassword";
 import UpdateUser from "./components/UserManagement/UpdateUser";
-import ClientData from "./components/AddClient/Client_Data";
-import Add_Client from "./components/AddClient/Add_Client";
+import ClientData from "./components/AddLead/Client_Data";
+import Add_Client from "./components/AddLead/Add_Client";
 import MarketingDetails from "./components/Marketing Management/MarketingDetails";
 import MarketingCreate from "./components/Marketing Management/MarketingCreate";
+import ChangePassword from "./components/pages/ChangePassword";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/notification" element={<Notification />} />
+        <Route path="/changePassword" element={<ChangePassword />} />
         <Route path="/profile" element={<Profile />} />
 
         {/* User-Management Routes */}

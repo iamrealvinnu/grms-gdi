@@ -151,14 +151,14 @@ function Header() {
                 Dashboard
               </Link>
             </li>
-            <li className="py-2 lg:py-0 text-center">
+            {/* <li className="py-2 lg:py-0 text-center">
               <Link
                 to="/notification"
                 className="text-white no-underline hover:bg-gray-600 rounded px-4 py-2 block"
               >
                 Notification
               </Link>
-            </li>
+            </li> */}
 
             {/* Profile Dropdown */}
             <li className="relative py-2 lg:py-0" ref={profileDropdownRef}>

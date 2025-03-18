@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "XJSV43vnKKiyhpmWTXL3aZE6LodVVXthP56OcQ/9OS4=",
+  "Hash": "aWA8/WIdoDEAU2D7v3rvONvvzIFmySoGKKX4txNT7fc=",
   "Source": "MyChatBotApp",
   "BasePath": "_content/MyChatBotApp",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }
