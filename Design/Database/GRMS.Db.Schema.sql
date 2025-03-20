@@ -239,7 +239,6 @@ CREATE TABLE [Marketing].[Opportunity](
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
     [LeadId] [UNIQUEIDENTIFIER] NOT NULL,
     [OpportunityName] [NVARCHAR](256) NOT NULL,
-    [OpportunityStatus] [NVARCHAR](50) NOT NULL,
     [EstimatedValue] [DECIMAL](18, 2) NULL,
     [CloseDate] [DATETIME] NULL,
     [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
