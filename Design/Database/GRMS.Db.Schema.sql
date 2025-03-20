@@ -91,6 +91,16 @@ CREATE TABLE [Utility].[Address](
 	CONSTRAINT [FK_Country_Address_ReferenceItem] FOREIGN KEY ([CountryId]) REFERENCES [Utility].[ReferenceItem] ([Id]),
 	CONSTRAINT [FK_AddressType_Address_ReferenceItem] FOREIGN KEY ([AddressTypeId]) REFERENCES [Utility].[ReferenceItem] ([Id])
 )
+-- AUDITLOG TABLE
+CREATE TABLE AuditLog (
+    Id INT IDENTITY(1,1) PRIMARY KEY, 
+    UserId INT NOT NULL,             
+    Action NVARCHAR(50) NOT NULL,    
+    Entity NVARCHAR(50) NOT NULL,   
+    Data NVARCHAR(MAX),              
+    CreatedOn DATETIME NOT NULL DEFAULT GETDATE(), 
+    EntityKey NVARCHAR(50)          
+);
 
 -- USER SCHEMA
 EXEC('CREATE SCHEMA [User]')
