@@ -1,12 +1,12 @@
 {
   "profiles": {
-    "MyChatBotApp": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:51643;http://localhost:51644"
-    }
+      "MyChatBotApp": {
+          "commandName": "Project",
+          "launchBrowser": true,
+          "environmentVariables": {
+              "ASPNETCORE_ENVIRONMENT": "Development"
+          },
+          "applicationUrl": "https://localhost:51643;http://localhost:51644"
+      }
   }
 }

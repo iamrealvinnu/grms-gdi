@@ -1,50 +1,39 @@
 ﻿using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
-using System;
-using System.Linq;
+using MyChatBotApp.Backend;
 using System.Threading.Tasks;
+using System.Linq;
 
-public class SalesReportHandler
+namespace MyChatBotApp.Backend
 {
-    private readonly Kernel _kernel;
-    private readonly CRMData _crmData;
-
-    public SalesReportHandler(Kernel kernel, CRMData crmData)
+    // Handles requests for generating and retrieving sales reports from the CRM database.
+    public class SalesReportHandler
     {
-        _kernel = kernel;
-        _crmData = crmData;
-    }
+        private readonly Kernel _kernel; // Semantic Kernel instance for potential AI-driven sales analysis (currently unused).
+        private readonly CRMData _crmData; // Singleton instance of CRM data loaded from the database.
 
-    public async Task<string> HandleSalesReportAsync(string userMessage)
-    {
-        var latestReport = _crmData.SalesReports
-            .OrderByDescending(r => r.Month)
-            .FirstOrDefault();
-
-        if (latestReport != null)
+        // Constructor: Initializes the handler with a Semantic Kernel and CRM data.
+        public SalesReportHandler(Kernel kernel, CRMData crmData)
         {
-            return $"📊 The latest sales report for {latestReport.Month:yyyy-MM} shows a revenue of **${latestReport.Revenue}**.";
+            _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel)); // Ensure the kernel is not null.
+            _crmData = crmData ?? new CRMData(); // Use provided CRM data, or fall back to an empty object if null.
         }
 
-        string prompt = $@"
-        You are an AI assistant specialized in CRM. Provide responses that are strictly related to
-        customer relationship management, sales, and lead management. Here is the user's message: {userMessage}
-        ";
-
-        var salesReportFunction = _kernel.CreateFunctionFromPrompt(prompt, new OpenAIPromptExecutionSettings
+        // Processes a request to generate or retrieve a sales report from the database.
+        public async Task<string?> HandleSalesReportAsync(string userMessage)
         {
-            Temperature = 0.7,
-            MaxTokens = 1000,
-        });
+            await Task.CompletedTask; // Ensures the method adheres to async signature (no async operations yet).
 
-        KernelArguments arguments = new KernelArguments
-        {
-            { "user_message", userMessage }
-        };
+            // Check if there are any sales reports available in the CRM data.
+            if (_crmData.SalesReports == null || !_crmData.SalesReports.Any())
+                return "No sales reports available in the database.";
 
-        var response = await _kernel.InvokeAsync(salesReportFunction, arguments);
-
-        // Ensure a non-null response
-        return response.GetValue<string>() ?? "No response from the AI assistant.";
+            // Retrieve the latest sales report based on the month (simple implementation for now).
+            var latestReport = _crmData.SalesReports.OrderByDescending(r => r.Month).FirstOrDefault();
+            if (latestReport != null)
+            {
+                return $"Latest Sales Report ({latestReport.Month:yyyy-MM}): Revenue: ${latestReport.Revenue:F2}"; // Return formatted report details.
+            }
+            return "No sales report available for the requested period."; // Return error if no report is found.
+        }
     }
 }

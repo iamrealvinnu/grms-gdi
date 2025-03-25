@@ -80,7 +80,7 @@ function Header() {
         {/* Internal Header (When User is Logged In) */}
         {isLoggedIn && (
           <ul
-            className={`md:flex md:items-center absolute md:static top-16 right-0 w-[200px] bg-gray-800 md:bg-transparent md:w-auto md:space-x-6 transition-all duration-300 ${
+            className={`md:flex md:items-center absolute md:static top-16 right-0 w-[200px] bg-gray-800 md:bg-transparent md:w-auto md:space-x-6 transition-all z-50 duration-300 ${
               menuOpen ? "flex flex-col" : "hidden"
             }`}
           >
@@ -96,7 +96,7 @@ function Header() {
                 User Management ▼
               </button>
               {userDropdownOpen && (
-                <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-35 mt-2">
+                <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-35 mt-2 z-10">
                   <li>
                     <Link
                       to="/userCreate"
@@ -130,7 +130,7 @@ function Header() {
                 Marketing Management ▼
               </button>
               {marketDropDownOpen && (
-                <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-35 mt-2">
+                <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-35 mt-2 z-10">
                   <li>
                     <Link
                       to="/marketingDetails"
@@ -149,6 +149,14 @@ function Header() {
                 className="text-white no-underline hover:bg-gray-600 rounded px-4 py-2 block"
               >
                 Dashboard
+              </Link>
+            </li>
+            <li className="py-2 lg:py-0 text-center">
+              <Link
+                to="/getAllOpportunity"
+                className="text-white no-underline hover:bg-gray-600 rounded px-4 py-2 block"
+              >
+                Opportunity
               </Link>
             </li>
             {/* <li className="py-2 lg:py-0 text-center">
@@ -172,7 +180,7 @@ function Header() {
                 Profile ▼
               </button>
               {profileDropdownOpen && (
-                <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-35 mt-2">
+                <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-35 mt-2 z-10">
                   <li>
                     <Link
                       to="/profile"

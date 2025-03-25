@@ -1,19 +1,754 @@
 {
-    "Customers": [
-        {
-            "Id": 1,
-            "Name": "John Doe",
-            "Email": "john.doe@example.com",
-            "Phone": "123-456-7890"
-        },
-        {
-            "Id": 2,
-            "Name": "Jane Smith",
-            "Email": "jane.smith@example.com",
-            "Phone": "987-654-3210"
-        }
-    ],
-    "Leads": [],
-    "Meetings": [],
-    "SalesReports": []
+  "Leads": [
+    {
+      "Id": 1,
+      "Name": "Alice Green",
+      "Contact": "alice.green@example.com",
+      "Status": "New",
+      "Score": 30
+    },
+    {
+      "Id": 2,
+      "Name": "Bob White",
+      "Contact": "bob.white@example.com",
+      "Status": "Contacted",
+      "Score": 40
+    },
+    {
+      "Id": 3,
+      "Name": "Clara Blue",
+      "Contact": "clara.blue@example.com",
+      "Status": "Qualified",
+      "Score": 60
+    },
+    {
+      "Id": 4,
+      "Name": "Daniel Red",
+      "Contact": "daniel.red@example.com",
+      "Status": "Lost",
+      "Score": 10
+    },
+    {
+      "Id": 5,
+      "Name": "Ella Black",
+      "Contact": "ella.black@example.com",
+      "Status": "New",
+      "Score": 30
+    },
+    {
+      "Id": 6,
+      "Name": "Frank Gray",
+      "Contact": "frank.gray@example.com",
+      "Status": "Contacted",
+      "Score": 40
+    },
+    {
+      "Id": 7,
+      "Name": "Grace Purple",
+      "Contact": "grace.purple@example.com",
+      "Status": "Qualified",
+      "Score": 60
+    },
+    {
+      "Id": 8,
+      "Name": "Henry Yellow",
+      "Contact": "henry.yellow@example.com",
+      "Status": "Lost",
+      "Score": 10
+    },
+    {
+      "Id": 9,
+      "Name": "Isabella Orange",
+      "Contact": "isabella.orange@example.com",
+      "Status": "New",
+      "Score": 30
+    },
+    {
+      "Id": 10,
+      "Name": "Jack Brown",
+      "Contact": "jack.brown@example.com",
+      "Status": "Contacted",
+      "Score": 40
+    },
+    {
+      "Id": 11,
+      "Name": "Kelly Pink",
+      "Contact": "kelly.pink@example.com",
+      "Status": "Qualified",
+      "Score": 60
+    },
+    {
+      "Id": 12,
+      "Name": "Liam Teal",
+      "Contact": "liam.teal@example.com",
+      "Status": "New",
+      "Score": 30
+    },
+    {
+      "Id": 13,
+      "Name": "Mia Violet",
+      "Contact": "mia.violet@example.com",
+      "Status": "Contacted",
+      "Score": 40
+    },
+    {
+      "Id": 14,
+      "Name": "Noah Indigo",
+      "Contact": "noah.indigo@example.com",
+      "Status": "Qualified",
+      "Score": 60
+    },
+    {
+      "Id": 15,
+      "Name": "Olivia Cyan",
+      "Contact": "olivia.cyan@example.com",
+      "Status": "Lost",
+      "Score": 10
+    },
+    {
+      "Id": 16,
+      "Name": "Peter Maroon",
+      "Contact": "peter.maroon@example.com",
+      "Status": "New",
+      "Score": 30
+    },
+    {
+      "Id": 17,
+      "Name": "Quinn Lime",
+      "Contact": "quinn.lime@example.com",
+      "Status": "Contacted",
+      "Score": 40
+    },
+    {
+      "Id": 18,
+      "Name": "Rachel Gold",
+      "Contact": "rachel.gold@example.com",
+      "Status": "Qualified",
+      "Score": 60
+    },
+    {
+      "Id": 19,
+      "Name": "Sam Silver",
+      "Contact": "sam.silver@example.com",
+      "Status": "New",
+      "Score": 30
+    },
+    {
+      "Id": 20,
+      "Name": "Tina Bronze",
+      "Contact": "tina.bronze@example.com",
+      "Status": "Contacted",
+      "Score": 40
+    },
+    {
+      "Id": 21,
+      "Name": "Vinay",
+      "Contact": "abc@gmail.com",
+      "Status": "New",
+      "Score": 30
+    },
+    {
+      "Id": 22,
+      "Name": "krishna",
+      "Contact": "krishna123@gmail.com",
+      "Status": "Qualified",
+      "Score": 60
+    },
+    {
+      "Id": 23,
+      "Name": "balaji",
+      "Contact": "balaji123@gmail.com",
+      "Status": "Qualified",
+      "Score": 60
+    }
+  ],
+  "Customers": [
+    {
+      "Id": 1,
+      "Name": "John Doe",
+      "Email": "john.doe@example.com",
+      "Phone": "123-456-7890"
+    },
+    {
+      "Id": 2,
+      "Name": "Jane Smith",
+      "Email": "jane.smith@example.com",
+      "Phone": "987-654-3210"
+    },
+    {
+      "Id": 3,
+      "Name": "Michael Brown",
+      "Email": "michael.brown@example.com",
+      "Phone": "555-123-4567"
+    },
+    {
+      "Id": 4,
+      "Name": "Sarah Johnson",
+      "Email": "sarah.johnson@example.com",
+      "Phone": "444-987-6543"
+    },
+    {
+      "Id": 5,
+      "Name": "David Lee",
+      "Email": "david.lee@example.com",
+      "Phone": "333-456-7891"
+    },
+    {
+      "Id": 6,
+      "Name": "Emily Davis",
+      "Email": "emily.davis@example.com",
+      "Phone": "222-654-3219"
+    },
+    {
+      "Id": 7,
+      "Name": "Robert Wilson",
+      "Email": "robert.wilson@example.com",
+      "Phone": "111-123-4568"
+    },
+    {
+      "Id": 8,
+      "Name": "Laura Martinez",
+      "Email": "laura.martinez@example.com",
+      "Phone": "666-987-6542"
+    },
+    {
+      "Id": 9,
+      "Name": "James Taylor",
+      "Email": "james.taylor@example.com",
+      "Phone": "777-456-7892"
+    },
+    {
+      "Id": 10,
+      "Name": "Lisa Anderson",
+      "Email": "lisa.anderson@example.com",
+      "Phone": "888-654-3218"
+    },
+    {
+      "Id": 11,
+      "Name": "Thomas Clark",
+      "Email": "thomas.clark@example.com",
+      "Phone": "999-123-4569"
+    },
+    {
+      "Id": 12,
+      "Name": "Megan Harris",
+      "Email": "megan.harris@example.com",
+      "Phone": "121-987-6541"
+    },
+    {
+      "Id": 13,
+      "Name": "William Lewis",
+      "Email": "william.lewis@example.com",
+      "Phone": "131-456-7893"
+    },
+    {
+      "Id": 14,
+      "Name": "Ashley Walker",
+      "Email": "ashley.walker@example.com",
+      "Phone": "141-654-3217"
+    },
+    {
+      "Id": 15,
+      "Name": "Charles Hall",
+      "Email": "charles.hall@example.com",
+      "Phone": "151-123-4570"
+    },
+    {
+      "Id": 16,
+      "Name": "Sophie Turner",
+      "Email": "sophie.turner@example.com",
+      "Phone": "161-456-7894"
+    },
+    {
+      "Id": 17,
+      "Name": "Daniel Kim",
+      "Email": "daniel.kim@example.com",
+      "Phone": "171-654-3216"
+    },
+    {
+      "Id": 18,
+      "Name": "Olivia White",
+      "Email": "olivia.white@example.com",
+      "Phone": "181-123-4571"
+    },
+    {
+      "Id": 19,
+      "Name": "Henry Adams",
+      "Email": "henry.adams@example.com",
+      "Phone": "191-987-6540"
+    },
+    {
+      "Id": 20,
+      "Name": "Mia Clark",
+      "Email": "mia.clark@example.com",
+      "Phone": "201-456-7895"
+    },
+    {
+      "Id": 21,
+      "Name": "Ethan Brown",
+      "Email": "ethan.brown@example.com",
+      "Phone": "211-654-3215"
+    },
+    {
+      "Id": 22,
+      "Name": "Ava Harris",
+      "Email": "ava.harris@example.com",
+      "Phone": "221-123-4572"
+    },
+    {
+      "Id": 23,
+      "Name": "Liam Evans",
+      "Email": "liam.evans@example.com",
+      "Phone": "231-987-6549"
+    },
+    {
+      "Id": 24,
+      "Name": "Isabella Moore",
+      "Email": "isabella.moore@example.com",
+      "Phone": "241-456-7896"
+    },
+    {
+      "Id": 25,
+      "Name": "Noah Carter",
+      "Email": "noah.carter@example.com",
+      "Phone": "251-654-3214"
+    }
+  ],
+  "Meetings": [
+    {
+      "Date": "2025-03-01T09:00:00Z",
+      "Title": "Initial Consultation",
+      "Client": "John Doe"
+    },
+    {
+      "Date": "2025-03-02T14:00:00Z",
+      "Title": "Follow-Up Meeting",
+      "Client": "Jane Smith"
+    },
+    {
+      "Date": "2025-03-03T10:30:00Z",
+      "Title": "Project Kickoff",
+      "Client": "Michael Brown"
+    },
+    {
+      "Date": "2025-03-04T11:00:00Z",
+      "Title": "Strategy Session",
+      "Client": "Sarah Johnson"
+    },
+    {
+      "Date": "2025-03-05T15:00:00Z",
+      "Title": "Review Meeting",
+      "Client": "David Lee"
+    },
+    {
+      "Date": "2025-03-06T13:00:00Z",
+      "Title": "Planning Session",
+      "Client": "Emily Davis"
+    },
+    {
+      "Date": "2025-03-07T16:00:00Z",
+      "Title": "Demo Presentation",
+      "Client": "Robert Wilson"
+    },
+    {
+      "Date": "2025-03-08T12:00:00Z",
+      "Title": "Feedback Session",
+      "Client": "Laura Martinez"
+    },
+    {
+      "Date": "2025-03-09T09:30:00Z",
+      "Title": "Budget Review",
+      "Client": "James Taylor"
+    },
+    {
+      "Date": "2025-03-10T14:30:00Z",
+      "Title": "Contract Discussion",
+      "Client": "Lisa Anderson"
+    },
+    {
+      "Date": "2025-03-11T10:00:00Z",
+      "Title": "Product Demo",
+      "Client": "Thomas Clark"
+    },
+    {
+      "Date": "2025-03-12T15:30:00Z",
+      "Title": "Team Alignment",
+      "Client": "Megan Harris"
+    },
+    {
+      "Date": "2025-03-13T11:00:00Z",
+      "Title": "Sales Strategy",
+      "Client": "William Lewis"
+    },
+    {
+      "Date": "2025-03-14T13:00:00Z",
+      "Title": "Client Onboarding",
+      "Client": "Ashley Walker"
+    },
+    {
+      "Date": "2025-03-15T16:00:00Z",
+      "Title": "Progress Update",
+      "Client": "Charles Hall"
+    },
+    {
+      "Date": "2025-03-16T09:00:00Z",
+      "Title": "Kickoff Meeting",
+      "Client": "Sophie Turner"
+    },
+    {
+      "Date": "2025-03-17T14:00:00Z",
+      "Title": "Follow-Up Call",
+      "Client": "Daniel Kim"
+    },
+    {
+      "Date": "2025-03-18T10:30:00Z",
+      "Title": "Strategy Review",
+      "Client": "Olivia White"
+    },
+    {
+      "Date": "2025-03-19T11:00:00Z",
+      "Title": "Demo Session",
+      "Client": "Henry Adams"
+    },
+    {
+      "Date": "2025-03-20T15:00:00Z",
+      "Title": "Planning Call",
+      "Client": "Mia Clark"
+    },
+    {
+      "Date": "2025-03-21T13:00:00Z",
+      "Title": "Feedback Review",
+      "Client": "Ethan Brown"
+    },
+    {
+      "Date": "2025-03-22T16:00:00Z",
+      "Title": "Sales Pitch",
+      "Client": "Ava Harris"
+    },
+    {
+      "Date": "2025-03-23T12:00:00Z",
+      "Title": "Contract Finalization",
+      "Client": "Liam Evans"
+    },
+    {
+      "Date": "2025-03-24T09:30:00Z",
+      "Title": "Onboarding Session",
+      "Client": "Isabella Moore"
+    },
+    {
+      "Date": "2025-03-25T14:30:00Z",
+      "Title": "Progress Check",
+      "Client": "Noah Carter"
+    },
+    {
+      "Date": "2025-03-25T00:00:00",
+      "Title": "team sync",
+      "Client": "laura"
+    },
+    {
+      "Date": "2025-03-25T00:00:00",
+      "Title": "team sync",
+      "Client": "laura"
+    }
+  ],
+  "SalesReports": [
+    {
+      "Month": "2025-01-01T00:00:00Z",
+      "Revenue": 35000.00
+    },
+    {
+      "Month": "2025-02-01T00:00:00Z",
+      "Revenue": 42000.00
+    },
+    {
+      "Month": "2025-03-01T00:00:00Z",
+      "Revenue": 46500.00
+    }
+  ],
+  "Tasks": [
+    {
+      "Id": 1,
+      "Title": "Follow up with John Doe",
+      "AssignedTo": "Alice Green",
+      "DueDate": "2025-03-01T00:00:00Z",
+      "Status": "Pending"
+    },
+    {
+      "Id": 2,
+      "Title": "Send proposal to Jane Smith",
+      "AssignedTo": "Bob White",
+      "DueDate": "2025-03-02T00:00:00Z",
+      "Status": "In Progress"
+    },
+    {
+      "Id": 3,
+      "Title": "Prepare report for Michael Brown",
+      "AssignedTo": "Clara Blue",
+      "DueDate": "2025-03-03T00:00:00Z",
+      "Status": "Completed"
+    },
+    {
+      "Id": 4,
+      "Title": "Schedule meeting with Sarah Johnson",
+      "AssignedTo": "Daniel Red",
+      "DueDate": "2025-03-04T00:00:00Z",
+      "Status": "Pending"
+    },
+    {
+      "Id": 5,
+      "Title": "Update CRM for David Lee",
+      "AssignedTo": "Ella Black",
+      "DueDate": "2025-03-05T00:00:00Z",
+      "Status": "In Progress"
+    },
+    {
+      "Id": 6,
+      "Title": "Follow up with Emily Davis",
+      "AssignedTo": "Frank Gray",
+      "DueDate": "2025-03-06T00:00:00Z",
+      "Status": "Pending"
+    },
+    {
+      "Id": 7,
+      "Title": "Send contract to Robert Wilson",
+      "AssignedTo": "Grace Purple",
+      "DueDate": "2025-03-07T00:00:00Z",
+      "Status": "Completed"
+    },
+    {
+      "Id": 8,
+      "Title": "Prepare demo for Laura Martinez",
+      "AssignedTo": "Henry Yellow",
+      "DueDate": "2025-03-08T00:00:00Z",
+      "Status": "In Progress"
+    },
+    {
+      "Id": 9,
+      "Title": "Review budget with James Taylor",
+      "AssignedTo": "Isabella Orange",
+      "DueDate": "2025-03-09T00:00:00Z",
+      "Status": "Pending"
+    },
+    {
+      "Id": 10,
+      "Title": "Update leads for Lisa Anderson",
+      "AssignedTo": "Jack Brown",
+      "DueDate": "2025-03-10T00:00:00Z",
+      "Status": "Completed"
+    },
+    {
+      "Id": 11,
+      "Title": "Follow up with Thomas Clark",
+      "AssignedTo": "Kelly Pink",
+      "DueDate": "2025-03-11T00:00:00Z",
+      "Status": "Pending"
+    },
+    {
+      "Id": 12,
+      "Title": "Send proposal to Megan Harris",
+      "AssignedTo": "Liam Teal",
+      "DueDate": "2025-03-12T00:00:00Z",
+      "Status": "In Progress"
+    },
+    {
+      "Id": 13,
+      "Title": "Prepare report for William Lewis",
+      "AssignedTo": "Mia Violet",
+      "DueDate": "2025-03-13T00:00:00Z",
+      "Status": "Completed"
+    },
+    {
+      "Id": 14,
+      "Title": "Schedule meeting with Ashley Walker",
+      "AssignedTo": "Noah Indigo",
+      "DueDate": "2025-03-14T00:00:00Z",
+      "Status": "Pending"
+    },
+    {
+      "Id": 15,
+      "Title": "Update CRM for Charles Hall",
+      "AssignedTo": "Olivia Cyan",
+      "DueDate": "2025-03-15T00:00:00Z",
+      "Status": "In Progress"
+    },
+    {
+      "Id": 16,
+      "Title": "Follow up with Sophie Turner",
+      "AssignedTo": "Peter Maroon",
+      "DueDate": "2025-03-16T00:00:00Z",
+      "Status": "Pending"
+    },
+    {
+      "Id": 17,
+      "Title": "Send contract to Daniel Kim",
+      "AssignedTo": "Quinn Lime",
+      "DueDate": "2025-03-17T00:00:00Z",
+      "Status": "Completed"
+    },
+    {
+      "Id": 18,
+      "Title": "Prepare demo for Olivia White",
+      "AssignedTo": "Rachel Gold",
+      "DueDate": "2025-03-18T00:00:00Z",
+      "Status": "In Progress"
+    },
+    {
+      "Id": 19,
+      "Title": "Review budget with Henry Adams",
+      "AssignedTo": "Sam Silver",
+      "DueDate": "2025-03-19T00:00:00Z",
+      "Status": "Pending"
+    },
+    {
+      "Id": 20,
+      "Title": "Update leads for Mia Clark",
+      "AssignedTo": "Tina Bronze",
+      "DueDate": "2025-03-20T00:00:00Z",
+      "Status": "Completed"
+    }
+  ],
+  "Campaigns": [
+    {
+      "Id": 1,
+      "Name": "March Madness Sale",
+      "StartDate": "2025-03-01T00:00:00Z",
+      "EndDate": "2025-03-31T00:00:00Z",
+      "Budget": 20000.00
+    },
+    {
+      "Id": 2,
+      "Name": "Spring Outreach Week 1",
+      "StartDate": "2025-03-01T00:00:00Z",
+      "EndDate": "2025-03-07T00:00:00Z",
+      "Budget": 5000.00
+    },
+    {
+      "Id": 3,
+      "Name": "Spring Outreach Week 2",
+      "StartDate": "2025-03-08T00:00:00Z",
+      "EndDate": "2025-03-14T00:00:00Z",
+      "Budget": 6000.00
+    },
+    {
+      "Id": 4,
+      "Name": "Spring Outreach Week 3",
+      "StartDate": "2025-03-15T00:00:00Z",
+      "EndDate": "2025-03-21T00:00:00Z",
+      "Budget": 7000.00
+    },
+    {
+      "Id": 5,
+      "Name": "Spring Outreach Week 4",
+      "StartDate": "2025-03-22T00:00:00Z",
+      "EndDate": "2025-03-31T00:00:00Z",
+      "Budget": 8000.00
+    }
+  ],
+  "Opportunities": [
+    {
+      "Id": 1,
+      "Name": "Expand Contract with John Doe",
+      "CustomerId": 1,
+      "Value": 20000.00,
+      "Stage": "Negotiation"
+    },
+    {
+      "Id": 2,
+      "Name": "New Project with Jane Smith",
+      "CustomerId": 2,
+      "Value": 30000.00,
+      "Stage": "Proposal"
+    },
+    {
+      "Id": 3,
+      "Name": "Upsell to Michael Brown",
+      "CustomerId": 3,
+      "Value": 15000.00,
+      "Stage": "Closed Won"
+    },
+    {
+      "Id": 4,
+      "Name": "Contract Renewal with Sarah Johnson",
+      "CustomerId": 4,
+      "Value": 25000.00,
+      "Stage": "Negotiation"
+    },
+    {
+      "Id": 5,
+      "Name": "New Deal with David Lee",
+      "CustomerId": 5,
+      "Value": 18000.00,
+      "Stage": "Proposal"
+    },
+    {
+      "Id": 6,
+      "Name": "Upsell to Emily Davis",
+      "CustomerId": 6,
+      "Value": 12000.00,
+      "Stage": "Closed Lost"
+    },
+    {
+      "Id": 7,
+      "Name": "Expand Services with Robert Wilson",
+      "CustomerId": 7,
+      "Value": 22000.00,
+      "Stage": "Negotiation"
+    },
+    {
+      "Id": 8,
+      "Name": "New Contract with Laura Martinez",
+      "CustomerId": 8,
+      "Value": 28000.00,
+      "Stage": "Proposal"
+    },
+    {
+      "Id": 9,
+      "Name": "Upsell to James Taylor",
+      "CustomerId": 9,
+      "Value": 14000.00,
+      "Stage": "Closed Won"
+    },
+    {
+      "Id": 10,
+      "Name": "Renewal with Lisa Anderson",
+      "CustomerId": 10,
+      "Value": 26000.00,
+      "Stage": "Negotiation"
+    },
+    {
+      "Id": 11,
+      "Name": "Expand Contract with Thomas Clark",
+      "CustomerId": 11,
+      "Value": 21000.00,
+      "Stage": "Negotiation"
+    },
+    {
+      "Id": 12,
+      "Name": "New Project with Megan Harris",
+      "CustomerId": 12,
+      "Value": 32000.00,
+      "Stage": "Proposal"
+    },
+    {
+      "Id": 13,
+      "Name": "Upsell to William Lewis",
+      "CustomerId": 13,
+      "Value": 16000.00,
+      "Stage": "Closed Won"
+    },
+    {
+      "Id": 14,
+      "Name": "Contract Renewal with Ashley Walker",
+      "CustomerId": 14,
+      "Value": 27000.00,
+      "Stage": "Negotiation"
+    },
+    {
+      "Id": 15,
+      "Name": "New Deal with Charles Hall",
+      "CustomerId": 15,
+      "Value": 19000.00,
+      "Stage": "Proposal"
+    }
+  ]
 }

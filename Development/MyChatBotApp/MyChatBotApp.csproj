@@ -1,17 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<!-- Disable default inclusion -->
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SemanticKernel" Version="1.41.0" />
 		<PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.41.0" />
 		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.41.0" />
-		<!-- Add other necessary packages here -->
+		<!-- few removed unless needed for other features -->
 	</ItemGroup>
 
+	<ItemGroup>
+		<Compile Include="Backend\AdminTasksHandler.cs" />
+		<Compile Include="Backend\AdvancedFeaturesHandler.cs" />
+		<Compile Include="Backend\ChatbotBackendAPI.cs" />
+		<Compile Include="Backend\ConversationManager.cs" />
+		<Compile Include="Backend\CrmDataManager.cs" />
+		<Compile Include="Backend\CRMHandler.cs" />
+		<Compile Include="Backend\CustomerNameExtractor.cs" />
+		<Compile Include="Backend\IntentParser.cs" />
+		<Compile Include="Backend\LeadManagementHandler.cs" />
+		<Compile Include="Backend\LeadManager.cs" />
+		<Compile Include="Backend\MeetingScheduler.cs" />
+		<Compile Include="Backend\SalesReportHandler.cs" />
+	</ItemGroup>
 </Project>

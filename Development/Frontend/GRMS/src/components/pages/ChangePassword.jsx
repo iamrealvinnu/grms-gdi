@@ -1,116 +1,168 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { MdRemoveRedEye } from "react-icons/md";
+import { AiFillEyeInvisible } from "react-icons/ai";
 
 const ChangePassword = () => {
   const [formData, setFormData] = useState({
+    username: "",
     currentPassword: "",
     newPassword: "",
-    confirmPassword: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState("");
+
+  // Handle input change
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // Validate password strength for newPassword field
+    if (name === "newPassword") {
+      validatePasswordStrength(value);
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formData.newPassword !== formData.confirmPassword) {
-      toast.error("Passwords do not match!");
+  // Password strength validation
+  const validatePasswordStrength = (password) => {
+    if (!password) {
+      setPasswordStrength("");
       return;
     }
 
-    setLoading(true);
-    try {
-      const response = await axios.put("/api/change-password", {
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
-      });
+    const minLength = password.length >= 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}<>]/.test(password);
 
-      toast.success(response.data.message || "Password updated successfully!");
-      setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    if (!minLength) {
+      setPasswordStrength("Password must be at least 8 characters.");
+    } else if (!hasUppercase) {
+      setPasswordStrength("Include at least one uppercase letter.");
+    } else if (!hasNumber) {
+      setPasswordStrength("Include at least one number.");
+    } else if (!hasSpecialChar) {
+      setPasswordStrength("Include at least one special character.");
+    } else {
+      setPasswordStrength("Strong password!");
+    }
+  };
+
+  // Submit form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      await axios.post(
+        "https://grms-dev.gdinexus.com:49181/api/v1/User/profile/changepassword",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      toast.success("Password changed successfully!");
+      setFormData({ username: "", currentPassword: "", newPassword: "" });
+      setPasswordStrength("");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update password");
+      toast.error(error.response?.data?.message || "Failed to change password");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-6 bg-white shadow-lg rounded-lg">
-        <h2 className="text-2xl font-semibold text-center mb-6">Change Password</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Current Password */}
-          <div>
-            <label className="block font-medium text-gray-700">Current Password</label>
+    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-semibold mb-4">Change Password</h2>
+      <form onSubmit={handleSubmit}>
+        {/* Username Field */}
+        <div className="mb-4">
+          <label className="block text-gray-700">Username</label>
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        {/* Current Password Field */}
+        <div className="mb-4">
+          <label className="block text-gray-700">Current Password</label>
+          <div className="relative">
             <input
-              type="password"
+              type={showCurrentPassword ? "text" : "password"}
               name="currentPassword"
               value={formData.currentPassword}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border rounded"
             />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 cursor-pointer"
+              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+            >
+              {showCurrentPassword ? <MdRemoveRedEye /> : <AiFillEyeInvisible />}
+            </button>
           </div>
+        </div>
 
-          {/* New Password */}
+        {/* New Password Field */}
+        <div className="mb-4">
+          <label className="block text-gray-700">New Password</label>
           <div className="relative">
-            <label className="block font-medium text-gray-700">New Password</label>
             <input
-              type={showPassword ? "text" : "password"}
+              type={showNewPassword ? "text" : "password"}
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border rounded"
             />
             <button
               type="button"
-              className="absolute inset-y-0 right-3 flex items-center text-gray-600"
-              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 cursor-pointer"
+              onClick={() => setShowNewPassword(!showNewPassword)}
             >
-              {showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
+              {showNewPassword ? <MdRemoveRedEye /> : <AiFillEyeInvisible />}
             </button>
           </div>
+          {/* Password Strength Indicator */}
+          {passwordStrength && (
+            <p
+              className={`text-sm mt-1 ${
+                passwordStrength === "Strong password!"
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {passwordStrength}
+            </p>
+          )}
+        </div>
 
-          {/* Confirm New Password */}
-          <div className="relative">
-            <label className="block font-medium text-gray-700">Confirm New Password</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          {/* Show Password Checkbox */}
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={showPassword}
-              onChange={() => setShowPassword(!showPassword)}
-              className="w-4 h-4"
-            />
-            <span className="text-gray-700">Show Password</span>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
-          >
-            {loading ? "Updating..." : "Change Password"}
-          </button>
-        </form>
-      </div>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-500 text-white p-2 rounded"
+        >
+          {loading ? "Changing..." : "Change Password"}
+        </button>
+      </form>
     </div>
   );
 };

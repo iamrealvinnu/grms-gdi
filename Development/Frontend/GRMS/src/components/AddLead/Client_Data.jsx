@@ -9,13 +9,18 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PlusCircle } from "lucide-react";
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function ClientData() {
+  const navigate = useNavigate();
+
+  const handleDetails = (userId) =>{
+    navigate(`/clientData/${userId}`);
+  }
   const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
 
   const data = {
@@ -134,7 +139,7 @@ function ClientData() {
             {customers.map((customer, index) => (
               <tr key={customer.id} className="border-b hover:bg-gray-100">
                 <td className="py-2 px-4">{index + 1}</td>
-                <td className="py-2 px-4">{customer.name}</td>
+                <td className="py-2 px-4 hover:text-blue-700"><Link to="/clientData/:userId" >{customer.name} </Link></td>
                 <td className="py-2 px-4">{customer.company}</td>
                 <td className="py-2 px-4">{customer.leadOwner}</td>
                 <td className="py-2 px-4 text-blue-600 underline">

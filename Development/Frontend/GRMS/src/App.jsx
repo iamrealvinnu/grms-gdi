@@ -25,6 +25,9 @@ import Add_Client from "./components/AddLead/Add_Client";
 import MarketingDetails from "./components/Marketing Management/MarketingDetails";
 import MarketingCreate from "./components/Marketing Management/MarketingCreate";
 import ChangePassword from "./components/pages/ChangePassword";
+import UpdateData from "./components/AddLead/UpdateData";
+import GetAllOpportunity from "./components/Opportunity/GetAllOpportunity";
+import CreateOpportunity from "./components/Opportunity/CreateOpportunity";
 
 function App() {
   return (
@@ -34,7 +37,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/resetpassword" element={<ResetPassword />} />
+        <Route path="/resetPassword" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/changePassword" element={<ChangePassword />} />
@@ -48,12 +51,18 @@ function App() {
         {/* Add Client-Lead Routes */}
         <Route path="/clientDetails" element={<ClientData />} />
         <Route path="/addClient" element={<Add_Client />} />
+        <Route path="/clientData/:userId" element={<UpdateData />} />
 
         {/* User-Profile Routes */}
 
         {/* Marketing Management Routes */}
         <Route path="/marketingDetails" element={<MarketingDetails />} />
         <Route path="/marketingCreate" element={<MarketingCreate />} />
+
+        {/* Opportunity Routes */}
+        <Route path="/getAllOpportunity" element={<GetAllOpportunity />} />
+        <Route path="/createOpportunity" element={<CreateOpportunity />} />
+
       </Routes>
     </Router>
   );

@@ -8,10 +8,10 @@
 //
 
 // Imports
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import withAuth from "../withAuth";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const GetUserList = () => {
   const [users, setUsers] = useState([]);

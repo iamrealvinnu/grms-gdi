@@ -13,6 +13,7 @@ import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SocialButtons from "./SocialButtons";
 
 // Define constants for login attempts
 const MAX_ATTEMPTS = 5; // Maximum allowed failed login attempts
@@ -114,17 +115,22 @@ const Home = () => {
 
       // If login is successful
       if (response.data.success) {
-        const { accessToken, refreshToken } = response.data.data;
+        const { accessToken, refreshToken, isFirstLogin } = response.data.data;
 
         // Store tokens securely
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("isFirstLogin", isFirstLogin ? "true" : "false");
 
         toast.success("Login Successfully!");
 
         // Navigate to dashboard after successful login
-        navigate("/dashboard", { replace: true });
-        window.location.href = "/dashboard"; // Full reload if necessary
+        if (isFirstLogin) {
+          navigate("/changePassword", { replace: true });
+        } else {
+          navigate("/dashboard", { replace: true });
+          window.location.href = "/dashboard"; // Full reload if necessary
+        }
       } else {
         handleLoginError(response.data.message);
       }
@@ -235,24 +241,7 @@ const Home = () => {
         <span className="mx-2 text-gray-500 ">OR</span>
         <hr className="flex-grow border-t border-gray-300" />
       </div>
-
-      {/* Social login buttons */}
-      <button className="bg-gray-200 p-3 rounded-lg flex items-center justify-center gap-5 hover:opacity-90 disabled:opacity-70 w-full mb-2">
-        <img
-          src="https://img.icons8.com/color/24/000000/google-logo.png"
-          alt="Google"
-        />
-        Sign in with Google
-      </button>
-
-      <button className="bg-blue-600 text-white p-3 rounded-lg flex items-center justify-center gap-5 hover:opacity-90 w-full">
-        <img
-          src="https://img.icons8.com/color/24/000000/microsoft.png"
-          alt="Microsoft"
-        />
-        Sign in with Microsoft
-      </button>
-
+      <SocialButtons />
       <ToastContainer />
     </div>
   );

@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Add_Client() {
+function UpdateData() {
   const [tableIndustryData, setTableIndustryData] = useState([]);
   const [user,setUser] = useState("");
   const [clientData,setClientData] = useState({
@@ -19,6 +19,9 @@ function Add_Client() {
   const industriesTypes =
     tableIndustryData.find((item) => item.name === "Industry Types")
       ?.referenceItems || [];
+
+  const leadStatusTypes =
+  tableIndustryData.find((item) => item.name === "Lead Status")?.referenceItems || [];
 
   const DepartmentTypes =
   tableIndustryData.find((item) => item.name === "Department Types")?.referenceItems || [];
@@ -63,6 +66,96 @@ function Add_Client() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      {/* Company Details Section */}
+      <div className="p-4">
+        <h3 className="text-2xl font-semibold mb-4">Company Details</h3>
+        <form className="flex flex-wrap gap-4">
+          {/* Company Name */}
+          <div className="w-full md:w-[48%]">
+            <label className="block font-medium text-gray-700">
+              Company Name
+            </label>
+            <input
+              type="text"
+              placeholder="Company Name"
+              className="w-full border-2 border-gray-400 rounded p-2"
+            />
+          </div>
+
+          {/* Lead Owner */}
+          <div className="w-full md:w-[48%]">
+            <label className="block font-medium text-gray-700">
+              Lead Owner
+            </label>
+            <input
+              type="text"
+              placeholder="Lead Owner"
+              className="w-full border-2 border-gray-400 rounded p-2"
+            />
+          </div>
+
+          {/* Company Email */}
+          <div className="w-full md:w-[48%]">
+            <label className="block font-medium text-gray-700">
+              Company Status
+            </label>
+            <select
+              type="text"
+              name="status"
+              className="w-full border-2 border-gray-400 rounded p-2"
+            >
+              <option value="" disabled selected>Select Status</option>
+              {leadStatusTypes.map((leadStatus) => (
+                <option key={leadStatus.id} value={leadStatus.id}>
+                  {leadStatus.code}
+                </option>
+              ))}
+              </select>
+          </div>
+
+          {/* Industry Dropdown */}
+          <div className="w-full md:w-[48%]">
+            <label className="block font-medium text-gray-700">Industry</label>
+            <select
+              name="industryId"
+              className="w-full border-2 border-gray-400 rounded p-2 bg-white"
+            >
+              <option value=""disabled selected>Select Industry</option>
+              {industriesTypes.map((industriesType) => (
+                <option key={industriesType.id} value={industriesType.id}>
+                  {industriesType.description}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Company Contact Number */}
+          <div className="w-full md:w-[48%]">
+            <label className="block font-medium text-gray-700">
+              Company Contact Number
+            </label>
+            <input
+              type="text"
+              placeholder="Company Contact Number"
+              className="w-full border-2 border-gray-400 rounded p-2"
+            />
+          </div>
+
+          {/* Address Section */}
+          <div className="w-full md:w-[48%]">
+            <label className="block font-medium text-gray-700">Address</label>
+              <select
+              name="AddressId"
+              className="w-full border-2 border-gray-400 rounded p-2 bg-white"
+              >
+                <option value="" disabled selected>Select Address</option>
+                {AddressTypes.map((AddressType) =>(
+                  <option key={AddressType.id} value={AddressType.id}>{AddressType.description}</option>
+                ))}
+              </select>
+          </div>
+        </form>
+      </div>
 
       {/* Contact Information Section */}
       <div className="mb-6 border-b pb-4 mt-6">
@@ -77,7 +170,7 @@ function Add_Client() {
               <input
                 type="text"
                 placeholder="First Name"
-                className="w-full border-dashed border-2 border-gray-400 rounded p-2"
+                className="w-full border-2 border-gray-400 rounded p-2"
               />
             </div>
 
@@ -89,7 +182,7 @@ function Add_Client() {
               <input
                 type="text"
                 placeholder="Last Name"
-                className="w-full border-dashed border-2 border-gray-400 rounded p-2"
+                className="w-full border-2 border-gray-400 rounded p-2"
               />
             </div>
 
@@ -99,50 +192,9 @@ function Add_Client() {
               <input
                 type="email"
                 placeholder="Email"
-                className="w-full border-dashed border-2 border-gray-400 rounded p-2"
+                className="w-full border-2 border-gray-400 rounded p-2"
               />
             </div>
-
-             {/* Company Name */}
-          <div className="w-full md:w-[48%]">
-            <label className="block font-medium text-gray-700">
-              Company Name
-            </label>
-            <input
-              type="text"
-              placeholder="Company Name"
-              className="w-full border-dashed border-2 border-gray-400 rounded p-2"
-            />
-          </div>
-
-          
-          {/* Industry Dropdown */}
-          <div className="w-full md:w-[48%]">
-            <label className="block font-medium text-gray-700">Industry</label>
-            <select
-              name="industryId"
-              className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
-            >
-              <option value=""disabled selected>Select Industry</option>
-              {industriesTypes.map((industriesType) => (
-                <option key={industriesType.id} value={industriesType.id}>
-                  {industriesType.description}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Lead Owner */}
-          <div className="w-full md:w-[48%]">
-            <label className="block font-medium text-gray-700">
-              Assigned to
-            </label>
-            <input
-              type="text"
-              placeholder="Lead Owner"
-              className="w-full border-dashed border-2 border-gray-400 rounded p-2"
-            />
-          </div>
 
             {/* Phone Number */}
             <div className="w-full md:w-[48%]">
@@ -152,7 +204,7 @@ function Add_Client() {
               <input
                 type="number"
                 placeholder="Phone Number"
-                className="w-full border-dashed border-2 border-gray-400 rounded p-2"
+                className="w-full border-2 border-gray-400 rounded p-2"
               />
             </div>
 
@@ -163,7 +215,7 @@ function Add_Client() {
               </label>
               <select
               name="departmentId"
-              className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
+              className="w-full border-2 border-gray-400 rounded p-2 bg-white"
               >
                 <option value="" disabled selected>Select Department</option>
                 {DepartmentTypes.map((departmentType) => (
@@ -174,27 +226,13 @@ function Add_Client() {
               </select>
             </div>
 
-            {/* Address Section */}
-          <div className="w-full md:w-[48%]">
-            <label className="block font-medium text-gray-700">Add Address</label>
-              <select
-              name="AddressId"
-              className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
-              >
-                <option value="" disabled selected>Select Address</option>
-                {AddressTypes.map((AddressType) =>(
-                  <option key={AddressType.id} value={AddressType.id}>{AddressType.description}</option>
-                ))}
-              </select>
-          </div>
-
             {/* Discussion */}
             <div className="w-full col-span-2">
               <label className="block font-medium text-gray-700">Notes:</label>
               <input
                 type="text"
                 // placeholder="Discussion"
-                className="w-full border-dashed border-2 border-gray-400 rounded p-4"
+                className="w-full border-2 border-gray-400 rounded p-4"
               />
             </div>
           </form>
@@ -211,9 +249,12 @@ function Add_Client() {
         <button className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
           Save
         </button>
+        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
+          Convert
+        </button>
       </div>
     </div>
   );
 }
 
-export default Add_Client;
+export default UpdateData;
