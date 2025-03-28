@@ -26,7 +26,9 @@
 		<Compile Include="Backend\IntentParser.cs" />
 		<Compile Include="Backend\LeadManagementHandler.cs" />
 		<Compile Include="Backend\LeadManager.cs" />
+		<Compile Include="Backend\LeadPredictor.cs" />
 		<Compile Include="Backend\MeetingScheduler.cs" />
+		<Compile Include="Backend\PredefinedResponseManager.cs" />
 		<Compile Include="Backend\SalesReportHandler.cs" />
 	</ItemGroup>
 </Project>

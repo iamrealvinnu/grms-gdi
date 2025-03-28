@@ -15,19 +15,24 @@ import Dashboard from "./components/pages/Dashboard"; // Import Dashboard
 import Profile from "./components/pages/Profile";
 import Notification from "./components/pages/Notification";
 import AuthMonitor from "./components/authMonitor"; // Import AuthMonitor
-import CreateUser from "./components/UserManagement/CreateUser";
-import GetUserList from "./components/UserManagement/GetUserList";
+import CreateUser from "./components/Admin/CreateUser";
+import GetUserList from "./components/Admin/GetUserList";
+import UpdateUser from "./components/Admin/UpdateUser";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ResetPassword from "./components/pages/ResetPassword";
-import UpdateUser from "./components/UserManagement/UpdateUser";
-import ClientData from "./components/AddLead/Client_Data";
-import Add_Client from "./components/AddLead/Add_Client";
-import MarketingDetails from "./components/Marketing Management/MarketingDetails";
-import MarketingCreate from "./components/Marketing Management/MarketingCreate";
+import ClientData from "./components/Leads/LeadData";
+import Add_Client from "./components/Leads/AddLead";
+import MarketingDetails from "./components/Campaign/MarketingDetails";
+import MarketingCreate from "./components/Campaign/MarketingCreate";
 import ChangePassword from "./components/pages/ChangePassword";
-import UpdateData from "./components/AddLead/UpdateData";
-import GetAllOpportunity from "./components/Opportunity/GetAllOpportunity";
-import CreateOpportunity from "./components/Opportunity/CreateOpportunity";
+import UpdateData from "./components/Leads/UpdateLeadData";
+import GetAllOpportunity from "./components/Leads/Opportunity/GetAllOpportunity";
+import CreateOpportunity from "./components/Leads/Opportunity/CreateOpportunity";
+import GoogleCallback from "./components/pages/GoogleCallback";
+import GetListCustomers from "./components/Leads/Customers/GetListCustomers";
+import CreateCustomer from "./components/Leads/Customers/CreateCustomer";
+import LeadData from "./components/Leads/LeadData";
+import AddLead from "./components/Leads/AddLead";
 
 function App() {
   return (
@@ -38,6 +43,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="/google/callback" element={<GoogleCallback />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/changePassword" element={<ChangePassword />} />
@@ -49,19 +55,24 @@ function App() {
         <Route path="/userUpdate/:userId" element={<UpdateUser />} />
 
         {/* Add Client-Lead Routes */}
-        <Route path="/clientDetails" element={<ClientData />} />
-        <Route path="/addClient" element={<Add_Client />} />
-        <Route path="/clientData/:userId" element={<UpdateData />} />
-
-        {/* User-Profile Routes */}
-
-        {/* Marketing Management Routes */}
-        <Route path="/marketingDetails" element={<MarketingDetails />} />
-        <Route path="/marketingCreate" element={<MarketingCreate />} />
+        <Route path="/leadDetails" element={<LeadData />} />
+        <Route path="/addLead" element={<AddLead />} />
+        <Route path="/clientData/:leadId" element={<UpdateData />} />
 
         {/* Opportunity Routes */}
         <Route path="/getAllOpportunity" element={<GetAllOpportunity />} />
         <Route path="/createOpportunity" element={<CreateOpportunity />} />
+
+        {/* Customers Routes */}
+        <Route path="/getCustomerList" element={<GetListCustomers />} />
+        <Route path="/createCustomerList" element={<CreateCustomer />} />
+
+
+        {/* Marketing Management Routes */}
+        <Route path="/campaignDetails" element={<MarketingDetails />} />
+        <Route path="/campaignCreate" element={<MarketingCreate />} />
+
+        
 
       </Routes>
     </Router>

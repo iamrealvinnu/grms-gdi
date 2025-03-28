@@ -54,6 +54,9 @@ D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBo
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\Frontend\crm-chatbot-frontend\build\asset-manifest.json
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\Frontend\crm-chatbot-frontend\package-lock.json
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\Frontend\crm-chatbot-frontend\package.json
+D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\package-lock.json
+D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\package.json
+D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\PredefinedResponses.json
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\MyChatBotApp.exe
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\MyChatBotApp.deps.json
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\MyChatBotApp.runtimeconfig.json
@@ -98,5 +101,3 @@ D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBo
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\obj\Debug\net8.0\MyChatBotApp.pdb
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\obj\Debug\net8.0\MyChatBotApp.genruntimeconfig.cache
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\obj\Debug\net8.0\ref\MyChatBotApp.dll
-D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\package-lock.json
-D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\package.json

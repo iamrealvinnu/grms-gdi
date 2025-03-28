@@ -15,13 +15,23 @@ namespace MyChatBotApp.Backend
         }
 
         // Processes lead management requests based on the user message.
-        // Currently a placeholder for future implementation.
         public async Task<string?> HandleLeadManagementAsync(string userMessage)
         {
             await Task.CompletedTask; // Ensures the method adheres to async signature (no async operations yet).
 
-            // TODO: Implement lead management logic (e.g., adding or updating leads).
-            return "Lead management action not recognized. Use 'lead, add new' to add a new lead."; // Default response until implemented.
+            // Check if the user wants to list leads by status.
+            if (userMessage.ToLower().StartsWith("list leads by status"))
+            {
+                return "Please specify a status to list leads (e.g., 'list leads by status New').";
+            }
+            if (userMessage.ToLower().StartsWith("list leads by status "))
+            {
+                var status = userMessage.Substring("list leads by status ".Length).Trim();
+                return $"Listing leads with status '{status}' is not implemented yet.";
+            }
+
+            // Default response for unrecognized lead management commands.
+            return "Lead management action not recognized. Use 'lead, add new' to add a new lead or 'lead, list new leads' to see new leads.";
         }
     }
 }

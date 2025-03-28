@@ -32,7 +32,8 @@ namespace MyChatBotApp
                     // Attempt to connect to a local Mistral model via LM Studio for AI capabilities.
                     kernelBuilder.Services.AddOpenAIChatCompletion(
                         modelId: "mistral-7b-instruct-v0.3",
-                        endpoint: new Uri("http://192.168.0.101:1234/v1")
+                        endpoint: new Uri("http://192.168.0.101:1234/v1"),
+                        apiKey: "not-needed" // LM Studio doesn't require an API key, but the field is mandatory.
                     );
                     var kernel = kernelBuilder.Build(); // Build the kernel with AI support.
                     Console.WriteLine("Semantic Kernel connected to LM Studio - AI is ready to assist!");
@@ -49,15 +50,15 @@ namespace MyChatBotApp
 
             // Configure CORS to allow communication with the frontend (localhost:3000).
             builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins("http://localhost:5173")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
-    });
-});
+    });           
+     });
 
             // Load CRM data from a file and register it as a singleton service.
             var crmData = CrmDataManager.LoadCrmData();
@@ -72,6 +73,8 @@ namespace MyChatBotApp
             builder.Services.AddScoped<SalesReportHandler>(sp => new SalesReportHandler(sp.GetRequiredService<Kernel>(), crmData));
             builder.Services.AddScoped<ConversationManager>();
             builder.Services.AddScoped<LeadManager>();
+            builder.Services.AddScoped<PredefinedResponseManager>(); // Manager for predefined responses from JSON.
+            builder.Services.AddScoped<LeadPredictor>(); // Predictor for lead conversion likelihood.
 
             // Build the application instance.
             var app = builder.Build();
@@ -85,7 +88,8 @@ namespace MyChatBotApp
             // Define the main chat endpoint to process user messages.
             app.MapPost("/chat", async (HttpContext context, Kernel kernel, CRMHandler crmHandler, MeetingScheduler meetingScheduler,
                 AdminTasksHandler adminHandler, AdvancedFeaturesHandler advancedHandler, LeadManagementHandler leadHandler,
-                SalesReportHandler salesReportHandler, CRMData crmData, LeadManager leadManager, ConversationManager conversationManager) =>
+                SalesReportHandler salesReportHandler, CRMData crmData, LeadManager leadManager, ConversationManager conversationManager,
+                PredefinedResponseManager predefinedResponseManager, LeadPredictor leadPredictor) =>
             {
                 // Read and deserialize the incoming chat request from the HTTP body.
                 var request = await context.Request.ReadFromJsonAsync<ChatRequest>();
@@ -106,7 +110,7 @@ namespace MyChatBotApp
                 {
                     // Process the chat request using the LeadManager and return the response.
                     var response = await leadManager.ProcessChatRequest(request, context, kernel, crmHandler, meetingScheduler,
-                        adminHandler, advancedHandler, leadHandler, salesReportHandler, conversationManager);
+                        adminHandler, advancedHandler, leadHandler, salesReportHandler, conversationManager, predefinedResponseManager, leadPredictor);
                     return Results.Ok(response);
                 }
                 catch (Exception ex)
@@ -171,7 +175,19 @@ namespace MyChatBotApp
     public record FeedbackRequest(string UserId, string MessageId, bool? Liked); // Model for feedback submissions.
     public record PreferenceRequest(string UserId, string Preference); // Model for preference settings.
 
-    public class Lead { public int Id { get; set; } public string Name { get; set; } = ""; public string Contact { get; set; } = ""; public string Status { get; set; } = ""; public int Score { get; set; } = 0; } // Model for lead data with default values.
+    public class Lead
+    {
+        public int Id { get; set; } // Unique identifier for the lead.
+        public string Name { get; set; } = ""; // Lead's full name.
+        public string Contact { get; set; } = ""; // Lead's contact information (e.g., email or phone).
+        public string Status { get; set; } = ""; // Lead's status (e.g., New, Contacted, Qualified, Lost).
+        public int Score { get; set; } = 0; // Lead's score based on engagement.
+        // Added fields to track interactions for lead prediction.
+        public int MessagesSent { get; set; } = 0; // Number of messages sent to the lead.
+        public int CallsMade { get; set; } = 0; // Number of calls made to the lead.
+        public int MeetingsHeld { get; set; } = 0; // Number of meetings held with the lead.
+        public DateTime LastInteraction { get; set; } = DateTime.MinValue; // Date of the last interaction.
+    } // Model for lead data with default values.
 
     // Ensure UserIntent is correctly defined in the Backend namespace.
     namespace MyChatBotApp.Backend

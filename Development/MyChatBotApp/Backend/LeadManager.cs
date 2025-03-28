@@ -6,7 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MyChatBotApp.Backend; // Added to reference UserIntent
+using MyChatBotApp.Backend;
+using MyChatBotApp.MyChatBotApp.Backend;
 
 namespace MyChatBotApp.Backend
 {
@@ -28,10 +29,13 @@ namespace MyChatBotApp.Backend
         /// <param name="leadHandler">Handler for lead management.</param>
         /// <param name="salesReportHandler">Handler for sales reports.</param>
         /// <param name="conversationManager">Manager for conversation state.</param>
+        /// <param name="predefinedResponseManager">Manager for predefined responses.</param>
+        /// <param name="leadPredictor">Predictor for lead conversion likelihood.</param>
         /// <returns>A task returning the formatted response object.</returns>
         public async Task<object> ProcessChatRequest(ChatRequest request, HttpContext context, Kernel kernel, CRMHandler crmHandler,
             MeetingScheduler meetingScheduler, AdminTasksHandler adminHandler, AdvancedFeaturesHandler advancedHandler,
-            LeadManagementHandler leadHandler, SalesReportHandler salesReportHandler, ConversationManager conversationManager)
+            LeadManagementHandler leadHandler, SalesReportHandler salesReportHandler, ConversationManager conversationManager,
+            PredefinedResponseManager predefinedResponseManager, LeadPredictor leadPredictor)
         {
             // Determine if the input is voice-based, defaulting to false if not specified.
             bool isVoiceInput = request.IsVoice ?? false;
@@ -58,28 +62,43 @@ namespace MyChatBotApp.Backend
             var intent = IntentParser.ParseIntentWithNLU(request.Message, request.UserId, kernel);
             Console.WriteLine($"Initial intent parsed - Action: '{intent.Action}', Name: '{intent.Name}'");
 
+            // Extract mentions (e.g., @username) from the intent name for notifications.
+            var mentions = Regex.Matches(intent.Name ?? "", "@[a-zA-Z0-9\\s]+").Cast<Match>().Select(m => m.Value).ToList();
+            string mentionMessage = mentions.Any() ? $"\nNotified {string.Join(" and ", mentions)} to follow up—they will contact you soon." : "";
+
+            // Check if the intent matches a predefined command in the JSON file.
+            var predefinedResponse = await predefinedResponseManager.GetResponseAsync(request.Message, request.UserId, mentionMessage);
+            ChatResponse? chatResponse = null; // Declare chatResponse once at the method level to avoid scoping issues.
+            if (predefinedResponse.HasValue)
+            {
+                var (action, response) = predefinedResponse.Value;
+                intent = new UserIntent(request.UserId, action, intent.Name); // Update the intent action.
+                chatResponse = new ChatResponse(response);
+                context.Items["LastResponse"] = chatResponse;
+                return FormatResponse(chatResponse, isVoiceInput);
+            }
+
             if (intent.Action != null)
             {
                 // Process the intent if an action is recognized.
-                var response = await HandleIntent(intent, context, kernel, crmHandler, meetingScheduler, adminHandler,
-                    advancedHandler, leadHandler, salesReportHandler, conversationManager);
-                if (response != null)
+                chatResponse = await HandleIntent(intent, context, kernel, crmHandler, meetingScheduler, adminHandler,
+                    advancedHandler, leadHandler, salesReportHandler, conversationManager, leadPredictor);
+                if (chatResponse != null)
                 {
-                    context.Items["LastResponse"] = response; // Store the response in the context.
-                    return FormatResponse(response, isVoiceInput); // Return the formatted response.
+                    context.Items["LastResponse"] = chatResponse; // Store the response in the context.
+                    return FormatResponse(chatResponse, isVoiceInput); // Return the formatted response.
                 }
             }
 
             // Retry parsing and handling up to 2 times if no response is generated.
             int retryCount = 0;
-            ChatResponse? chatResponse = null;
             while (chatResponse == null && retryCount < 2)
             {
                 Console.WriteLine($"Retry attempt {retryCount + 1} for unrecognized input: '{request.Message}'");
                 intent = IntentParser.ParseIntentWithNLU(request.Message, request.UserId, kernel); // Reparse the intent.
                 Console.WriteLine($"Retry intent parsed - Action: '{intent.Action}', Name: '{intent.Name}'");
                 chatResponse = await HandleIntent(intent, context, kernel, crmHandler, meetingScheduler, adminHandler,
-                    advancedHandler, leadHandler, salesReportHandler, conversationManager);
+                    advancedHandler, leadHandler, salesReportHandler, conversationManager, leadPredictor);
                 retryCount++;
             }
 
@@ -87,7 +106,6 @@ namespace MyChatBotApp.Backend
             {
                 // Return a default response if all retries fail.
                 chatResponse = new ChatResponse("Hmm, I didn’t understand that. Try 'help' for a list of commands!");
-                return FormatResponse(chatResponse, isVoiceInput);
             }
 
             context.Items["LastResponse"] = chatResponse; // Store the final response.
@@ -107,12 +125,12 @@ namespace MyChatBotApp.Backend
         /// <param name="leadHandler">Lead management handler.</param>
         /// <param name="salesReportHandler">Sales report handler.</param>
         /// <param name="conversationManager">Conversation manager.</param>
-        /// <param name="conversationState">Current conversation state.</param>
+        /// <param name="leadPredictor">Lead predictor.</param>
         /// <returns>A ChatResponse or null if no action is taken.</returns>
         private ChatResponse? HandleConversationStep(ChatRequest request, HttpContext context, Kernel kernel, CRMHandler crmHandler,
             MeetingScheduler meetingScheduler, AdminTasksHandler adminHandler, AdvancedFeaturesHandler advancedHandler,
             LeadManagementHandler leadHandler, SalesReportHandler salesReportHandler, ConversationManager conversationManager,
-            ConversationState conversationState)
+            LeadPredictor leadPredictor, ConversationState conversationState)
         {
             // Retrieve CRM data from the context.
             var crmData = context.Items["crmData"] as CRMData;
@@ -153,10 +171,12 @@ namespace MyChatBotApp.Backend
         /// <param name="leadHandler">Lead management handler.</param>
         /// <param name="salesReportHandler">Sales report handler.</param>
         /// <param name="conversationManager">Conversation manager.</param>
+        /// <param name="leadPredictor">Lead predictor.</param>
         /// <returns>A task returning a ChatResponse or null if no action is taken.</returns>
         private async Task<ChatResponse?> HandleIntent(UserIntent intent, HttpContext context, Kernel kernel, CRMHandler crmHandler,
             MeetingScheduler meetingScheduler, AdminTasksHandler adminHandler, AdvancedFeaturesHandler advancedHandler,
-            LeadManagementHandler leadHandler, SalesReportHandler salesReportHandler, ConversationManager conversationManager)
+            LeadManagementHandler leadHandler, SalesReportHandler salesReportHandler, ConversationManager conversationManager,
+            LeadPredictor leadPredictor)
         {
             // Get the current date and time.
             var currentDate = DateTime.Now;
@@ -182,11 +202,15 @@ namespace MyChatBotApp.Backend
             switch (intent.Action)
             {
                 case "find":
-                    // Prepare the search name and log it for debugging.
+                    // Prepare the search name and log it for debugging, ensuring null is handled.
                     string searchName = intent.Name?.ToLower().Trim() ?? "";
+                    if (string.IsNullOrWhiteSpace(searchName))
+                    {
+                        return new ChatResponse("Please provide a name to search for (e.g., 'find John Doe').");
+                    }
                     Console.WriteLine($"Debug: searchName = '{searchName}'");
                     var matches = crmData?.Customers
-                        ?.Where(c => c.Name?.ToLower().Contains(searchName) == true)
+                        ?.Where(c => !string.IsNullOrEmpty(c.Name) && c.Name.ToLower().Contains(searchName))
                         .ToList() ?? new List<Customer>();
                     Console.WriteLine($"Debug: Found {matches.Count} matches for '{searchName}'");
                     if (matches.Count == 0)
@@ -215,8 +239,13 @@ namespace MyChatBotApp.Backend
                         return new ChatResponse(sb.ToString());
                     }
                 case "schedule":
-                    // Parse the schedule command parts and validate the date.
-                    var parts = (intent.Name ?? "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
+                    // Ensure intent.Name is not null before splitting, and validate the parts.
+                    string scheduleInput = intent.Name ?? "";
+                    if (string.IsNullOrWhiteSpace(scheduleInput))
+                    {
+                        return new ChatResponse("Please provide schedule details (e.g., 'schedule, Team Sync, 2025-03-25, Laura').");
+                    }
+                    var parts = scheduleInput.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
                     if (parts.Length >= 3 && DateTime.TryParse(parts[1], out var parsedDate))
                         return new ChatResponse(await meetingScheduler.ScheduleMeetingAsync(parts[0], parts[1], parts[2], crmData!) ?? "Scheduling failed.");
                     return new ChatResponse("Invalid schedule format. Try: 'schedule, title, date, client'");
@@ -264,19 +293,42 @@ namespace MyChatBotApp.Backend
                     if (crmData?.Opportunities == null || !crmData.Opportunities.Any())
                         return new ChatResponse("No opportunities found in the database. Try adding one with 'opportunity, add new'.");
                     return HandleOpportunityIntent(intent, crmData, mentionMessage);
-                case "greet":
-                    // Return a greeting based on the current time, with command examples.
-                    return new ChatResponse($"Hello{(currentDate.Hour >= 12 && currentDate.Hour < 17 ? " Good afternoon" : currentDate.Hour >= 17 ? " Good evening" : " Good morning")}, I can help with 'find John Doe' or 'schedule, Team Sync, 2025-03-25, Laura'. Type 'help' for commands!{mentionMessage}");
+                case "predict_lead":
+                    // Prepare the lead name for prediction and log it for debugging.
+                    string predictLeadName = intent.Name?.ToLower().Trim() ?? "";
+                    Console.WriteLine($"Debug: predictLeadName = '{predictLeadName}'");
+                    if (string.IsNullOrWhiteSpace(predictLeadName))
+                        return new ChatResponse("Please provide a lead name to predict (e.g., 'predict lead John Doe').");
+                    var leadMatches = crmData?.Leads
+                        ?.Where(l => l.Name?.ToLower().Contains(predictLeadName) == true)
+                        .ToList() ?? new List<Lead>();
+                    Console.WriteLine($"Debug: Found {leadMatches.Count} lead matches for '{predictLeadName}'");
+                    if (leadMatches.Count == 0)
+                    {
+                        return new ChatResponse("No matching leads found in the database for prediction.");
+                    }
+                    else if (leadMatches.Count == 1)
+                    {
+                        var lead = leadMatches[0];
+                        var (probability, recommendation) = leadPredictor.PredictLeadConversion(lead);
+                        return new ChatResponse($"Lead Prediction for {lead.Name}:\n- Conversion Probability: {probability:F1}%\n- Recommendation: {recommendation}{mentionMessage}");
+                    }
+                    else
+                    {
+                        // Handle multiple matches by listing them (no confirmation step for simplicity).
+                        var sb = new StringBuilder("Multiple leads found:\n");
+                        for (int i = 0; i < leadMatches.Count && i < 3; i++)
+                        {
+                            var lead = leadMatches[i];
+                            var (probability, recommendation) = leadPredictor.PredictLeadConversion(lead);
+                            sb.Append($"- {lead.Name}: {probability:F1}% chance ({recommendation})\n");
+                        }
+                        if (leadMatches.Count > 3) sb.Append($"...and {leadMatches.Count - 3} more!\n");
+                        sb.Append("Please specify a single lead name for a detailed prediction.");
+                        return new ChatResponse(sb.ToString());
+                    }
                 case "yes":
                     return HandleYesIntent(intent, context, crmData, mentionMessage);
-                case "thank":
-                    return new ChatResponse($"You’re welcome! How can I assist you further?{mentionMessage}");
-                case "good":
-                    return new ChatResponse($"Thank you! How can I assist you further?{mentionMessage}");
-                case "bad":
-                    return new ChatResponse($"I’m sorry to hear that. I’m here to help—please let me know what you need!{mentionMessage}");
-                case "help":
-                    return new ChatResponse($"Available commands:\n- Find: 'find John Doe'\n- Schedule: 'schedule, Team Sync, 2025-03-25, Laura'\n- Admin: 'admin, list pending tasks'\n- Advanced: 'advanced, list campaigns'\n- Lead: 'lead, add new'\n- Insights: 'insights'\n- Report: 'report for today'\n- Opportunity: 'opportunity, add new' or 'opportunity, list opportunities'\nTry one!{mentionMessage}");
                 default:
                     return await HandleDefaultIntent(intent, kernel, mentionMessage);
             }
@@ -350,8 +402,6 @@ namespace MyChatBotApp.Backend
                 // Prepare the intent name and log it for debugging.
                 string intentName = intent.Name ?? "";
                 Console.WriteLine($"Debug: HandleDefaultIntent intentName = '{intentName}'");
-                if (intentName.ToLower() == "who made you")
-                    return new ChatResponse($"I’m CRM Assistant, created by [CEO's Name] and the GDI Bot team! How can I help you today?{mentionMessage}");
                 return new ChatResponse($"I didn’t understand that. Try 'help' for a list of commands!{mentionMessage}");
             }
             catch (Exception ex)

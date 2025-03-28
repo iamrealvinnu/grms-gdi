@@ -60,15 +60,17 @@ const Dashboard = () => {
         
         {/* Total Customers Card */}
         <div className="bg-orange-500 text-white shadow-md rounded-lg p-5 text-center cursor-pointer hover:shadow-lg transition"
-        onClick={() => navigate("/clientDetails")}
+        onClick={() => navigate("/leadDetails")}
         >
-          <h5 className="text-lg font-semibold">Total Customers</h5>
+          <h5 className="text-lg font-semibold">Total Leads</h5>
           <p className="text-2xl font-bold">20</p> {/* Static data, can be replaced with API data */}
         </div>
 
         {/* Leads Card */}
-        <div className="bg-violet-500 text-white shadow-md rounded-lg p-5 text-center cursor-pointer hover:shadow-lg transition">
-          <h5 className="text-lg font-semibold">Leads</h5>
+        <div className="bg-violet-500 text-white shadow-md rounded-lg p-5 text-center cursor-pointer hover:shadow-lg transition"
+        onClick={() => navigate("/getCustomerList")}
+        >
+          <h5 className="text-lg font-semibold">Customers</h5>
           <p className="text-2xl font-bold">5</p>
         </div>
 

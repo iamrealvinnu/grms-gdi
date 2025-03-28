@@ -1,12 +1,10 @@
 ﻿using Microsoft.SemanticKernel;
 using System.Text.RegularExpressions;
-using MyChatBotApp.Backend; // To access other types from Backend, if any
+using MyChatBotApp.Backend;
+using MyChatBotApp.MyChatBotApp.Backend;
 
 namespace MyChatBotApp.Backend
 {
-    // Temporary definition of UserIntent to resolve CS0246 until the root cause is fixed.
-    public record UserIntent(string UserId, string? Action, string? Name);
-
     // Static class for parsing user input into intents using rule-based Natural Language Understanding (NLU).
     public static class IntentParser
     {
@@ -30,12 +28,8 @@ namespace MyChatBotApp.Backend
                 ("insights", @"^insights$"),                             // Matches "insights"
                 ("report", @"^report\s*(.+)$"),                          // Matches "report <period>"
                 ("opportunity", @"^opportunity\s*,+\s*(\S+.*)$"),        // Matches "opportunity, <action>"
-                ("greet", @"^(hi|hello|hey|greet)$"),                    // Matches greeting words
                 ("yes", @"^(yes|sure|ok|k)$"),                          // Matches affirmative responses
-                ("thank", @"^(thanks|thank you|thx)$"),                  // Matches thank you responses
-                ("good", @"^(good|great|awesome|nice)$"),                // Matches positive feedback
-                ("bad", @"^(bad|terrible|awful|sucks)$"),                // Matches negative feedback
-                ("help", @"^(help|commands)$")                           // Matches help requests
+                ("predict_lead", @"^predict lead\s*(.+)$")               // Matches "predict lead <name>" for lead prediction
             };
 
             // Iterate through each pattern to find a match in the user message.

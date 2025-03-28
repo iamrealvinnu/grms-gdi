@@ -17,7 +17,7 @@ function CreateOpportunity() {
 
   const opportunityTypes =
     tableOpportunityStatusData.find(
-      (item) => item.name === "Opportunity Status"
+      (item) => item.name === "Opportunity Stages"
     )?.referenceItems || [];
 
   const fetchMasterTableData = async () => {
@@ -113,7 +113,7 @@ function CreateOpportunity() {
     <div className="flex justify-center items-center min-h-screen bg-gray-200 p-6 sm:p-8">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-xl">
         <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-           Opportunity Form
+           Add Opportunity
         </h3>
         <form className="space-y-4" onSubmit={handleCampaignSubmit}>
           <div>
@@ -151,7 +151,7 @@ function CreateOpportunity() {
 
           <div className="mb-4">
             <label className="block text-gray-700 font-medium mb-1">
-              Opportunity Status:
+              Opportunity Stages:
             </label>
             <select
               name="status"

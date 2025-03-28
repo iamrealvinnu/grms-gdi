@@ -93,7 +93,7 @@ function Header() {
                   setProfileDropdownOpen(false);
                 }}
               >
-                User Management ▼
+                Admin ▼
               </button>
               {userDropdownOpen && (
                 <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-35 mt-2 z-10">
@@ -127,13 +127,13 @@ function Header() {
                   setProfileDropdownOpen(false);
                 }}
               >
-                Marketing Management ▼
+                Campaign ▼
               </button>
               {marketDropDownOpen && (
                 <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-35 mt-2 z-10">
                   <li>
                     <Link
-                      to="/marketingDetails"
+                      to="/campaignDetails"
                       className="block no-underline px-4 py-2 text-gray-700 hover:bg-gray-200"
                     >
                       Campaign Details
@@ -149,6 +149,14 @@ function Header() {
                 className="text-white no-underline hover:bg-gray-600 rounded px-4 py-2 block"
               >
                 Dashboard
+              </Link>
+            </li>
+            <li className="py-2 lg:py-0 text-center">
+              <Link
+                to="/getAccount"
+                className="text-white no-underline hover:bg-gray-600 rounded px-4 py-2 block"
+              >
+                Accounts
               </Link>
             </li>
             <li className="py-2 lg:py-0 text-center">

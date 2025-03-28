@@ -61,7 +61,8 @@ namespace MyChatBotApp.Backend
                             Name = state.LeadName!, // Set the lead's name.
                             Contact = state.LeadContact!, // Set the lead's contact.
                             Status = state.LeadStatus!, // Set the lead's status.
-                            Score = CalculateLeadScore(state.LeadName!, state.LeadContact!, state.LeadStatus!) // Calculate the lead's score.
+                            Score = CalculateLeadScore(state.LeadName!, state.LeadContact!, state.LeadStatus!), // Calculate the lead's score.
+                            LastInteraction = DateTime.Now // Set the last interaction to the current time.
                         };
                         state.CrmData.Leads.Add(newLead); // Add the lead to the CRM data.
                         if (await CrmDataManager.SaveCrmData(state.CrmData)) // Save the updated data to crm_data.json.

@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Add_Client() {
+function CreateCustomer() {
   const [tableIndustryData, setTableIndustryData] = useState([]);
   const [user,setUser] = useState("");
   const [clientData,setClientData] = useState({
@@ -216,4 +216,4 @@ function Add_Client() {
   );
 }
 
-export default Add_Client;
+export default CreateCustomer;

@@ -59,6 +59,12 @@ namespace MyChatBotApp.Backend
                 Console.WriteLine($"IO error saving CRM data: {ex.Message} - Data might not be saved.");
                 return false; // Return false due to IO problems.
             }
+            catch (Exception ex)
+            {
+                // Handle any other unexpected errors during file writing.
+                Console.WriteLine($"Unexpected error saving CRM data: {ex.Message} - Data might not be saved.");
+                return false; // Return false due to unexpected errors.
+            }
         }
     }
 

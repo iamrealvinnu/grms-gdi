@@ -40,9 +40,10 @@ namespace MyChatBotApp.Backend
             crmData.Meetings.Add(meeting);
             if (await CrmDataManager.SaveCrmData(crmData)) // Persist the updated data to crm_data.json.
             {
-                return $"Meeting scheduled and saved to the database: {title} on {date} with {client}"; // Return success message.
+                return $"Meeting scheduled successfully!\nTitle: {meeting.Title}\nDate: {meeting.Date:yyyy-MM-dd}\nClient: {meeting.Client}";
             }
-            return "Failed to save the meeting to the database. Please try again."; // Return error message if save fails.
+
+            return "Failed to save the meeting to crm_data.json. Please try again."; // Return error if save fails.
         }
     }
 }
