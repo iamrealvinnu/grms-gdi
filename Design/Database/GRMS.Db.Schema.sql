@@ -91,6 +91,16 @@ CREATE TABLE [Utility].[Address](
 	CONSTRAINT [FK_Country_Address_ReferenceItem] FOREIGN KEY ([CountryId]) REFERENCES [Utility].[ReferenceItem] ([Id]),
 	CONSTRAINT [FK_AddressType_Address_ReferenceItem] FOREIGN KEY ([AddressTypeId]) REFERENCES [Utility].[ReferenceItem] ([Id])
 )
+-- AUDITLOG TABLE
+CREATE TABLE AuditLog (
+    Id INT IDENTITY(1,1) PRIMARY KEY, 
+    UserId INT NOT NULL,             
+    Action NVARCHAR(50) NOT NULL,    
+    Entity NVARCHAR(50) NOT NULL,   
+    Data NVARCHAR(MAX),              
+    CreatedOn DATETIME NOT NULL DEFAULT GETDATE(), 
+    EntityKey NVARCHAR(50)          
+);
 
 -- USER SCHEMA
 EXEC('CREATE SCHEMA [User]')
@@ -174,83 +184,6 @@ CREATE TABLE[User].[UserRefreshToken](
 	CONSTRAINT[FK_User_UserRefreshToken_Users] FOREIGN KEY([UserId]) REFERENCES[User].[Users]([Id]) ON DELETE CASCADE
 )
 
--- STORED PROCEDURES
--- Insert Failed Login Attempt
-CREATE PROCEDURE [User].InsertFailedLoginAttempt
-    @UserID UNIQUEIDENTIFIER
-AS
-BEGIN
-    DECLARE @CurrentAttemptCount INT;
-    DECLARE @IsLocked BIT;
-    DECLARE @AttemptTime DATETIME;
-
-    SET @AttemptTime = GETDATE();
-
-    SELECT @CurrentAttemptCount = AccessFailedCount
-    FROM [User].[Users]
-    WHERE Id = @UserID;
-
--- Increment the attempt count
-    SET @CurrentAttemptCount = @CurrentAttemptCount + 1;
-
--- Lock the account if the number of failed attempts exceeds 5
- 
-    IF @CurrentAttemptCount >= 5
-    BEGIN
-        SET @IsLocked = 1;
--- Set LockoutEndDate to 15 minutes from now
-        UPDATE [User].[Users]
-        SET AccessFailedCount = @CurrentAttemptCount,
-            LockoutEndDate = DATEADD(minute, 30, @AttemptTime),
-            LockoutEnabled = @IsLocked
-        WHERE Id = @UserID;
-    END
-    ELSE
-    BEGIN
-        SET @IsLocked = 0;
--- Update AccessFailedCount without locking the account
-        UPDATE [User].[Users]
-        SET AccessFailedCount = @CurrentAttemptCount,
-            LockoutEnabled = @IsLocked
-        WHERE Id = @UserID;
-    END
-END;
-
--- Check Lock Status
-CREATE PROCEDURE [User].CheckLockStatus
-    @UserID UNIQUEIDENTIFIER,
-    @IsLocked BIT OUTPUT
-AS
-BEGIN
-    DECLARE @LockoutEndDate DATETIME;
-
-    SELECT @LockoutEndDate = LockoutEndDate
-    FROM [User].[Users]
-    WHERE Id = @UserID;
-
-    IF @LockoutEndDate IS NOT NULL AND @LockoutEndDate > GETDATE()
-    BEGIN
-        SET @IsLocked = 1;
-    END
-    ELSE
-    BEGIN
-        SET @IsLocked = 0;
-    END
-END
-GO
-
--- Reset Failed Login Attempts
-CREATE PROCEDURE [User].ResetFailedLoginAttempts
-    @UserID UNIQUEIDENTIFIER
-AS
-BEGIN
-    UPDATE [User].[Users]
-    SET AccessFailedCount = 0,
-        LockoutEndDate = NULL,
-        LockoutEnabled = 0
-    WHERE Id = @UserID;
-END
-GO
 
 -- MARKETING SCHEMA
 EXEC('CREATE SCHEMA [Marketing]')
@@ -316,7 +249,6 @@ CREATE TABLE [Marketing].[Opportunity](
     [Id] [UNIQUEIDENTIFIER] PRIMARY KEY NOT NULL,
     [LeadId] [UNIQUEIDENTIFIER] NOT NULL,
     [OpportunityName] [NVARCHAR](256) NOT NULL,
-    [OpportunityStatus] [NVARCHAR](50) NOT NULL,
     [EstimatedValue] [DECIMAL](18, 2) NULL,
     [CloseDate] [DATETIME] NULL,
     [CreatedOnUtc] [DATETIME] NOT NULL DEFAULT (getutcdate()),
@@ -422,127 +354,7 @@ CREATE TABLE [Account].[Contact](
     CONSTRAINT FK_ModifiedBy_Contact_Users FOREIGN KEY (ModifiedById) REFERENCES [User].[Users]([Id])
 )
 
--- Sprint2 
-CREATE PROCEDURE usp_UpdateUserProfile
-    @UserId UNIQUEIDENTIFIER,
-    @UserName NVARCHAR(256),
-    @Email NVARCHAR(256),
-    @Dob DATE,
-    @PhoneNumber NVARCHAR(256),
-    @MobileNumber NVARCHAR(256),
-    @AddressId UNIQUEIDENTIFIER
-AS
-BEGIN
-    BEGIN TRANSACTION;
--- Update Password in the Users table
-UPDATE [User].[Users]
-SET [PasswordHash] = 'new password hash', [ChangedOnUtc] = GETUTCDATE()
-WHERE [Id] = 'user unique identifier';
 
--- Update Contact Number (PhoneNumber and MobileNumber) in the Users table
-UPDATE [User].[Users]
-SET [PhoneNumber] = 'new phone#', [MobileNumber] = 'new mobile #', [ChangedOnUtc] = GETUTCDATE()
-WHERE [Id] = 'user unique identifier';
-
--- Update Date of Birth (Dob) in the UserProfile table
-UPDATE [User].[UserProfile]
-SET [Dob] = 'new DOB'
-WHERE [UserId] = 'user unique identifier';
-
--- Update Address in the UserAddress table
-UPDATE [User].[UserAddress]
-SET [AddressId] = 'new address id', [Preffered] = 'new preferred status'
-WHERE [UserId] = 'user unique identifier' AND [AddressId] = 'current address id';
-
-COMMIT TRANSACTION;
-END;
-GO
---
---Execute SP
-EXEC usp_UpdateUserProfile
-    @UserId = 'user unique identifier',
-    @UserName = 'new username',
-    @Email = 'new email@example.com',
-    @Dob = '1990-01-01',
-    @PhoneNumber = 'new phone number',
-    @MobileNumber = 'new mobile number',
-    @AddressId = 'new address id'
---
-
-CREATE FUNCTION dbo.ValidatePassword(@Password NVARCHAR(512))
-RETURNS BIT
-AS
-BEGIN
-    DECLARE @IsValid BIT = 1;
-
-    -- Check if the password length is at least 8 characters
-    IF LEN(@Password) < 8
-        SET @IsValid = 0;
-
-    -- Check if the password contains at least one uppercase letter
-    IF @Password NOT LIKE '%[A-Z]%'
-        SET @IsValid = 0;
-
-    -- Check if the password contains at least one lowercase letter
-    IF @Password NOT LIKE '%[a-z]%'
-        SET @IsValid = 0;
-
-    -- Check if the password contains at least one digit
-    IF @Password NOT LIKE '%[0-9]%'
-        SET @IsValid = 0;
-
-    -- Check if the password contains at least one special character
-    IF @Password NOT LIKE '%[!@#$%^&*()]%'
-        SET @IsValid = 0;
-
-    RETURN @IsValid;
-END;
-GO
---
-CREATE TRIGGER trgValidatePassword
-ON [User].[Users]
-INSTEAD OF INSERT, UPDATE
-AS
-BEGIN
-    DECLARE @IsValid BIT;
-    DECLARE @Password NVARCHAR(512);
-    DECLARE @UserId UNIQUEIDENTIFIER;
-
-    -- Retrieve the password from the inserted or updated row
-    SELECT @Password = [PasswordHash], @UserId = [Id]
-    FROM inserted;
-
-    -- Validate the password
-    SET @IsValid = dbo.ValidatePassword(@Password);
-
-    -- If the password is not valid, raise an error
-    IF @IsValid = 0
-    BEGIN
-        RAISERROR('Password does not meet strength requirements.', 16, 1);
-        ROLLBACK TRANSACTION;
-    END
-    ELSE
-    BEGIN
-        -- If the password is valid, proceed with the insert or update
-        IF EXISTS (SELECT 1 FROM [User].[Users] WHERE [Id] = @UserId)
-        BEGIN
-            -- Update existing row
-            UPDATE [User].[Users]
-            SET [PasswordHash] = @Password,
-                [ChangedOnUtc] = GETUTCDATE()
-            WHERE [Id] = @UserId;
-        END
-        ELSE
-        BEGIN
-            -- Insert new row
-            INSERT INTO [User].[Users]([Id], [PasswordHash], [ChangedOnUtc], ... )
-            SELECT [Id], [PasswordHash], GETUTCDATE(), ...
-            FROM inserted;
-        END
-    END
-END;
-GO
--- 
 
 
 -- COMMIT/ROLLBACK TRANSACTION
