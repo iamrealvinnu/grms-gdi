@@ -20,8 +20,6 @@ import GetUserList from "./components/Admin/GetUserList";
 import UpdateUser from "./components/Admin/UpdateUser";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ResetPassword from "./components/pages/ResetPassword";
-import ClientData from "./components/Leads/LeadData";
-import Add_Client from "./components/Leads/AddLead";
 import MarketingDetails from "./components/Campaign/MarketingDetails";
 import MarketingCreate from "./components/Campaign/MarketingCreate";
 import ChangePassword from "./components/pages/ChangePassword";
