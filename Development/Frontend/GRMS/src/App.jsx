@@ -31,6 +31,13 @@ import GetListCustomers from "./components/Leads/Customers/GetListCustomers";
 import CreateCustomer from "./components/Leads/Customers/CreateCustomer";
 import LeadData from "./components/Leads/LeadData";
 import AddLead from "./components/Leads/AddLead";
+import GetAllAccount from "./components/Account/GetAllAccount";
+import AddAccount from "./components/Account/AddAccount";
+import UpdateCampaign from "./components/Campaign/UpdateCampaign";
+import GetAllActivities from "./components/Leads/Activities/GetAllActivities";
+import UpdateOpportunity from "./components/Leads/Opportunity/UpdateOpportunity";
+import EditAccount from "./components/Account/EditAccount";
+import UpdateContact from "./components/Leads/Customers/UpdateContact";
 
 function App() {
   return (
@@ -40,7 +47,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="/resetpassword/:code" element={<ResetPassword />} />
         <Route path="/google/callback" element={<GoogleCallback />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/notification" element={<Notification />} />
@@ -59,16 +66,27 @@ function App() {
 
         {/* Opportunity Routes */}
         <Route path="/getAllOpportunity" element={<GetAllOpportunity />} />
-        <Route path="/createOpportunity" element={<CreateOpportunity />} />
+        <Route path="/createOpportunity/:leadId" element={<CreateOpportunity />} />
+        <Route path="/updateOpportunity/:opportunityId" element={<UpdateOpportunity />} />
 
         {/* Customers Routes */}
         <Route path="/getCustomerList" element={<GetListCustomers />} />
         <Route path="/createCustomerList" element={<CreateCustomer />} />
+        <Route path="/updateCustomer/:customerId" element={<UpdateContact />} />
 
 
         {/* Marketing Management Routes */}
         <Route path="/campaignDetails" element={<MarketingDetails />} />
         <Route path="/campaignCreate" element={<MarketingCreate />} />
+        <Route path="/campaignUpdate/:campaignId" element={<UpdateCampaign />} />
+
+        {/* Account Routes */}
+        <Route path="/getAllaccount" element={<GetAllAccount />} />
+        <Route path="/addAccount" element={<AddAccount />} />
+        <Route path="/updateAccount/:accountId" element={<EditAccount />} />
+
+        {/* Activities Routes */}
+        <Route path="/getAllactivities" element={<GetAllActivities />} />
 
         
 

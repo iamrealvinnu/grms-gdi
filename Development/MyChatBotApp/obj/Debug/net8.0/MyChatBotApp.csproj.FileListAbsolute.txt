@@ -101,3 +101,8 @@ D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBo
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\obj\Debug\net8.0\MyChatBotApp.pdb
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\obj\Debug\net8.0\MyChatBotApp.genruntimeconfig.cache
 D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\obj\Debug\net8.0\ref\MyChatBotApp.dll
+D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\Serilog.dll
+D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\Serilog.Extensions.Hosting.dll
+D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\Serilog.Extensions.Logging.dll
+D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\Serilog.Sinks.Console.dll
+D:\Second_Pro_GRMS\GDI_Nexus_Relationship_Management_System\Development\MyChatBotApp\bin\Debug\net8.0\Serilog.Sinks.File.dll

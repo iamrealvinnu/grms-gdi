@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { jwtDecode } from "jwt-decode"; // Library for decoding JWT tokens
 import withAuth from "../withAuth";
+import { useNavigate } from "react-router-dom"; 
 
 function MarketingCreate() {
   const [formMarketingData, setFormMarketingData] = useState({
@@ -25,6 +26,7 @@ function MarketingCreate() {
   });
   const [errors, setErrors] = useState({});
   const [user, setUser] = useState("");
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     // Retrieve the JWT token from local storage
@@ -107,6 +109,9 @@ function MarketingCreate() {
       } else {
         toast.error("Failed to create campaign.");
       }
+      setTimeout(() => {
+      navigate('/campaignDetails');
+      }, 1500); 
     } catch (error) {
       console.error("Error fetching the data:", error);
       toast.error("Error creating the campaign. Please try again.");
@@ -125,7 +130,7 @@ function MarketingCreate() {
     <div className="flex justify-center items-center min-h-screen bg-gray-200 p-6">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
         <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-          Create Campaign
+          Add Campaign
         </h3>
         <form className="space-y-4" onSubmit={handleCampaignSubmit}>
           <div>

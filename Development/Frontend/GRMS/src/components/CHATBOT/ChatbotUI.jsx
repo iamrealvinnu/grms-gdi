@@ -2,7 +2,8 @@
 import axios from "axios";
 import { IoMdSend } from "react-icons/io";
 import { FaTimes, FaMicrophone } from "react-icons/fa";
-import Message from "./Message.jsx";
+import { motion, AnimatePresence } from "framer-motion";
+import Message from "./Message";
 import "./styles/chatbot.css";
 
 const ChatbotUI = ({ closeChat, isChatOpen }) => {
@@ -10,6 +11,7 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
     const [input, setInput] = useState("");
     const [isListening, setIsListening] = useState(false);
     const [recognition, setRecognition] = useState(null);
+    const [isTyping, setIsTyping] = useState(false);
     const chatEndRef = useRef(null);
 
     useEffect(() => {
@@ -36,15 +38,12 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
                 setIsListening(false);
             };
 
-            recog.onend = () => {
-                setIsListening(false);
-            };
-
+            recog.onend = () => setIsListening(false);
             setRecognition(recog);
         } else {
             setMessages((prev) => [
                 ...prev,
-                { sender: "bot", text: "Speech recognition not supported in this browser. Use Chrome or Edge.", showFeedback: true },
+                { sender: "bot", text: "Speech recognition not supported.", showFeedback: true },
             ]);
         }
     }, []);
@@ -57,14 +56,13 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
         if (!recognition) {
             setMessages((prev) => [
                 ...prev,
-                { sender: "bot", text: "Speech recognition not supported in this browser.", showFeedback: true },
+                { sender: "bot", text: "Speech recognition not supported.", showFeedback: true },
             ]);
             return;
         }
 
         if (isListening) {
             recognition.stop();
-            setIsListening(false);
         } else {
             setInput("");
             recognition.start();
@@ -77,6 +75,7 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
 
         setMessages((prev) => [...prev, { sender: "user", text: messageToSend }]);
         setInput("");
+        setIsTyping(true);
 
         try {
             const response = await axios.post("http://localhost:51644/chat", {
@@ -84,29 +83,52 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
                 Message: messageToSend,
             });
 
-            console.log("Backend response:", response.data);
-            const botReply = response.data.Reply || response.data.reply || "No response from bot";
-            const showFeedback = response.data.ShowFeedback !== false;
-            setMessages((prev) => [
-                ...prev,
-                { sender: "bot", text: botReply, showFeedback, messageId: Date.now().toString() },
-            ]);
+            const messageId = response.data.MessageId || response.data.messageId;
+            const reply = response.data.Reply || response.data.reply;
+
+            if (!reply) {
+                setMessages((prev) => [
+                    ...prev,
+                    { sender: "bot", text: "Error: No response from backend", showFeedback: true, messageId: messageId || Date.now().toString() },
+                ]);
+                return;
+            }
+
+            setTimeout(() => {
+                setMessages((prev) => [
+                    ...prev,
+                    { sender: "bot", text: reply, showFeedback: true, messageId: messageId },
+                ]);
+                setIsTyping(false);
+            }, 1000);
         } catch (error) {
-            console.error("Error sending message:", error);
             setMessages((prev) => [
                 ...prev,
-                { sender: "bot", text: "Error processing request: " + error.message, showFeedback: true, messageId: Date.now().toString() },
+                { sender: "bot", text: "Error: " + (error.message || "Unknown error"), showFeedback: true, messageId: Date.now().toString() },
             ]);
+            setIsTyping(false);
         }
     };
 
     const handleFeedback = async (messageId, liked) => {
+        if (!messageId || isNaN(parseInt(messageId))) {
+            setMessages((prev) =>
+                prev.map((msg) =>
+                    msg.messageId === messageId
+                        ? { ...msg, showFeedback: false, feedbackMessage: "Error: Invalid message ID" }
+                        : msg
+                )
+            );
+            return;
+        }
+
+        const feedbackPayload = {
+            MessageId: parseInt(messageId),
+            Liked: liked,
+        };
+
         try {
-            await axios.post("http://localhost:51644/feedback", {
-                UserId: "user123",
-                MessageId: messageId,
-                Liked: liked,
-            });
+            await axios.post("http://localhost:51644/chat/feedback", feedbackPayload);
             setMessages((prev) =>
                 prev.map((msg) =>
                     msg.messageId === messageId
@@ -115,7 +137,6 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
                 )
             );
         } catch (error) {
-            console.error("Error sending feedback:", error);
             setMessages((prev) =>
                 prev.map((msg) =>
                     msg.messageId === messageId
@@ -126,62 +147,95 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
         }
     };
 
-    const toggleChat = () => {
-        if (closeChat) closeChat();
-    };
+    const toggleChat = () => closeChat && closeChat();
 
     return (
         <div className="chat-wrapper">
-            {/* WebM Animation when chat is closed */}
-            {!isChatOpen && (
-                <div className="bot-icon" onClick={toggleChat}>
-                    <video autoPlay loop muted className="bot-animation">
-                        <source src="/botanimation.webm" type="video/webm" />
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            )}
+            <AnimatePresence>
+                {!isChatOpen && (
+                    <motion.div
+                        className="bot-icon"
+                        onClick={toggleChat}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <video autoPlay loop muted className="bot-animation">
+                            <source src="/botanimation.webm" type="video/webm" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            {/* Chat Interface when open */}
-            {isChatOpen && (
-                <div className={`chat-container ${isChatOpen ? "fade-in" : "fade-out"}`}>
-                    <div className="chat-header">
-                        <span>CRM Assistant</span>
-                        <FaTimes className="close-btn" onClick={toggleChat} />
-                    </div>
+            <AnimatePresence>
+                {isChatOpen && (
+                    <motion.div
+                        className="chat-container"
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 50 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <div className="chat-header">
+                            <span>CRM Assistant</span>
+                            <FaTimes className="close-btn" onClick={toggleChat} />
+                        </div>
 
-                    <div className="chat-body">
-                        {messages.map((msg, index) => (
-                            <Message
-                                key={index}
-                                sender={msg.sender}
-                                text={msg.text}
-                                showFeedback={msg.showFeedback}
-                                messageId={msg.messageId}
-                                onFeedback={handleFeedback}
-                                feedbackMessage={msg.feedbackMessage}
+                        <div className="chat-body">
+                            <AnimatePresence>
+                                {messages.map((msg, index) => (
+                                    <motion.div
+                                        key={index}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 20 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        <Message
+                                            sender={msg.sender}
+                                            text={msg.text}
+                                            showFeedback={msg.showFeedback}
+                                            messageId={msg.messageId}
+                                            onFeedback={handleFeedback}
+                                            feedbackMessage={msg.feedbackMessage}
+                                        />
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                            {isTyping && (
+                                <motion.div
+                                    className="typing-indicator"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <span></span><span></span><span></span>
+                                </motion.div>
+                            )}
+                            <div ref={chatEndRef} />
+                        </div>
+
+                        <div className="chat-footer">
+                            <input
+                                type="text"
+                                placeholder="Type a message..."
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                             />
-                        ))}
-                        <div ref={chatEndRef} />
-                    </div>
-
-                    <div className="chat-footer">
-                        <input
-                            type="text"
-                            placeholder="Type a message..."
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                        />
-                        <FaMicrophone
-                            className={`mic-btn ${isListening ? "listening" : ""}`}
-                            onClick={toggleSpeechRecognition}
-                            title={isListening ? "Stop listening" : "Start voice input"}
-                        />
-                        <IoMdSend className="send-btn" onClick={() => sendMessage()} />
-                    </div>
-                </div>
-            )}
+                            <FaMicrophone
+                                className={`mic-btn ${isListening ? "listening" : ""}`}
+                                onClick={toggleSpeechRecognition}
+                                title={isListening ? "Stop listening" : "Start voice input"}
+                            />
+                            <IoMdSend className="send-btn" onClick={() => sendMessage()} />
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

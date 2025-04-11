@@ -1,34 +1,26 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<!-- MyChatBotApp.csproj -->
+<!-- Project file defining dependencies and included files -->
+
+<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-		<!-- Disable default inclusion -->
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<!-- Ensure warnings are not treated as errors -->
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SemanticKernel" Version="1.41.0" />
 		<PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.41.0" />
-		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.41.0" />
-		<!-- few removed unless needed for other features -->
+		<PackageReference Include="Serilog" Version="4.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+		<PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="Backend\AdminTasksHandler.cs" />
-		<Compile Include="Backend\AdvancedFeaturesHandler.cs" />
-		<Compile Include="Backend\ChatbotBackendAPI.cs" />
-		<Compile Include="Backend\ConversationManager.cs" />
-		<Compile Include="Backend\CrmDataManager.cs" />
-		<Compile Include="Backend\CRMHandler.cs" />
-		<Compile Include="Backend\CustomerNameExtractor.cs" />
-		<Compile Include="Backend\IntentParser.cs" />
-		<Compile Include="Backend\LeadManagementHandler.cs" />
-		<Compile Include="Backend\LeadManager.cs" />
-		<Compile Include="Backend\LeadPredictor.cs" />
-		<Compile Include="Backend\MeetingScheduler.cs" />
-		<Compile Include="Backend\PredefinedResponseManager.cs" />
-		<Compile Include="Backend\SalesReportHandler.cs" />
+	  <Folder Include="Models\" />
 	</ItemGroup>
 </Project>

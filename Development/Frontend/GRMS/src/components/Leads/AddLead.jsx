@@ -26,13 +26,16 @@ function AddLead() {
     phoneNumber: "",
     assignedToId: "",
     address1: "",
-    address2: "",
+    city: "",
     zip: "",
     stateId: "",
     countryId: "",
     industryId: "",
     departmentId: "",
-    createdById: ""
+    createdById: "",
+    addressTypeId: "",
+    statusId: "",
+    notes: ""
   });
   const [currentUserId, setCurrentUserId] = useState(null);
   const navigate = useNavigate();
@@ -53,6 +56,14 @@ function AddLead() {
     tableIndustryData.find((item) => item.name === "Countries")
       ?.referenceItems || [];
 
+  const AddressTypes =
+    tableIndustryData.find((item) => item.name === "Address Types")
+      ?.referenceItems || [];
+
+  const statusTypes =
+    tableIndustryData.find((item) => item.name === "Lead Status")
+      ?.referenceItems || [];
+
   const fetchTableData = async () => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -65,15 +76,11 @@ function AddLead() {
         }
       );
       setTableIndustryData(response.data.data);
-      console.log("fetched tableData:", response.data.data);
+      // console.log("fetched tableData:", response.data.data);
     } catch (error) {
       console.error("Error fetching Table data:", error);
     }
   };
-
-  useEffect(() => {
-    fetchTableData();
-  }, []);
 
   const fetchUsers = async () => {
     try {
@@ -87,13 +94,14 @@ function AddLead() {
         }
       );
       setUsers(response.data.data); // Assuming the response has a `data` field
-      console.log("Fetched users:", response.data.data);
+      // console.log("Fetched users:", response.data.data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
 
   useEffect(() => {
+    fetchTableData();
     fetchUsers();
   }, []);
 
@@ -138,8 +146,8 @@ function AddLead() {
       const token = localStorage.getItem("accessToken");
       const dataToSend = {
         ...clientData,
-        createdById:currentUserId
-      }
+        createdById: currentUserId
+      };
       const response = await axios.post(
         "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Lead/create",
         dataToSend,
@@ -152,7 +160,9 @@ function AddLead() {
 
       if (response.status === 201 || response.status === 200) {
         toast.success("Client added successfully!");
-        navigate("/leadDetails");
+        setTimeout(() => {
+          navigate("/leadDetails");
+        }, 1500);
       } else {
         toast.error("Unexpected response from server.");
       }
@@ -240,11 +250,51 @@ function AddLead() {
               </select>
             </div>
 
+            <div className="w-full md:w-[48%]">
+              <label className="block font-medium text-gray-700">
+                Lead Status <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="statusId"
+                className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
+                value={clientData.statusId}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Industry</option>
+                {statusTypes.map((statusType) => (
+                  <option key={statusType.id} value={statusType.id}>
+                    {statusType.code}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Address Section */}
             <div className="w-full border-dashed border-2 border-gray-400 rounded p-4">
               <label className="block font-medium text-gray-700">
                 Add Address
               </label>
+
+              <div className="w-full">
+                <label className="block font-medium text-gray-700">
+                  Address <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="addressTypeId"
+                  className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
+                  value={clientData.addressTypeId}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Address</option>
+                  {AddressTypes.map((addressType) => (
+                    <option key={addressType.id} value={addressType.id}>
+                      {addressType.description}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               {/* Street */}
               <input
@@ -259,10 +309,10 @@ function AddLead() {
               {/* Town */}
               <input
                 type="text"
-                name="address2"
+                name="city"
                 placeholder="Town"
                 className="w-full border-b-2 border-gray-400 focus:outline-none p-2 mb-2"
-                value={clientData.address2}
+                value={clientData.city}
                 onChange={handleChange}
               />
 
@@ -406,13 +456,16 @@ function AddLead() {
               </div>
 
               {/* Discussion */}
-              <div className="w-full col-span-2">
-                <label className="block font-medium text-gray-700">
-                  Notes:
-                </label>
-                <input
+              <div className="w-full ">
+                <label className="block font-medium text-gray-700">notes</label>
+                <textarea
                   type="text"
-                  className="w-full border-dashed border-2 border-gray-400 rounded p-4"
+                  name="notes"
+                  placeholder="Discussion"
+                  className="w-full border-dashed border-2 border-gray-400 rounded p-2"
+                  value={clientData.notes}
+                  onChange={handleChange}
+                  required
                 />
               </div>
             </div>

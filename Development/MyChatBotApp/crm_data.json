@@ -307,17 +307,6 @@
       "CallsMade": 0,
       "MeetingsHeld": 0,
       "LastInteraction": "2025-02-01T09:00:00Z"
-    },
-    {
-      "Id": 29,
-      "Name": "asma",
-      "Contact": "6553544675",
-      "Status": "lost",
-      "Score": 10,
-      "MessagesSent": 0,
-      "CallsMade": 0,
-      "MeetingsHeld": 0,
-      "LastInteraction": "2025-03-27T18:16:52.8624425+05:30"
     }
   ],
   "Customers": [

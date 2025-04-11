@@ -62,7 +62,7 @@
 
 
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -70,45 +70,65 @@ import { toast } from "react-toastify";
 function GoogleCallback() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGoogleAuth = async () => {
+      setLoading(true);
       const queryParams = new URLSearchParams(location.search);
-      const code = queryParams.get("code"); // Extract auth code
+      const code = queryParams.get("code");
 
-      if (code) {
-        try {
-          const response = await axios.post(
-            "https://grms-dev.gdinexus.com:49181/api/v1/User/external", // Your backend API
-            { code }, 
-            { headers: { "Content-Type": "application/json" } }
-          );
-
-          if (response.data.success) {
-            const { accessToken, refreshToken, user } = response.data.data;
-
-            // Store tokens
-            localStorage.setItem("accessToken", accessToken);
-            localStorage.setItem("refreshToken", refreshToken);
-            localStorage.setItem("email", user.email);
-
-            toast.success(`Welcome, ${user.givenName}!`);
-            navigate("/dashboard"); // Redirect after login
-          } else {
-            toast.error(response.data.message || "Authentication failed.");
-          }
-        } catch (error) {
-          toast.error(error.response?.data?.message || "Login failed.");
-        }
-      } else {
+      if (!code) {
         toast.error("No authentication code found.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const requestData = { code, source: "google" };
+        console.log("Sending Auth Request:", requestData);
+
+        const response = await axios.post(
+          "https://grms-dev.gdinexus.com:49181/api/v1/Auth/external",
+          requestData,
+          { headers: { "Content-Type": "application/json" } }
+        );
+
+        console.log("API Response:", response.data);
+
+        if (response.data.success) {
+          const { accessToken, refreshToken, user } = response.data.data;
+
+          // Store tokens
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+
+          // Store user details
+          if (user) {
+            localStorage.setItem("user", JSON.stringify(user));
+          }
+
+          toast.success("Login successful!");
+          navigate("/dashboard");
+        } else {
+          toast.error(response.data.message || "Authentication failed.");
+        }
+      } catch (error) {
+        console.error("Auth Error:", error.response?.data || error.message);
+        toast.error(error.response?.data?.message || "Login failed.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchGoogleAuth();
   }, [location, navigate]);
 
-  return <div>Authenticating...</div>;
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      {loading ? <p>Authenticating...</p> : <p>Redirecting...</p>}
+    </div>
+  );
 }
 
 export default GoogleCallback;

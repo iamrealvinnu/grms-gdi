@@ -14,6 +14,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SocialButtons from "./SocialButtons";
+import { jwtDecode } from 'jwt-decode'; // Library for decoding JWT tokens
 
 // Define constants for login attempts
 const MAX_ATTEMPTS = 5; // Maximum allowed failed login attempts
@@ -115,7 +116,11 @@ const Home = () => {
 
       // If login is successful
       if (response.data.success) {
-        const { accessToken, refreshToken, isFirstLogin } = response.data.data;
+        const { accessToken, refreshToken } = response.data.data;
+
+        const decoded = jwtDecode(accessToken);
+
+        const isFirstLogin = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authentication"] === "1";
 
         // Store tokens securely
         localStorage.setItem("accessToken", accessToken);

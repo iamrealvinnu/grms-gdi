@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { MdRemoveRedEye } from "react-icons/md";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import { jwtDecode } from "jwt-decode";
@@ -21,6 +21,7 @@ const ChangePassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(0);
+  const navigate =useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -123,6 +124,7 @@ const ChangePassword = () => {
       });
       setPasswordStrength("");
       setPasswordMatch(0);
+      navigate('/dashboard');
     } catch (error) {
       console.error("API Error:", error.response);
       toast.error(

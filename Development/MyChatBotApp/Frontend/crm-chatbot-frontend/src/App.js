@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import FloatingBot from "./components/FloatingBot";
-import ChatbotUI from "./components/ChatbotUI";
+import React, { useState } from 'react';
+import ChatbotUI from './components/ChatbotUI'; // Adjust path
 
 const App = () => {
     const [isChatOpen, setIsChatOpen] = useState(false);
 
+    const toggleChat = () => {
+        setIsChatOpen((prev) => !prev);
+    };
+
     return (
-        <div>
-            <FloatingBot toggleChat={() => setIsChatOpen(true)} />
-            {isChatOpen && <ChatbotUI closeChat={() => setIsChatOpen(false)} />}
+        <div className="App">
+            <ChatbotUI closeChat={toggleChat} isChatOpen={isChatOpen} />
         </div>
     );
 };
