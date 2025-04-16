@@ -124,7 +124,7 @@ const ChangePassword = () => {
       });
       setPasswordStrength("");
       setPasswordMatch(0);
-      navigate('/dashboard');
+      window.location.href = "/dashboard"; 
     } catch (error) {
       console.error("API Error:", error.response);
       toast.error(

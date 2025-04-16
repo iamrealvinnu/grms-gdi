@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function UpdateOpportunity() {
   const { opportunityId } = useParams();
@@ -17,6 +19,7 @@ function UpdateOpportunity() {
   });
   const [opportunityStagesTypes, setOpportunityStagesTypes] = useState({});
   const [opportunityStatusTypes, setOpportunityStatusTypes] = useState({});
+  const [errors, setErrors] = useState({});
 
   const fetchOpportunityDetails = async () => {
     try {
@@ -36,10 +39,12 @@ function UpdateOpportunity() {
         estimatedValue: opportunityData.estimatedValue,
         stageId: opportunityData.stageId,
         description: opportunityData.description,
+        changedById: opportunityData.createdById, 
+        leadId: opportunityData.leadId,
         closeDate: opportunityData.closeDate
         ? opportunityData.closeDate.split("T")[0]  // ✅ Only the date part
         : ""
-            });
+        });
       console.log("Opportunity data fetched successfully:", opportunityData);
     } catch (error) {
       console.error("Error fetching opportunity details:", error);
@@ -82,6 +87,7 @@ function UpdateOpportunity() {
       setOpportunityStatusTypes(opportunityStatusMap);
     } catch (error) {
       console.error("Error fetching table data:", error);
+      setErrors({ fetchError: "Failed to fetch table data." });
     }
   };
 
@@ -91,7 +97,48 @@ function UpdateOpportunity() {
       ...prevState,
       [name]: value
     }));
+    setErrors({ ...errors, [name]: "" });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("accessToken");
+  
+      const updatedData = {
+        id: opportunityId,
+        name: formOpportunityData.name,
+        description: formOpportunityData.description,
+        statusId: formOpportunityData.statusId,
+        stageId: formOpportunityData.stageId,
+        estimatedValue: parseFloat(formOpportunityData.estimatedValue),
+        closeDate: new Date(formOpportunityData.closeDate).toISOString(),
+        openDate: new Date().toISOString(), // Or use the original openDate from DB if available
+        changedById: formOpportunityData.changedById,
+        leadId: formOpportunityData.leadId
+      };
+  
+      const response = await axios.put(
+        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Opportunity/update",
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        }
+      );
+  
+      toast.success("Opportunity updated successfully!");
+      setTimeout(() => {
+        navigate("/getAllOpportunity");
+      }, 1500);
+  
+    } catch (error) {
+      console.error("Error updating opportunity:", error.response?.data || error.message);
+      setErrors({ submitError: "Failed to update opportunity." });
+    }
+  }
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-200 p-6 sm:p-8">
@@ -99,7 +146,7 @@ function UpdateOpportunity() {
         <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
           Edit Opportunity
         </h3>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Opportunity Name */}
           <div>
             <label className="block text-gray-700 font-medium">
@@ -221,6 +268,7 @@ function UpdateOpportunity() {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -170,7 +170,7 @@ function MarketingCreate() {
             <label className="block text-gray-700 font-medium mb-1">
               Start Date:
             </label>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
               <input
                 type="date"
                 name="startDate"
@@ -193,7 +193,7 @@ function MarketingCreate() {
 
           <div className="mb-4">
             <label className="text-gray-700 font-medium mb-1">End Date:</label>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
               <input
                 type="date"
                 name="endDate"

@@ -263,7 +263,7 @@ function CreateCustomer() {
               <div className="w-full md:w-[48%]">
                 <label className="block font-medium text-gray-700">Phone Number</label>
                 <input
-                  type="text"
+                  type="number"
                   name="phoneNumber"
                   value={clientData.phoneNumber}
                   onChange={handleChange}
@@ -272,7 +272,7 @@ function CreateCustomer() {
                 />
               </div>
 
-                             {/* Department Dropdown */}
+               {/* Department Dropdown */}
                <div className="w-full md:w-[48%]">
                  <label className="block font-medium text-gray-700">
                    Department

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function UpdateCampaign() {
   const [formMarketingData, setFormMarketingData] = useState({
     name: "",
     description: "",
     startDate: "",
-    endDate: ""
+    endDate: "",
+    changedById: ""
   });
   const [errors, setErrors] = useState({});
   const { campaignId } = useParams();
@@ -32,12 +35,14 @@ function UpdateCampaign() {
         }
       );
       const campaignData = response.data || response.data?.data;
-      const formatDate = (dateString) => dateString ? dateString.split("T")[0] : "";
+      const formatDate = (dateString) =>
+        dateString ? dateString.split("T")[0] : "";
       setFormMarketingData({
         name: campaignData.data.name || "",
         description: campaignData.data.description || "",
         startDate: formatDate(campaignData.data.startDate) || "",
-        endDate: formatDate(campaignData.data.endDate) || ""
+        endDate: formatDate(campaignData.data.endDate) || "",
+        changedById: campaignData.data.createdById || ""
       });
       console.log("Campaign data:", response.data);
     } catch (error) {
@@ -57,6 +62,38 @@ function UpdateCampaign() {
     }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("accessToken");
+      const updatedData = {
+        id: campaignId,
+        name: formMarketingData.name,
+        description: formMarketingData.description,
+        startDate: formMarketingData.startDate || null,
+        endDate: formMarketingData.endDate || null,
+        changedById: formMarketingData.changedById
+      };
+      const response = await axios.put(
+        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Campaign/update",
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      toast.success("Campaign updated successfully!");
+      console.log("Campaign updated successfully:", response.data);
+      setTimeout(() => {
+        navigate("/campaignDetails");
+      }, 1500);
+    } catch (error) {
+      console.error("Error updating campaign:", error);
+      setErrors({ submitError: "Failed to update campaign." });
+    }
+  };
+
   return (
     <div className="flex items-center justify-center p-5">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
@@ -64,7 +101,7 @@ function UpdateCampaign() {
           <h3 className="text-2xl font-semibold text-gray-800 text-center mb-4">
             Update Campaign
           </h3>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block font-medium text-gray-700">
                 Campaign Name
@@ -98,7 +135,7 @@ function UpdateCampaign() {
               <label className="block text-gray-700 font-medium mb-1">
                 Start Date:
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <input
                   type="date"
                   name="startDate"
@@ -120,7 +157,7 @@ function UpdateCampaign() {
               <label className="block text-gray-700 font-medium mb-1">
                 End Date:
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <input
                   type="date"
                   name="endDate"
@@ -130,7 +167,7 @@ function UpdateCampaign() {
                 />
                 <button
                   type="button"
-                  onClick={() => clearDate("startDate")}
+                  onClick={() => clearDate("endDate")}
                   className="px-3 py-2 text-white bg-gray-500 rounded-lg hover:bg-red-600 transition duration-300"
                 >
                   Clear
@@ -147,6 +184,7 @@ function UpdateCampaign() {
           </form>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

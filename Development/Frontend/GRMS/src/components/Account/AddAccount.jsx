@@ -23,6 +23,8 @@ function AddAccount() {
     stateId: "",
     countryId: "",
     createdById: "",
+    description: "",
+    number: "", // Added 'number' to the initial state
   });
 
   const [errors, setErrors] = useState({});
@@ -31,70 +33,89 @@ function AddAccount() {
   const [currentUserId, setCurrentUserId] = useState(null);
   const navigate = useNavigate();
 
-  const industriesTypes= tableData.find((item) => item.name === "Industry Types")?.referenceItems || [];
-  const StateTypes = tableData.find((item) => item.name === "States")?.referenceItems || [];
-  const CountryTypes = tableData.find((item) => item.name === "Countries")?.referenceItems || [];
-  const AddressTypes = tableData.find((item) => item.name === "Address Types")?.referenceItems || [];
-  const AccountTypes = tableData.find((item) => item.name === "Account Types")?.referenceItems || [];
-  const OwnershipTypes = tableData.find((item) => item.name === "Ownership Types")?.referenceItems || [];
+  const [loading, setLoading] = useState(true); // Add a loading state
 
-    const fetchTableData = async () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        const response = await axios.get(
-          "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        setTableData(response.data.data);
-        // console.log("fetched tableData:", response.data.data);
-      } catch (error) {
-        console.error("Error fetching Table data:", error);
-      }
-    };
+  // Extract reference data from tableData
+  const industriesTypes =
+    tableData.find((item) => item.name === "Industry Types")?.referenceItems ||
+    [];
+  const stateTypes =
+    tableData.find((item) => item.name === "States")?.referenceItems || [];
+  const countryTypes =
+    tableData.find((item) => item.name === "Countries")?.referenceItems || [];
+  const addressTypes =
+    tableData.find((item) => item.name === "Address Types")?.referenceItems ||
+    [];
+  const accountTypes =
+    tableData.find((item) => item.name === "Account Types")?.referenceItems ||
+    [];
+  const ownershipTypes =
+    tableData.find((item) => item.name === "Ownership Types")?.referenceItems ||
+    [];
 
-    const fetchUsers = async () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        const response = await axios.get(
-          "https://grms-dev.gdinexus.com:49181/api/v1/User/all/true",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        setUsers(response.data.data); // Assuming the response has a `data` field
-        // console.log("Fetched users:", response.data.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    useEffect(() => {
-      fetchTableData();
-      fetchUsers();
-    }, []);
-
-    useEffect(() => {
+  const fetchTableData = async () => {
+    try {
       const token = localStorage.getItem("accessToken");
-      if (token) {
-        try {
-          const decodedToken = jwtDecode(token);
-          const userId =
-            decodedToken[
-              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-            ] || "User";
-          setCurrentUserId(userId);
-          // console.log('nnn',name);
-        } catch (error) {
-          console.error("Error decoding token:", error); // Log error if token decoding fails
+      const response = await axios.get(
+        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      }
+      );
+      setTableData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching Table data:", error);
+      toast.error("Failed to load reference data."); // Show error to user
+    } finally {
+      setLoading(false); // Set loading to false after fetch
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        "https://grms-dev.gdinexus.com:49181/api/v1/User/all/true",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUsers(response.data.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      toast.error("Failed to load user data."); // Show error to user
+    } finally {
+      setLoading(false); // Set loading to false after fetch
+    }
+  };
+
+  useEffect(() => {
+    setLoading(true); // Start loading before fetching
+    Promise.all([fetchTableData(), fetchUsers()]).then(() => {
+        setLoading(false);
     });
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const userId =
+          decodedToken[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+          ] || "User";
+        setCurrentUserId(userId);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        toast.error("Invalid access token."); // Inform user about token issue
+      }
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -119,7 +140,7 @@ function AddAccount() {
       isValid = false;
     }
     if (!formAccountData.ownershipTypeId) {
-      newErrors.ownershipTypeId = "Accont Onwer is required.";
+      newErrors.ownershipTypeId = "Account Owner is required.";
       isValid = false;
     }
     if (!formAccountData.numberOfEmployees) {
@@ -127,11 +148,11 @@ function AddAccount() {
       isValid = false;
     }
     if (!formAccountData.annualRevenue) {
-      newErrors.annualRevenue = "Contact Number is required.";
+      newErrors.annualRevenue = "Annual revenue is required.";
       isValid = false;
     }
     if (!formAccountData.assignedToId) {
-      newErrors.assignedToId = "Contact Number is required.";
+      newErrors.assignedToId = "Assigned user is required.";
       isValid = false;
     }
     if (!formAccountData.accountTypeId) {
@@ -142,7 +163,15 @@ function AddAccount() {
       newErrors.industryTypeId = "Industry Type is required.";
       isValid = false;
     }
-        
+    if (!formAccountData.stateId) {
+      newErrors.stateId = "State is required.";
+      isValid = false;
+    }
+    if (!formAccountData.countryId) {  //Added validation
+        newErrors.countryId = "Country is required.";
+        isValid = false;
+    }
+
     setErrors(newErrors);
     return isValid;
   };
@@ -153,31 +182,57 @@ function AddAccount() {
     if (!validForm()) {
       return;
     }
+    setLoading(true);
     try {
       const token = localStorage.getItem("accessToken");
       const dataPassed = {
         ...formAccountData,
         createdById: currentUserId,
+        annualRevenue: parseInt(formAccountData.annualRevenue || 0, 10),
+        numberOfEmployees: parseInt(formAccountData.numberOfEmployees || 0, 10),
       };
+
       const response = await axios.post(
         "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Account/create",
         dataPassed,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-          }
+          },
         }
       );
-      toast.success("Account created successfully!");
-      setTimeout(()=>{
-        navigate("/getAllaccount")
-      },1500);
-      console.log("Account created successfully:", response.data);
+
+      if (response.data.success) {
+        toast.success("Account created successfully!");
+        setTimeout(() => {
+          navigate("/getAllaccount");
+        }, 1500);
+      } else {
+        console.error("Account creation failed on the server:", response.data);
+        toast.error(
+          `Error creating account: ${
+            response.data.errors
+              ? response.data.errors.join(", ")
+              : "Server error"
+          }`
+        );
+      }
     } catch (error) {
       console.error("Error creating account:", error);
+      console.error("Error response:", error.response);
       toast.error("Error creating account. Please try again.");
+    } finally {
+        setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -187,7 +242,7 @@ function AddAccount() {
             Add Account Details
           </h3>
           <div className="flex flex-wrap gap-4">
-          <div className="w-full md:w-[48%]">
+            <div className="w-full md:w-[48%]">
               <label className="block text-gray-700 font-medium">
                 Account Owner:
               </label>
@@ -199,9 +254,9 @@ function AddAccount() {
                 required
               >
                 <option value="">Select Ownership</option>
-                {OwnershipTypes.map((Ownership) => (
-                  <option key={Ownership.id} value={Ownership.id}>
-                    {Ownership.code}
+                {ownershipTypes.map((ownership) => (
+                  <option key={ownership.id} value={ownership.id}>
+                    {ownership.code}
                   </option>
                 ))}
               </select>
@@ -228,9 +283,7 @@ function AddAccount() {
             </div>
 
             <div className="w-full md:w-[48%]">
-              <label className="block text-gray-700 font-medium">
-                Email:
-              </label>
+              <label className="block text-gray-700 font-medium">Email:</label>
               <input
                 type="email"
                 name="email"
@@ -256,7 +309,7 @@ function AddAccount() {
                 required
               >
                 <option value="">Select AccountType</option>
-                {AccountTypes.map((accountType) => (
+                {accountTypes.map((accountType) => (
                   <option key={accountType.id} value={accountType.id}>
                     {accountType.code}
                   </option>
@@ -297,8 +350,24 @@ function AddAccount() {
                 className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
               />
               {errors.numberOfEmployees && (
-                <p className="text-red-500 text-sm">{errors.numberOfEmployees}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.numberOfEmployees}
+                </p>
               )}
+            </div>
+
+            <div className="w-full md:w-[48%]">
+              <label className="block text-gray-700 font-medium">
+                Account Number:
+              </label>
+              <input
+                type="number"
+                name="number"
+                placeholder="Enter the Account Number"
+                value={formAccountData.number}
+                onChange={handleChange}
+                className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+              />
             </div>
 
             <div className="w-full md:w-[48%]">
@@ -326,7 +395,9 @@ function AddAccount() {
             </div>
 
             <div className="w-full md:w-[48%]">
-              <label className="block text-gray-700 font-medium">Assigned To</label>
+              <label className="block text-gray-700 font-medium">
+                Assigned To
+              </label>
               <select
                 name="assignedToId"
                 className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
@@ -334,16 +405,12 @@ function AddAccount() {
                 onChange={handleChange}
                 required
               >
-                <option value="">Select User</option>
-                {users && users.length > 0 ? (
-                  users.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.profile?.firstName}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Loading users...</option>
-                )}
+                <option value="">Assign User</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.profile?.firstName} {user.profile?.lastName}
+                  </option>
+                ))}
               </select>
               {errors.assignedToId && (
                 <p className="text-red-500 text-sm">{errors.assignedToId}</p>
@@ -367,13 +434,27 @@ function AddAccount() {
               )}
             </div>
 
+            <div className="w-full md:w-[48%]">
+              <label className="block text-gray-700 font-medium">
+                Description:
+              </label>
+              <textarea
+                rows="4"
+                type="text"
+                name="description"
+                value={formAccountData.description}
+                onChange={handleChange}
+                className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                placeholder="Enter Notes..."
+              />
+            </div>
+
             <div className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300">
               <label className="block font-medium text-gray-700">
                 Add Address
               </label>
 
               <div className="w-full">
-                
                 <select
                   name="addressTypeId"
                   className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
@@ -382,7 +463,7 @@ function AddAccount() {
                   required
                 >
                   <option value="">Select Address</option>
-                  {AddressTypes.map((addressType) => (
+                  {addressTypes.map((addressType) => (
                     <option key={addressType.id} value={addressType.id}>
                       {addressType.description}
                     </option>
@@ -398,7 +479,6 @@ function AddAccount() {
                 onChange={handleChange}
                 placeholder="Street"
                 className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-
               />
 
               {/* Town */}
@@ -409,7 +489,6 @@ function AddAccount() {
                 onChange={handleChange}
                 placeholder="Town"
                 className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-
               />
 
               {/* Pincode */}
@@ -420,7 +499,6 @@ function AddAccount() {
                 onChange={handleChange}
                 placeholder="Pincode"
                 className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-
               />
 
               {/* State */}
@@ -433,12 +511,15 @@ function AddAccount() {
                   onChange={handleChange}
                 >
                   <option value="">Select State</option>
-                  {StateTypes.map((StateType) => (
-                    <option key={StateType.id} value={StateType.id}>
-                      {StateType.description}
+                  {stateTypes.map((stateType) => (
+                    <option key={stateType.id} value={stateType.id}>
+                      {stateType.description}
                     </option>
                   ))}
                 </select>
+                {errors.stateId && (
+                    <p className="text-red-500 text-sm">{errors.stateId}</p>
+                )}
               </div>
 
               {/* Country Dropdown */}
@@ -453,20 +534,24 @@ function AddAccount() {
                   onChange={handleChange}
                 >
                   <option value="">Select Country</option>
-                  {CountryTypes.map((countryType) => (
+                  {countryTypes.map((countryType) => (
                     <option key={countryType.id} value={countryType.id}>
                       {countryType.description}
                     </option>
                   ))}
                 </select>
+                {errors.countryId && (
+                    <p className="text-red-500 text-sm">{errors.countryId}</p>
+                )}
               </div>
             </div>
 
             <button
               type="submit"
               className="w-full bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-75"
+              disabled={loading}
             >
-              Save
+              {loading ? 'Saving...' : 'Save'}
             </button>
           </div>
         </div>

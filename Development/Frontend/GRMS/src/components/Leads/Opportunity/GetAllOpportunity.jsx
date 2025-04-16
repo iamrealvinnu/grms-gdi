@@ -49,7 +49,7 @@ function GetAllOpportunity() {
           }
         );
         setOpportunities(response.data.data || []);
-        // console.log("Opportunities:", response.data.data);
+        console.log("Opportunities:", response.data.data);
       } catch (error) {
         console.error("Error fetching opportunities:", error);
       }

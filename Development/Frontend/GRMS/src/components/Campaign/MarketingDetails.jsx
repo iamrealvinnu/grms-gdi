@@ -37,7 +37,7 @@ function MarketingDetails() {
         } else {
           setCampaigns([]);
         }
-        console.log("dss", response.data);
+        // console.log("fetched Campaigns", response.data);
       } catch (err) {
         setError(err.message);
       } finally {

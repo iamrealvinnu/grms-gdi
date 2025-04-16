@@ -271,7 +271,7 @@ function UpdateUser() {
               Phone Number:
             </label>
             <input
-              type="text"
+              type="number"
               name="phoneNumber"
               value={user.phoneNumber}
               onChange={handleChange}
@@ -285,7 +285,7 @@ function UpdateUser() {
               Mobile Number:
             </label>
             <input
-              type="text"
+              type="number"
               name="mobileNumber"
               value={user.mobileNumber}
               onChange={handleChange}
