@@ -9,6 +9,9 @@ function GetListCustomers() {
   const [contacts, setContacts] = useState([]);
   const [departments, setDepartments] = useState({});
   const [accounts, setAccounts] = useState({});
+  const [filteredContacts,setFilteredContacts] = useState([]);
+  const [searchTerm,setSearchTerm] = useState("");
+  const [sortConfig,setSortConfig] = useState({key:null, direction:"asc"});
   const navigate = useNavigate();
 
 
@@ -24,6 +27,7 @@ function GetListCustomers() {
         }
       );
       setContacts(response.data.data);
+      setFilteredContacts(response.data.data);
       // console.log('fetched Contacts:', response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -93,9 +97,55 @@ function GetListCustomers() {
     fetchAccounts();
   }, []);
 
+  useEffect(() =>{
+    let filtered = contacts;
+
+    if (searchTerm) {
+      filtered = filtered.filter((contact) => {
+        const accountName = accounts[contact.accountId] || "";
+        const departmentName = departments[contact.departmentId] || "";
+    
+        return (
+          (contact.firstName && contact.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (contact.lastName && contact.lastName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (accountName && accountName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (departmentName && departmentName.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+      });
+    }
+    
+    setFilteredContacts(filtered);
+  },[contacts,searchTerm]);
+
+  const handleSort = (field) =>{
+    let direction = "asc";
+    if(sortConfig.key === field && sortConfig.direction === "asc"){
+      direction = "desc";
+    }
+    setSortConfig({key:field,direction});
+
+    const sorted = [...filteredContacts].sort((a,b) =>{
+      if (a[field] < b[field]) return direction === "asc" ? -1 : 1;
+      if (b[field] > b[field]) return direction === "asc" ? 1: -1;
+      return 0;
+    });
+    setFilteredContacts(sorted);
+  }
+
   return (
     <div className="p-5">
       <ToastContainer />
+      <div className="flex justify-between items-center mb-4">
+        {/* Search and Filter Section */}
+        <div className="flex items-center gap-4 flex-1">
+          <input
+            type="text"
+            className="border p-2 rounded w-[48%]"
+            placeholder="Search Contacts..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
       {/* Add Customer Button */}
       <div className="flex justify-end mb-4">
         <Link
@@ -105,6 +155,7 @@ function GetListCustomers() {
           <PlusCircle size={20} /> Add Contact
         </Link>
       </div>
+      </div>
 
       {/* Table Section */}
       <div className="overflow-x-auto shadow-lg rounded-lg">
@@ -112,10 +163,10 @@ function GetListCustomers() {
           <thead className="bg-blue-900 text-white">
             <tr>
               <th className="py-3 px-4 text-left">S.No</th>
-              <th className="py-3 px-4 text-left">First Name</th>
-              <th className="py-3 px-4 text-left">Last Name</th>
-              <th className="py-3 px-4 text-left">Company Name</th>
-              <th className="py-3 px-4 text-left">Department</th>
+              <th className="py-3 px-4 text-left cursor-pointer" onClick={() => handleSort("firstName")}>First Name{" "}{sortConfig.key === "firstName" ? sortConfig.direction === "asc" ?  " ▲" : " ▼" : ""}</th>
+              <th className="py-3 px-4 text-left cursor-pointer" onClick={() => handleSort("lastName")}>Last Name{" "}{sortConfig.key === "lastName" ? sortConfig.direction === "asc" ? "▲" : " ▼" : ""}</th>
+              <th className="py-3 px-4 text-left cursor-pointer" onClick={() => handleSort("accountId")}>Company Name{" "}{sortConfig.key === "accountId" ? sortConfig.direction === "asc" ? "▲" : " ▼" : ""}</th>
+              <th className="py-3 px-4 text-left cursor-pointer" onClick={() => handleSort("departmentId")}>Department{" "}{sortConfig.key === "departmentId" ? sortConfig.direction === "asc" ? "▲" : " ▼" : ""}</th>
               <th className="py-3 px-4 text-left">Email</th>
               <th className="py-3 px-4 text-left">Phone Number</th>
               <th className="py-3 px-4 text-left">Mobile Number</th>
@@ -123,7 +174,7 @@ function GetListCustomers() {
             </tr>
           </thead>
           <tbody>
-            {contacts.map((contact, index) => (
+            {filteredContacts.map((contact, index) => (
               <tr key={contact.id} className="border-b hover:bg-gray-100">
                 <td className="py-3 px-4">{index + 1}</td>
                 <td className="py-3 px-4">{contact.firstName}</td>

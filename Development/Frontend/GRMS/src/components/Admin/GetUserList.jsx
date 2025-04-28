@@ -139,7 +139,7 @@ const GetUserList = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-8xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">User List</h2>
 
       {/* Search Input */}

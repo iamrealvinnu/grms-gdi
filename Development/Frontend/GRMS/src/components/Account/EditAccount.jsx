@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
 function EditAccount() {
@@ -173,13 +173,13 @@ function EditAccount() {
     e.preventDefault();
     try {
       const token = localStorage.getItem("accessToken");
-        
+
       const updateAccountData = {
         ...formAccountData,
-        id: accountId,       
-        changedById: formAccountData.changedById,        
+        id: accountId,
+        changedById: formAccountData.changedById
       };
-  
+
       await axios.put(
         "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Account/update",
         updateAccountData,
@@ -207,7 +207,7 @@ function EditAccount() {
         <form onSubmit={handleAccountSubmit}>
           <div className="p-4">
             <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-              Add Account Details
+              Edit Account Details
             </h3>
             <div className="flex flex-wrap gap-4">
               <div className="w-full md:w-[48%]">
@@ -398,11 +398,14 @@ function EditAccount() {
               </div>
 
               <div className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300">
-                <label className="block font-medium text-gray-700">
+                {/* <label className="block font-medium text-gray-700">
                   Add Address
-                </label>
+                </label> */}
 
                 <div className="w-full">
+                  <label className="block font-medium text-gray-700">
+                    Address
+                  </label>
                   <select
                     name="addressTypeId"
                     className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
@@ -420,73 +423,93 @@ function EditAccount() {
                 </div>
 
                 {/* Street */}
-                <input
-                  type="text"
-                  name="address1"
-                  value={formAccountData.address1}
-                  onChange={handleChange}
-                  placeholder="Street"
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                />
-
-                {/* Town */}
-                <input
-                  type="text"
-                  name="city"
-                  value={formAccountData.city}
-                  onChange={handleChange}
-                  placeholder="Town"
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                />
-
-                {/* Pincode */}
-                <input
-                  type="text"
-                  name="zip"
-                  value={formAccountData.zip}
-                  onChange={handleChange}
-                  placeholder="Pincode"
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                />
-
-                {/* State */}
-                <div className="w-full border-b-2 p-2 bg-white">
-                  <label className="block font-medium text-gray-700">
-                    State
+                <div className="w-full mt-4">
+                  <label className="block font-medium  text-gray-700 p-1">
+                    Address Line 1
                   </label>
-                  <select
-                    name="stateId"
-                    className="w-full p-2 bg-white"
-                    value={formAccountData.stateId}
+                  <input
+                    type="text"
+                    name="address1"
+                    value={formAccountData.address1}
                     onChange={handleChange}
-                  >
-                    <option value="">Select State</option>
-                    {Object.entries(states).map(([id, description]) => (
-                      <option key={id} value={id}>
-                        {description}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="Street"
+                    className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                  />
                 </div>
 
-                {/* Country Dropdown */}
-                <div className="w-full border-b-2 p-2 bg-white">
-                  <label className="block font-medium text-gray-700">
-                    Country
-                  </label>
-                  <select
-                    name="countryId"
-                    className="w-full p-2 bg-white"
-                    value={formAccountData.countryId}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select Country</option>
-                    {Object.entries(countries).map(([id, description]) => (
-                      <option key={id} value={id}>
-                        {description}
-                      </option>
-                    ))}
-                  </select>
+                {/* Town */}
+                <div className="flex flex-wrap gap-4 mt-4">
+                  <div className="w-full md:w-[48%]">
+                    <label className="block font-medium text-gray-700">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formAccountData.city}
+                      onChange={handleChange}
+                      placeholder="Town"
+                      className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                    />
+                  </div>
+
+                  {/* Pincode */}
+                  <div className="w-full md:w-[48%]">
+                    <label className="block font-medium text-gray-700">
+                      ZIP Code
+                    </label>
+                    <input
+                      type="text"
+                      name="zip"
+                      value={formAccountData.zip}
+                      onChange={handleChange}
+                      placeholder="Pincode"
+                      className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                    />
+                  </div>
+                </div>
+
+                {/* State */}
+                <div className="flex flex-wrap gap-4 mt-4">
+                  <div className="w-full md:w-[48%]">
+                    {" "}
+                    <label className="block font-medium text-gray-700">
+                      State
+                    </label>
+                    <select
+                      name="stateId"
+                      className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                      value={formAccountData.stateId}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select State</option>
+                      {Object.entries(states).map(([id, description]) => (
+                        <option key={id} value={id}>
+                          {description}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Country Dropdown */}
+                  <div className="w-full md:w-[48%]">
+                    <label className="block font-medium text-gray-700">
+                      Country
+                    </label>
+                    <select
+                      name="countryId"
+                      className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                      value={formAccountData.countryId}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select Country</option>
+                      {Object.entries(countries).map(([id, description]) => (
+                        <option key={id} value={id}>
+                          {description}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -494,7 +517,7 @@ function EditAccount() {
                 type="submit"
                 className="w-full bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-75"
               >
-                Save
+                UPDATE
               </button>
             </div>
           </div>

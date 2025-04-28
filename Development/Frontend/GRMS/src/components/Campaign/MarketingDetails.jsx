@@ -10,7 +10,7 @@
 // Imports
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, ArrowUpDown, Search } from "lucide-react";
 import withAuth from "../withAuth";
 import axios from "axios";
 
@@ -19,6 +19,13 @@ function MarketingDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "ascending"
+  });
+  const [filterStartDate, setFilterStartDate] = useState("");
+  const [filterEndDate, setFilterEndDate] = useState("");
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -55,9 +62,86 @@ function MarketingDetails() {
     navigate(`/campaignUpdate/${campaignId}`);
   };
 
+  const handleSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortedCampaigns = () => {
+    let sortableItems = [...campaigns];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        const valueA = a[sortConfig.key];
+        const valueB = b[sortConfig.key];
+
+        if (sortConfig.key === "startDate" || sortConfig.key === "endDate") {
+          const dateA = new Date(valueA).getTime();
+          const dateB = new Date(valueB).getTime();
+          return sortConfig.direction === "ascending"
+            ? dateA - dateB
+            : dateB - dateA;
+        }
+
+        if (typeof valueA === "string" && typeof valueB === "string") {
+          return sortConfig.direction === "ascending"
+            ? valueA.localeCompare(valueB)
+            : valueB.localeCompare(valueA);
+        }
+
+        return 0;
+      });
+    }
+    return sortableItems;
+  };
+
+  const getFilteredCampaigns = () => {
+    let filteredItems = getSortedCampaigns();
+
+    if (searchTerm) {
+      const searchTermLower = searchTerm.toLowerCase();
+      filteredItems = filteredItems.filter(
+        (campaign) =>
+          campaign.name.toLowerCase().includes(searchTermLower) ||
+          campaign.description.toLowerCase().includes(searchTermLower)
+      );
+    }
+
+    if (filterStartDate) {
+      const startDate = new Date(filterStartDate);
+      filteredItems = filteredItems.filter(
+        (campaign) => new Date(campaign.startDate) >= startDate
+      );
+    }
+
+    if (filterEndDate) {
+      const endDate = new Date(filterEndDate);
+      filteredItems = filteredItems.filter(
+        (campaign) => new Date(campaign.endDate) <= endDate
+      );
+    }
+
+    return filteredItems;
+  };
+
+  const sortedAndFilteredCampaigns = getFilteredCampaigns();
+
   return (
     <div className="p-5">
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-4 gap-3">
+        <div className="flex items-center gap-2">
+          <Search className="w-5 h-5 text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search Campaigns..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-4 py-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300 w-64"
+          />
+        </div>
+
         <Link
           to="/campaignCreate"
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
@@ -70,28 +154,73 @@ function MarketingDetails() {
         <table className="min-w-full border border-gray-200 rounded-lg shadow-md">
           <thead className="bg-gray-500 text-white">
             <tr>
-              <th className="py-2 px-4 border-b text-left  font-semibold">
+              <th className="py-2 px-4 border-b text-left font-semibold">
                 S.no
               </th>
-              <th className="py-2 px-4 border-b text-left  font-semibold">
-                Campaign Name
+
+              <th className="py-2 px-4 border-b text-left font-semibold">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1">
+                    Campaign Name
+                    <button onClick={() => handleSort("name")}>
+                      <ArrowUpDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
               </th>
-              <th className="py-2 px-4 border-b text-left  font-semibold">
-                Campaign Description
+
+              <th className="py-2 px-4 border-b text-left font-semibold">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1">
+                    Campaign Description
+                    <button onClick={() => handleSort("description")}>
+                      <ArrowUpDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
               </th>
-              <th className="py-2 px-4 border-b text-left  font-semibold">
-                Campaign Start Date
+
+              <th className="py-2 px-4 border-b text-left font-semibold">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1">
+                    Start Date
+                    <button onClick={() => handleSort("startDate")}>
+                      <ArrowUpDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <input
+                    type="date"
+                    value={filterStartDate}
+                    onChange={(e) => setFilterStartDate(e.target.value)}
+                    className="mt-1 px-2 py-1 rounded text-black"
+                  />
+                </div>
               </th>
-              <th className="py-2 px-4 border-b text-left  font-semibold">
-                Campaign End Date
+
+              <th className="py-2 px-4 border-b text-left font-semibold">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1">
+                    End Date
+                    <button onClick={() => handleSort("endDate")}>
+                      <ArrowUpDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <input
+                    type="date"
+                    value={filterEndDate}
+                    onChange={(e) => setFilterEndDate(e.target.value)}
+                    className="mt-1 px-2 py-1 rounded text-black"
+                  />
+                </div>
               </th>
-              <th className="py-2 px-4 border-b text-left  font-semibold">
+
+              <th className="py-2 px-4 border-b text-left font-semibold">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {campaigns.map((campaign, index) => (
+            {sortedAndFilteredCampaigns.map((campaign, index) => (
               <tr key={campaign.id} className="hover:bg-gray-50">
                 <td className="py-2 px-4 border-b text-gray-600">
                   {index + 1}

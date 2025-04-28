@@ -2,13 +2,18 @@
 // Author: Krishna Murthy
 // Company: GDI Nexus
 // Date: 28/03/2025
-// Purpose: Lead Creation Form
+// Purpose: Lead Update Form
 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaTasks } from "react-icons/fa";
+import { IoCall } from "react-icons/io5";
+import { MdEmail } from "react-icons/md";
+import { FaPeopleGroup } from "react-icons/fa6";
+import { IoSettings } from "react-icons/io5";
 
 function UpdateContact() {
   const [clientData, setClientData] = useState({
@@ -20,7 +25,7 @@ function UpdateContact() {
     departmentId: "",
     assignedToId: "",
     changedById: "",
-    mobileNumber: "",
+    mobileNumber: ""
   });
   const navigate = useNavigate();
   const { contactId } = useParams();
@@ -49,9 +54,9 @@ function UpdateContact() {
         assignedToId: contactData.assignedToId || "",
         changedById: contactData.changedById || "",
         accountId: contactData.accountId || "",
-        mobileNumber: contactData.mobileNumber || "",
+        mobileNumber: contactData.mobileNumber || ""
       });
-      console.log("ajja", response.data.data);
+      // console.log("ajja", response.data.data);
     } catch (error) {
       console.error("Error fetching contact data:", error);
       setErrors({ fetch: "Failed to fetch contact data." });
@@ -153,7 +158,7 @@ function UpdateContact() {
 
     try {
       const token = localStorage.getItem("accessToken");
-      const dataToSend = { 
+      const dataToSend = {
         id: contactId,
         firstName: clientData.firstName,
         lastName: clientData.lastName,
@@ -162,8 +167,8 @@ function UpdateContact() {
         departmentId: clientData.departmentId,
         accountId: clientData.accountId,
         changedById: clientData.changedById,
-        mobileNumber: clientData.mobileNumber,
-       };
+        mobileNumber: clientData.mobileNumber
+      };
 
       const response = await axios.put(
         "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Account/contact/update",
@@ -185,169 +190,213 @@ function UpdateContact() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <ToastContainer />
-      <form onSubmit={handleSubmit}>
-        {/* Company Details Section */}
-        <div className="p-4">
-          <h3 className="text-2xl font-semibold mb-4">Company Details</h3>
-          <div className="flex flex-wrap gap-4">
-            {/* Company Name (Dropdown of Accounts) */}
-            <div className="w-full md:w-[48%]">
-              <label className="block font-medium text-gray-700">
-                Company Name <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="accountId"
-                value={clientData.accountId}
-                onChange={handleChange}
-                className="w-full border-2 border-gray-400 rounded p-2 bg-white"
-                required
-              >
-                <option value="">Select Company</option>
-                {accounts.map((account) => (
-                  <option key={account.id} value={account.id}>
-                    {account.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Lead Owner */}
-            <div className="w-full md:w-[48%]">
-              <label className="block font-medium text-gray-700">
-                Assigned To <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="assignedToId"
-                className="w-full border-2 border-gray-400 rounded p-2 bg-white"
-                value={clientData.assignedToId}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select User</option>
-                {userDetails &&
-                  Array.isArray(userDetails) &&
-                  userDetails.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.profile?.firstName} {user.profile?.lastName}
-                    </option>
-                  ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Contact Information Section */}
-        <div className="mb-6 border-b pb-4 mt-6">
+    <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <div className="flex flex-col lg:flex-row gap-6">
+        <ToastContainer />
+        <form onSubmit={handleSubmit} className="w-full bg-gray-50 lg:flex-1">
+          {/* Company Details Section */}
           <div className="p-4">
-            <h3 className="text-2xl font-semibold mb-4">Contact Information</h3>
+            <h3 className="text-2xl font-semibold mb-4">Company Details</h3>
             <div className="flex flex-wrap gap-4">
-              {/* First Name */}
+              {/* Company Name (Dropdown of Accounts) */}
               <div className="w-full md:w-[48%]">
                 <label className="block font-medium text-gray-700">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={clientData.firstName}
-                  onChange={handleChange}
-                  className="w-full border-2 border-gray-400 rounded p-2"
-                  required
-                />
-              </div>
-
-              {/* Last Name */}
-              <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={clientData.lastName}
-                  onChange={handleChange}
-                  className="w-full border-2 border-gray-400 rounded p-2"
-                />
-              </div>
-
-              {/* Email */}
-              <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={clientData.email}
-                  onChange={handleChange}
-                  className="w-full border-2 border-gray-400 rounded p-2"
-                  required
-                />
-              </div>
-
-              {/* Phone Number */}
-              <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">
-                  Phone Number
-                </label>
-                <input
-                  type="number"
-                  name="phoneNumber"
-                  value={clientData.phoneNumber}
-                  onChange={handleChange}
-                  className="w-full border-2 border-gray-400 rounded p-2"
-                  required
-                />
-              </div>
-
-              {/* Department Dropdown */}
-              <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">
-                  Department
+                  Company Name <span className="text-red-500">*</span>
                 </label>
                 <select
-                  name="departmentId"
-                  className="w-full  border-2 border-gray-400 rounded p-2 bg-white"
-                  value={clientData.departmentId}
+                  name="accountId"
+                  value={clientData.accountId}
                   onChange={handleChange}
+                  className="w-full border-2 border-gray-400 rounded p-2 bg-white"
+                  required
                 >
-                  <option value="">Select Department</option>
-                  {Object.entries(departmentTypes).map(([id, description]) => (
-                    <option key={id} value={id}>
-                      {description}
+                  <option value="">Select Company</option>
+                  {accounts.map((account) => (
+                    <option key={account.id} value={account.id}>
+                      {account.name}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Phone Number */}
+              {/* Lead Owner */}
               <div className="w-full md:w-[48%]">
                 <label className="block font-medium text-gray-700">
-                  Mobile Number
+                  Assigned To <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  name="mobileNumber"
-                  value={clientData.mobileNumber}
+                <select
+                  name="assignedToId"
+                  className="w-full border-2 border-gray-400 rounded p-2 bg-white"
+                  value={clientData.assignedToId}
                   onChange={handleChange}
-                  className="w-full border-2 border-gray-400 rounded p-2"
                   required
-                />
+                >
+                  <option value="">Select User</option>
+                  {userDetails &&
+                    Array.isArray(userDetails) &&
+                    userDetails.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.profile?.firstName} {user.profile?.lastName}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Information Section */}
+          <div className="mb-6 border-b pb-4 mt-6">
+            <div className="p-4">
+              <h3 className="text-2xl font-semibold mb-4">
+                Contact Information
+              </h3>
+              <div className="flex flex-wrap gap-4">
+                {/* First Name */}
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={clientData.firstName}
+                    onChange={handleChange}
+                    className="w-full border-2 border-gray-400 rounded p-2"
+                    required
+                  />
+                </div>
+
+                {/* Last Name */}
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={clientData.lastName}
+                    onChange={handleChange}
+                    className="w-full border-2 border-gray-400 rounded p-2"
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={clientData.email}
+                    onChange={handleChange}
+                    className="w-full border-2 border-gray-400 rounded p-2"
+                    required
+                  />
+                </div>
+
+                {/* Phone Number */}
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    Phone Number
+                  </label>
+                  <input
+                    type="number"
+                    name="phoneNumber"
+                    value={clientData.phoneNumber}
+                    onChange={handleChange}
+                    className="w-full border-2 border-gray-400 rounded p-2"
+                    required
+                  />
+                </div>
+
+                {/* Department Dropdown */}
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    Department
+                  </label>
+                  <select
+                    name="departmentId"
+                    className="w-full  border-2 border-gray-400 rounded p-2 bg-white"
+                    value={clientData.departmentId}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Department</option>
+                    {Object.entries(departmentTypes).map(
+                      ([id, description]) => (
+                        <option key={id} value={id}>
+                          {description}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+
+                {/* Phone Number */}
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    Mobile Number
+                  </label>
+                  <input
+                    type="text"
+                    name="mobileNumber"
+                    value={clientData.mobileNumber}
+                    onChange={handleChange}
+                    className="w-full border-2 border-gray-400 rounded p-2"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="p-4">
+            <button
+              type="submit"
+              className="bg-gray-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+            >
+              Update
+            </button>
+          </div>
+        </form>
+
+        <div className="w-full lg:w-64 xl:w-72">
+          <div className="bg-blue-50 rounded-lg shadow-md p-4 h-full">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Quick Actions
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              <button className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                <FaTasks className="text-blue-500 text-2xl mb-2" />
+                <span className="text-sm font-medium text-gray-700">Task</span>
+              </button>
+              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                <IoCall className="text-green-500 text-2xl mb-2" />
+                <span className="text-sm font-medium text-gray-700">Call</span>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                <MdEmail className="text-yellow-500 text-2xl mb-2" />
+                <span className="text-sm font-medium text-gray-700">Email</span>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                <FaPeopleGroup className="text-purple-500 text-2xl mb-2" />
+                <span className="text-sm font-medium text-gray-700">
+                  Meeting
+                </span>
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                <IoSettings className="text-gray-600 text-2xl mb-2" />
+                <span className="text-sm font-medium text-gray-700">
+                  Settings
+                </span>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Submit Button */}
-        <div className="p-4">
-          <button
-            type="submit"
-            className="bg-gray-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-          >
-            Update
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }

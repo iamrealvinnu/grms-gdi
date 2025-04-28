@@ -40,6 +40,9 @@ import EditAccount from "./components/Account/EditAccount";
 import UpdateContact from "./components/Leads/Customers/UpdateContact";
 import GetTask from "./components/Activities/Task/GetTask";
 import CreateTask from "./components/Activities/Task/CreateTask";
+import CallCreate from "./components/Activities/Call/CallCreate";
+import MailCreate from "./components/Activities/Email/MailCreate";
+import MeetingCreate from "./components/Activities/Meeting/MeetingCreate";
 
 function App() {
   return (
@@ -93,6 +96,11 @@ function App() {
         {/* Task Routes */}
         <Route path="/getAllTask" element={<GetTask />} />
         <Route path="/createTask" element={<CreateTask />} />
+
+        {/* Call Routes */}
+        <Route path="/createCall" element={<CallCreate />} />
+        <Route path="/createMail" element={<MailCreate />} />
+        <Route path="/createMeeting" element={<MeetingCreate />} />
 
         
 

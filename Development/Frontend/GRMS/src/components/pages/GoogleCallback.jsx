@@ -1,71 +1,9 @@
-// import { useEffect } from "react";
-// import { useNavigate, useLocation } from "react-router-dom";
-// import axios from "axios";
-// import { toast } from "react-toastify";
-
-// function GoogleCallback() {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-
-//   useEffect(() => {
-//     const fetchGoogleAuth = async () => {
-//       const queryParams = new URLSearchParams(location.search);
-//       const token = queryParams.get("code"); // Get Google auth code
-
-//       if (token) {
-//         try {
-//           // Send the token to the backend to verify & fetch user details
-//           const response = await axios.post(
-//             "https://grms-dev.gdinexus.com:49181/api/v1/User/external",
-//             { token }, // Send only token; backend should validate & return user details
-//             {
-//               headers: { "Content-Type": "application/json" },
-//             }
-//           );
-
-//           if (response.data.success) {
-//             const { accessToken, refreshToken, user } = response.data.data;
-
-//             // Store tokens in localStorage
-//             localStorage.setItem("accessToken", accessToken);
-//             localStorage.setItem("refreshToken", refreshToken);
-
-//             // Store user details in localStorage
-//             localStorage.setItem("source", user.source);
-//             localStorage.setItem("nameIdentifier", user.nameIdentifier);
-//             localStorage.setItem("givenName", user.givenName);
-//             localStorage.setItem("surname", user.surname);
-//             localStorage.setItem("email", user.email);
-
-//             toast.success(`Welcome, ${user.givenName}! Login Successful`);
-
-//             // Navigate to dashboard after successful login
-//             navigate("/dashboard");
-//           } else {
-//             toast.error(response.data.message || "Authentication failed.");
-//           }
-//         } catch (error) {
-//           toast.error(error.response?.data?.message || "Login failed. Try again.");
-//         }
-//       } else {
-//         toast.error("No authentication code found.");
-//       }
-//     };
-
-//     fetchGoogleAuth();
-//   }, [location, navigate]);
-
-//   return <div>Authenticating...</div>;
-// }
-
-// export default GoogleCallback;
-
-
-
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import  { jwtDecode }  from "jwt-decode"; // Corrected import
+
 
 function GoogleCallback() {
   const navigate = useNavigate();
@@ -77,37 +15,58 @@ function GoogleCallback() {
       setLoading(true);
       const queryParams = new URLSearchParams(location.search);
       const code = queryParams.get("code");
-
+  
       if (!code) {
         toast.error("No authentication code found.");
         setLoading(false);
         return;
       }
-
+  
       try {
-        const requestData = { code, source: "google" };
-        console.log("Sending Auth Request:", requestData);
-
+        // Step 1: Exchange code for Google tokens (via your backend or use Google OAuth directly)
+        const tokenResponse = await axios.post(
+          "https://oauth2.googleapis.com/token",
+          {
+            code,
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+            client_secret: import.meta.env.VITE_GOOGLE_CLIENT_SECRET,
+            redirect_uri: "http://localhost:5173/google/callback",
+            grant_type: "authorization_code",
+          },
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        );
+  
+        const { id_token } = tokenResponse.data;
+  
+        // Step 2: Decode the token
+        const decoded = jwtDecode(id_token);
+        console.log("Decoded Google Token:", decoded);
+  
+        // Step 3: Build payload for your backend
+        const requestData = {
+          source: "google",
+          nameIdentifier: decoded.sub,
+          givenName: decoded.given_name,
+          surname: decoded.family_name,
+          email: decoded.email,
+        };
+  
+        // Step 4: Send to your backend
         const response = await axios.post(
           "https://grms-dev.gdinexus.com:49181/api/v1/Auth/external",
           requestData,
           { headers: { "Content-Type": "application/json" } }
         );
-
-        console.log("API Response:", response.data);
-
+  
         if (response.data.success) {
-          const { accessToken, refreshToken, user } = response.data.data;
-
-          // Store tokens
+          const { accessToken, refreshToken } = response.data.data;
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
-
-          // Store user details
-          if (user) {
-            localStorage.setItem("user", JSON.stringify(user));
-          }
-
+          
           toast.success("Login successful!");
           navigate("/dashboard");
         } else {
@@ -120,9 +79,10 @@ function GoogleCallback() {
         setLoading(false);
       }
     };
-
+  
     fetchGoogleAuth();
   }, [location, navigate]);
+  
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>

@@ -24,7 +24,7 @@ function AddAccount() {
     countryId: "",
     createdById: "",
     description: "",
-    number: "", // Added 'number' to the initial state
+    number: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -32,10 +32,8 @@ function AddAccount() {
   const [users, setUsers] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
-  const [loading, setLoading] = useState(true); // Add a loading state
-
-  // Extract reference data from tableData
   const industriesTypes =
     tableData.find((item) => item.name === "Industry Types")?.referenceItems ||
     [];
@@ -67,9 +65,9 @@ function AddAccount() {
       setTableData(response.data.data);
     } catch (error) {
       console.error("Error fetching Table data:", error);
-      toast.error("Failed to load reference data."); // Show error to user
+      toast.error("Failed to load reference data.");
     } finally {
-      setLoading(false); // Set loading to false after fetch
+      setLoading(false);
     }
   };
 
@@ -87,16 +85,16 @@ function AddAccount() {
       setUsers(response.data.data);
     } catch (error) {
       console.error("Error fetching users:", error);
-      toast.error("Failed to load user data."); // Show error to user
+      toast.error("Failed to load user data.");
     } finally {
-      setLoading(false); // Set loading to false after fetch
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    setLoading(true); // Start loading before fetching
+    setLoading(true);
     Promise.all([fetchTableData(), fetchUsers()]).then(() => {
-        setLoading(false);
+      setLoading(false);
     });
   }, []);
 
@@ -112,7 +110,7 @@ function AddAccount() {
         setCurrentUserId(userId);
       } catch (error) {
         console.error("Error decoding token:", error);
-        toast.error("Invalid access token."); // Inform user about token issue
+        toast.error("Invalid access token.");
       }
     }
   }, []);
@@ -167,9 +165,9 @@ function AddAccount() {
       newErrors.stateId = "State is required.";
       isValid = false;
     }
-    if (!formAccountData.countryId) {  //Added validation
-        newErrors.countryId = "Country is required.";
-        isValid = false;
+    if (!formAccountData.countryId) {
+      newErrors.countryId = "Country is required.";
+      isValid = false;
     }
 
     setErrors(newErrors);
@@ -192,6 +190,9 @@ function AddAccount() {
         numberOfEmployees: parseInt(formAccountData.numberOfEmployees || 0, 10),
       };
 
+      // **CRITICAL DEBUGGING STEP:**
+      console.log("Data being sent:", dataPassed); // Log the data *before* sending
+
       const response = await axios.post(
         "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Account/create",
         dataPassed,
@@ -201,6 +202,9 @@ function AddAccount() {
           },
         }
       );
+
+      console.log("API Response:", response); // Log the *entire* response
+      console.log("Response data:", response.data);
 
       if (response.data.success) {
         toast.success("Account created successfully!");
@@ -222,7 +226,7 @@ function AddAccount() {
       console.error("Error response:", error.response);
       toast.error("Error creating account. Please try again.");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -518,7 +522,7 @@ function AddAccount() {
                   ))}
                 </select>
                 {errors.stateId && (
-                    <p className="text-red-500 text-sm">{errors.stateId}</p>
+                  <p className="text-red-500 text-sm">{errors.stateId}</p>
                 )}
               </div>
 
@@ -541,7 +545,7 @@ function AddAccount() {
                   ))}
                 </select>
                 {errors.countryId && (
-                    <p className="text-red-500 text-sm">{errors.countryId}</p>
+                  <p className="text-red-500 text-sm">{errors.countryId}</p>
                 )}
               </div>
             </div>
@@ -551,7 +555,7 @@ function AddAccount() {
               className="w-full bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-75"
               disabled={loading}
             >
-              {loading ? 'Saving...' : 'Save'}
+              {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </div>

@@ -4,11 +4,11 @@ import { jwtDecode } from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function CreateTask({ opportunityId, onClose }) {
+function CreateContactTask({ contactId, onClose }) {
   const [tasks, setTasks] = useState({
     name: "",
-    type: "Opportunity",
-    entityId: opportunityId,
+    type: "Contact",
+    entityId: contactId,
     activityTypeId: "",
     description: "",
     outcomeId: "",
@@ -20,7 +20,6 @@ function CreateTask({ opportunityId, onClose }) {
 
   const [tableData, setTableData] = useState([]);
   const [users, setUsers] = useState([]);
-  const [opportunityName, setOpportunityName] = useState("");
 
   const outcomeTypes =
     tableData.find((item) => item.name === "Outcomes")?.referenceItems || [];
@@ -32,7 +31,7 @@ function CreateTask({ opportunityId, onClose }) {
   useEffect(() => {
     fetchTableData();
     fetchUsers();
-    fetchOpportunityName();
+    fetchContactData();
     fetchCurrentUser();
   }, []);
 
@@ -72,27 +71,25 @@ function CreateTask({ opportunityId, onClose }) {
     }
   };
 
-  const fetchOpportunityName = async () => {
+  const fetchContactData = async () => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        `https://grms-dev.gdinexus.com:49181/api/v1/marketing/Opportunity/one/${opportunityId}`,
+        `https://grms-dev.gdinexus.com:49181/api/v1/marketing/Account/contact/one/${contactId}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          headers: { Authorization: `Bearer ${token}` }
         }
       );
-      const opportunityData = response.data?.data || response.data;
-      setOpportunityName(opportunityData.name);
-      setTasks((prev) => ({
-        ...prev,
-        name: `Task for ${opportunityData.name}`
-      }));
-      // console.log("haa", opportunityData);
+
+      const contactData = response.data?.data || response.data;
+      setTasks({
+        
+      })
+      
+      console.log("ajja", response.data.data);
     } catch (error) {
-      console.error("Error fetching opportunity details: error");
-      toast.error("Failed to load opportunity details");
+      console.error("Error fetching contact data:", error);
+      setErrors({ fetch: "Failed to fetch contact data." });
     }
   };
 
@@ -374,4 +371,4 @@ function CreateTask({ opportunityId, onClose }) {
   );
 }
 
-export default CreateTask;
+export default CreateContactTask;
