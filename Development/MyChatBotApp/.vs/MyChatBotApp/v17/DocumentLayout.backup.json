@@ -1,0 +1,331 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\GDI Bot\\MyChatBotApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\backend\\chatbotbackendapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:backend\\chatbotbackendapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\frontend\\crm-chatbot-frontend\\src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:frontend\\crm-chatbot-frontend\\src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\frontend\\crm-chatbot-frontend\\src\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:frontend\\crm-chatbot-frontend\\src\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\backend\\customernameextractor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:backend\\customernameextractor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\crm_data.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:crm_data.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\backend\\meetingscheduler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:backend\\meetingscheduler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\backend\\crmhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:backend\\crmhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\mychatbotapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:mychatbotapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\frontend\\crm-chatbot-frontend\\src\\components\\chatbotui.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:frontend\\crm-chatbot-frontend\\src\\components\\chatbotui.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\frontend\\crm-chatbot-frontend\\public\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:frontend\\crm-chatbot-frontend\\public\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\backend\\salesreporthandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:backend\\salesreporthandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\frontend\\crm-chatbot-frontend\\src\\components\\floatingbot.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:frontend\\crm-chatbot-frontend\\src\\components\\floatingbot.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\frontend\\crm-chatbot-frontend\\src\\components\\message.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:frontend\\crm-chatbot-frontend\\src\\components\\message.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\frontend\\crm-chatbot-frontend\\src\\components\\styles\\chatbot.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:frontend\\crm-chatbot-frontend\\src\\components\\styles\\chatbot.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\backend\\leadmanagementhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:backend\\leadmanagementhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\backend\\advancedfeatureshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:backend\\advancedfeatureshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\backend\\admintaskshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:backend\\admintaskshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|d:\\gdi bot\\mychatbotapp\\frontend\\crm-chatbot-frontend\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5E4D3A53-5A96-4F87-BD60-9AEC1838DA62}|MyChatBotApp.csproj|solutionrelative:frontend\\crm-chatbot-frontend\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Message.js",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\components\\Message.js",
+              "RelativeDocumentMoniker": "Frontend\\crm-chatbot-frontend\\src\\components\\Message.js",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\components\\Message.js",
+              "RelativeToolTip": "Frontend\\crm-chatbot-frontend\\src\\components\\Message.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-03-06T11:11:30.236Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "App.js",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\App.js",
+              "RelativeDocumentMoniker": "Frontend\\crm-chatbot-frontend\\src\\App.js",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\App.js",
+              "RelativeToolTip": "Frontend\\crm-chatbot-frontend\\src\\App.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-03-06T11:12:08.276Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "index.js",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\index.js",
+              "RelativeDocumentMoniker": "Frontend\\crm-chatbot-frontend\\src\\index.js",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\index.js",
+              "RelativeToolTip": "Frontend\\crm-chatbot-frontend\\src\\index.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-03-12T11:38:39.886Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ChatbotBackendAPI.cs",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Backend\\ChatbotBackendAPI.cs",
+              "RelativeDocumentMoniker": "Backend\\ChatbotBackendAPI.cs",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Backend\\ChatbotBackendAPI.cs",
+              "RelativeToolTip": "Backend\\ChatbotBackendAPI.cs",
+              "ViewState": "AgIAAIIAAAAAAAAAAAAcwIMAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-05T14:26:44.718Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CustomerNameExtractor.cs",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Backend\\CustomerNameExtractor.cs",
+              "RelativeDocumentMoniker": "Backend\\CustomerNameExtractor.cs",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Backend\\CustomerNameExtractor.cs",
+              "RelativeToolTip": "Backend\\CustomerNameExtractor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T10:52:53.501Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "crm_data.json",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\crm_data.json",
+              "RelativeDocumentMoniker": "crm_data.json",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\crm_data.json",
+              "RelativeToolTip": "crm_data.json",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAiwAcAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-03-06T10:26:43.99Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MeetingScheduler.cs",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Backend\\MeetingScheduler.cs",
+              "RelativeDocumentMoniker": "Backend\\MeetingScheduler.cs",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Backend\\MeetingScheduler.cs",
+              "RelativeToolTip": "Backend\\MeetingScheduler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-06T19:50:18.434Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-03-12T06:09:11.139Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CRMHandler.cs",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Backend\\CRMHandler.cs",
+              "RelativeDocumentMoniker": "Backend\\CRMHandler.cs",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Backend\\CRMHandler.cs",
+              "RelativeToolTip": "Backend\\CRMHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-06T19:47:25.643Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MyChatBotApp.csproj",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\MyChatBotApp.csproj",
+              "RelativeDocumentMoniker": "MyChatBotApp.csproj",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\MyChatBotApp.csproj",
+              "RelativeToolTip": "MyChatBotApp.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAYwBEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-03-05T14:36:44.161Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ChatbotUI.js",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\components\\ChatbotUI.js",
+              "RelativeDocumentMoniker": "Frontend\\crm-chatbot-frontend\\src\\components\\ChatbotUI.js",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\components\\ChatbotUI.js",
+              "RelativeToolTip": "Frontend\\crm-chatbot-frontend\\src\\components\\ChatbotUI.js",
+              "ViewState": "AgIAACcAAAAAAAAAAAAQwDYAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-03-06T11:11:08.056Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "FloatingBot.js",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\components\\FloatingBot.js",
+              "RelativeDocumentMoniker": "Frontend\\crm-chatbot-frontend\\src\\components\\FloatingBot.js",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\components\\FloatingBot.js",
+              "RelativeToolTip": "Frontend\\crm-chatbot-frontend\\src\\components\\FloatingBot.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-03-06T11:09:47.47Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "SalesReportHandler.cs",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Backend\\SalesReportHandler.cs",
+              "RelativeDocumentMoniker": "Backend\\SalesReportHandler.cs",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Backend\\SalesReportHandler.cs",
+              "RelativeToolTip": "Backend\\SalesReportHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-06T19:52:29.138Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "index.html",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\public\\index.html",
+              "RelativeDocumentMoniker": "Frontend\\crm-chatbot-frontend\\public\\index.html",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\public\\index.html",
+              "RelativeToolTip": "Frontend\\crm-chatbot-frontend\\public\\index.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-03-07T08:04:44.811Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "package.json",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\package.json",
+              "RelativeDocumentMoniker": "Frontend\\crm-chatbot-frontend\\package.json",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\package.json",
+              "RelativeToolTip": "Frontend\\crm-chatbot-frontend\\package.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-03-06T11:03:55.145Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "chatbot.css",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\components\\styles\\chatbot.css",
+              "RelativeDocumentMoniker": "Frontend\\crm-chatbot-frontend\\src\\components\\styles\\chatbot.css",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Frontend\\crm-chatbot-frontend\\src\\components\\styles\\chatbot.css",
+              "RelativeToolTip": "Frontend\\crm-chatbot-frontend\\src\\components\\styles\\chatbot.css",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAAAF4AAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-03-06T11:12:38.41Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "AdminTasksHandler.cs",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Backend\\AdminTasksHandler.cs",
+              "RelativeDocumentMoniker": "Backend\\AdminTasksHandler.cs",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Backend\\AdminTasksHandler.cs",
+              "RelativeToolTip": "Backend\\AdminTasksHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-06T17:35:06.338Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "AdvancedFeaturesHandler.cs",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Backend\\AdvancedFeaturesHandler.cs",
+              "RelativeDocumentMoniker": "Backend\\AdvancedFeaturesHandler.cs",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Backend\\AdvancedFeaturesHandler.cs",
+              "RelativeToolTip": "Backend\\AdvancedFeaturesHandler.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-06T17:35:34.157Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "LeadManagementHandler.cs",
+              "DocumentMoniker": "D:\\GDI Bot\\MyChatBotApp\\Backend\\LeadManagementHandler.cs",
+              "RelativeDocumentMoniker": "Backend\\LeadManagementHandler.cs",
+              "ToolTip": "D:\\GDI Bot\\MyChatBotApp\\Backend\\LeadManagementHandler.cs",
+              "RelativeToolTip": "Backend\\LeadManagementHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-06T17:36:09.839Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

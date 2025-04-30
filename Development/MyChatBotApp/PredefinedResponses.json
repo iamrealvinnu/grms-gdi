@@ -1,0 +1,50 @@
+{
+    "commands": [
+        {
+            "action": "greet",
+            "pattern": "^(hi|hello|hey|greet)$",
+            "responses": [
+                "Hello{timeOfDay}, I can help with 'find John Doe' or 'schedule, Team Sync, 2025-03-25, Laura'. Type 'help' for commands!{mentions}",
+                "Hi there{timeOfDay}! Try 'find John Doe' or 'schedule, Team Sync, 2025-03-25, Laura'. Type 'help' for more!{mentions}"
+            ]
+        },
+        {
+            "action": "help",
+            "pattern": "^(help|commands)$",
+            "responses": [
+                "Available commands:\\n- Find: 'find John Doe'\\n- Schedule: 'schedule, Team Sync, 2025-03-25, Laura'\\n- Admin: 'admin, list pending tasks'\\n- Advanced: 'advanced, list campaigns'\\n- Lead: 'lead, add new'\\n- Insights: 'insights'\\n- Report: 'report for today'\\n- Opportunity: 'opportunity, add new' or 'opportunity, list opportunities'\\n- Predict Lead: 'predict lead John Doe'\\nTry one!{mentions}"
+            ]
+        },
+        {
+            "action": "thank",
+            "pattern": "^(thanks|thank you|thx)$",
+            "responses": [
+                "You’re welcome! How can I assist you further?{mentions}",
+                "My pleasure! What’s next?{mentions}"
+            ]
+        },
+        {
+            "action": "good",
+            "pattern": "^(good|great|awesome|nice)$",
+            "responses": [
+                "Thank you! How can I assist you further?{mentions}",
+                "Glad you think so! What’s next?{mentions}"
+            ]
+        },
+        {
+            "action": "bad",
+            "pattern": "^(bad|terrible|awful|sucks)$",
+            "responses": [
+                "I’m sorry to hear that. I’m here to help—please let me know what you need!{mentions}",
+                "Apologies for that. Let’s fix it—what do you need?{mentions}"
+            ]
+        },
+        {
+            "action": "who_made_you",
+            "pattern": "^who made you$",
+            "responses": [
+                "I’m CRM Assistant, created by the GDI Bot team! How can I help you today?{mentions}"
+            ]
+        }
+    ]
+}

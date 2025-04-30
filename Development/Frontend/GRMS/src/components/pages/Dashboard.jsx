@@ -10,12 +10,16 @@
 import React, { useEffect, useState } from 'react'; // Importing React and hooks for state & effects
 import withAuth from '../withAuth'; // Higher-order component (HOC) for authentication
 import { jwtDecode } from 'jwt-decode'; // Library for decoding JWT tokens
+import { useNavigate } from 'react-router-dom';
+import ChatbotUI from "../CHATBOT/ChatbotUI";
 
 const Dashboard = () => {
   // State variables for storing user name, date, and day
   const [userName, setUserName] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [currentDay, setCurrentDay] = useState('');
+  const [isChatOpen,setIsChatOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Retrieve the JWT token from local storage
@@ -25,8 +29,6 @@ const Dashboard = () => {
       try {
         // Decode the token to extract user information
         const decodedToken = jwtDecode(token);
-        console.log('alal',decodedToken)
-
         // Extract the given name from the token, fallback to "User" if not found
         const name = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"] || "User";
         setUserName(name);
@@ -43,8 +45,10 @@ const Dashboard = () => {
     setCurrentDay(today.toLocaleDateString('en-US', { weekday: 'long' }));
   }, []); // Empty dependency array ensures this runs only once when component mounts
 
+  const toggleChat = () => setIsChatOpen(!isChatOpen);
+
   return (
-    <div className="p-5">
+    <div className="p-5 relative">
       {/* Welcome Message Section */}
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold">Welcome, {userName}</h1>
@@ -55,14 +59,16 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         
         {/* Total Customers Card */}
-        <div className="bg-orange-500 text-white shadow-md rounded-lg p-5 text-center cursor-pointer hover:shadow-lg transition">
-          <h5 className="text-lg font-semibold">Total Customers</h5>
+        <div className="bg-orange-500 text-white shadow-md rounded-lg p-5 text-center cursor-pointer hover:shadow-lg transition"
+        >
+          <h5 className="text-lg font-semibold">Total Leads</h5>
           <p className="text-2xl font-bold">20</p> {/* Static data, can be replaced with API data */}
         </div>
 
         {/* Leads Card */}
-        <div className="bg-violet-500 text-white shadow-md rounded-lg p-5 text-center cursor-pointer hover:shadow-lg transition">
-          <h5 className="text-lg font-semibold">Leads</h5>
+        <div className="bg-violet-500 text-white shadow-md rounded-lg p-5 text-center cursor-pointer hover:shadow-lg transition"
+        >
+          <h5 className="text-lg font-semibold">Customers</h5>
           <p className="text-2xl font-bold">5</p>
         </div>
 
@@ -77,6 +83,11 @@ const Dashboard = () => {
           <p className="text-2xl font-bold">8</p>
         </div>
         
+      </div>
+
+       {/* Chatbot positioned at bottom-right */}
+       <div className="fixed bottom-4 right-4 z-50">
+        <ChatbotUI closeChat={toggleChat} isChatOpen={isChatOpen} userName={userName} />
       </div>
     </div>
   );

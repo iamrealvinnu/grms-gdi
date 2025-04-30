@@ -8,11 +8,13 @@
 
 // Import necessary dependencies
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import SocialButtons from "./SocialButtons";
+import { jwtDecode } from 'jwt-decode'; // Library for decoding JWT tokens
 
 // Define constants for login attempts
 const MAX_ATTEMPTS = 5; // Maximum allowed failed login attempts
@@ -37,7 +39,7 @@ const Home = () => {
 
     if (storedAttempts >= MAX_ATTEMPTS && lockTime) {
       const timeElapsed = Date.now() - parseInt(lockTime);
-      
+
       if (timeElapsed < LOCKOUT_DURATION) {
         setIsLocked(true);
         setTimeout(() => {
@@ -91,7 +93,7 @@ const Home = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return; // Stop submission if validation fails
 
     if (isLocked) {
@@ -108,7 +110,7 @@ const Home = () => {
         "https://grms-dev.gdinexus.com:49181/api/v1/Auth/authorize",
         {
           userName: formData.userName,
-          password: formData.password,
+          password: formData.password
         }
       );
 
@@ -116,20 +118,31 @@ const Home = () => {
       if (response.data.success) {
         const { accessToken, refreshToken } = response.data.data;
 
+        const decoded = jwtDecode(accessToken);
+
+        const isFirstLogin = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authentication"] === "1";
+
         // Store tokens securely
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("isFirstLogin", isFirstLogin ? "true" : "false");
 
         toast.success("Login Successfully!");
 
         // Navigate to dashboard after successful login
-        navigate("/dashboard", { replace: true });
-        window.location.href = "/dashboard"; // Full reload if necessary
+        if (isFirstLogin) {
+          navigate("/changePassword", { replace: true });
+        } else {
+          navigate("/dashboard", { replace: true });
+          window.location.href = "/dashboard"; // Full reload if necessary
+        }
       } else {
         handleLoginError(response.data.message);
       }
     } catch (error) {
-      handleLoginError(error.response?.data?.message || "Login failed. Try again.");
+      handleLoginError(
+        error.response?.data?.message || "Login failed. Try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -169,7 +182,10 @@ const Home = () => {
 
       {/* Login form */}
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        <label> UserName</label>
+        <label htmlFor="email">
+          {" "}
+          UserName <span>*</span>
+        </label>
         <input
           type="email"
           name="userName"
@@ -179,9 +195,14 @@ const Home = () => {
           onChange={handleChange}
           disabled={isLocked}
         />
-        {errors.userName && <p className="text-red-500 text-sm">{errors.userName}</p>}
+        {errors.userName && (
+          <p className="text-red-500 text-sm">{errors.userName}</p>
+        )}
 
-        <label> Password</label>
+        <label htmlFor="password">
+          {" "}
+          Password <span>*</span>
+        </label>
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
@@ -205,6 +226,11 @@ const Home = () => {
           <p className="text-red-500 text-sm">{errors.password}</p>
         )}
 
+        {/* Forgot Password Link */}
+        <p className="text-sm text-blue-600 hover:underline cursor-pointer mt-1 text-right">
+          <a href="/forgot-password">Forgot - Password?</a>
+        </p>
+
         <button
           type="submit"
           className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-75"
@@ -220,18 +246,7 @@ const Home = () => {
         <span className="mx-2 text-gray-500 ">OR</span>
         <hr className="flex-grow border-t border-gray-300" />
       </div>
-
-      {/* Social login buttons */}
-      <button className="bg-gray-200 p-3 rounded-lg flex items-center justify-center gap-5 hover:opacity-90 disabled:opacity-70 w-full mb-2">
-        <img src="https://img.icons8.com/color/24/000000/google-logo.png" alt="Google" />
-        Sign in with Google
-      </button>
-
-      <button className="bg-blue-600 text-white p-3 rounded-lg flex items-center justify-center gap-5 hover:opacity-90 w-full">
-        <img src="https://img.icons8.com/color/24/000000/microsoft.png" alt="Microsoft" />
-        Sign in with Microsoft
-      </button>
-
+      <SocialButtons />
       <ToastContainer />
     </div>
   );

@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  frontend:
+    image: krishna7708/gdigrmsfrontend:v1
+    container_name: grms-frontend
+    ports:
+      - "59181:59181"  # Match the port inside the container
+    volumes:
+    - "D:/Second_Pro_GRMS/GDI_Nexus_Relationship_Management_System/Development/Frontend/GRMS/certs:/etc/nginx/ssl:ro"
+    restart: always
+    networks:
+      - grms-network
+
+networks:
+  grms-network:
+    driver: bridge
