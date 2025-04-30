@@ -425,7 +425,7 @@ function AddLead() {
                   Mobile Number <span className="text-red-500">*</span>
                 </label>
                 <input
-                  type="tel"
+                  type="number"
                   name="phoneNumber"
                   placeholder="Phone Number"
                   className="w-full border-2 border-dashed border-gray-400 rounded p-2"

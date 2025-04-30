@@ -4,28 +4,7 @@ function SocialButtons() {
 
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   // console.log("Google Client ID:", googleClientId);
-  
-
-  // const handleExternalLogin = (provider) => {
-  //   if (provider === "google") {
-  //     const redirectUri = encodeURIComponent("http://localhost:5173/google/callback"); // Must match Google Console
-  //     const googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=email%20profile&access_type=offline&prompt=consent`;
-  
-  //     console.log("Redirecting to:", googleAuthUrl); // Debugging
-  //     window.location.href = googleAuthUrl;
-  //   }
-  // };
-  
-
-  // const handleExternalLogin = (provider) => {
-  //   if (provider === "google") {
-  //     const redirectUri = "http://localhost:5173/google/callback"; // Callback URL
-  //     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=email%20profile&access_type=offline&prompt=consent`;
     
-  //     window.location.href = googleAuthUrl;
-  //   }
-  // };
-  
   const handleExternalLogin = (provider) => {
     let authUrl = "";
 

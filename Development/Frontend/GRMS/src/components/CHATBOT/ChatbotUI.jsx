@@ -4,6 +4,7 @@ import { IoMdSend } from "react-icons/io";
 import { FaTimes, FaMicrophone } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import Message from "./Message";
+import { jwtDecode } from "jwt-decode";
 import "./styles/chatbot.css";
 
 const ChatbotUI = ({ closeChat, isChatOpen }) => {
@@ -12,6 +13,7 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
     const [isListening, setIsListening] = useState(false);
     const [recognition, setRecognition] = useState(null);
     const [isTyping, setIsTyping] = useState(false);
+    const [currentUserId,setCurrentUserId] = useState(null);
     const chatEndRef = useRef(null);
 
     useEffect(() => {
@@ -52,6 +54,23 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                const name =
+                    decodedToken[
+                        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+                    ] || "User";
+                setCurrentUserId(name);
+            } catch (error) {
+                console.error("Error decoding token:", error);
+            }
+        }
+    }, []);
+    
+
     const toggleSpeechRecognition = () => {
         if (!recognition) {
             setMessages((prev) => [
@@ -72,39 +91,64 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
 
     const sendMessage = async (messageToSend = input) => {
         if (!messageToSend.trim()) return;
-
+    
         setMessages((prev) => [...prev, { sender: "user", text: messageToSend }]);
         setInput("");
         setIsTyping(true);
-
+    
         try {
-            const response = await axios.post("http://localhost:51644/chat", {
-                UserId: "user123",
-                Message: messageToSend,
-            });
-
-            const messageId = response.data.MessageId || response.data.messageId;
-            const reply = response.data.Reply || response.data.reply;
-
-            if (!reply) {
+            const token = localStorage.getItem("accessToken");
+    
+            const response = await axios.post(
+                "https://grms-dev.gdinexus.com:49181/api/v1/intelligence/Chat/session",
+                {
+                    request: messageToSend,
+                    userId: currentUserId,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+    
+            const reply = response.data.data?.response;
+            const messageId = response.data.data?.id;
+    
+            if (!reply || typeof reply !== "string") {
                 setMessages((prev) => [
                     ...prev,
-                    { sender: "bot", text: "Error: No response from backend", showFeedback: true, messageId: messageId || Date.now().toString() },
+                    {
+                        sender: "bot",
+                        text: "No response received from the assistant.",
+                        showFeedback: true,
+                        messageId: messageId || Date.now().toString(),
+                    },
                 ]);
                 return;
             }
-
+    
             setTimeout(() => {
                 setMessages((prev) => [
                     ...prev,
-                    { sender: "bot", text: reply, showFeedback: true, messageId: messageId },
+                    {
+                        sender: "bot",
+                        text: reply,
+                        showFeedback: true,
+                        messageId: messageId,
+                    },
                 ]);
                 setIsTyping(false);
             }, 1000);
         } catch (error) {
             setMessages((prev) => [
                 ...prev,
-                { sender: "bot", text: "Error: " + (error.message || "Unknown error"), showFeedback: true, messageId: Date.now().toString() },
+                {
+                    sender: "bot",
+                    text: "Error: " + (error.message || "Unknown error"),
+                    showFeedback: true,
+                    messageId: Date.now().toString(),
+                },
             ]);
             setIsTyping(false);
         }

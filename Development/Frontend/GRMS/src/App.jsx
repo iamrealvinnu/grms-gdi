@@ -34,10 +34,15 @@ import AddLead from "./components/Leads/AddLead";
 import GetAllAccount from "./components/Account/GetAllAccount";
 import AddAccount from "./components/Account/AddAccount";
 import UpdateCampaign from "./components/Campaign/UpdateCampaign";
-import GetAllActivities from "./components/Leads/Activities/GetAllActivities";
+import GetAllActivities from "./components/Activities/GetAllActivities";
 import UpdateOpportunity from "./components/Leads/Opportunity/UpdateOpportunity";
 import EditAccount from "./components/Account/EditAccount";
 import UpdateContact from "./components/Leads/Customers/UpdateContact";
+import GetTask from "./components/Activities/Task/GetTask";
+import CreateTask from "./components/Activities/Task/CreateTask";
+import CallCreate from "./components/Activities/Call/CallCreate";
+import MailCreate from "./components/Activities/Email/MailCreate";
+import MeetingCreate from "./components/Activities/Meeting/MeetingCreate";
 
 function App() {
   return (
@@ -72,7 +77,7 @@ function App() {
         {/* Customers Routes */}
         <Route path="/getCustomerList" element={<GetListCustomers />} />
         <Route path="/createCustomerList" element={<CreateCustomer />} />
-        <Route path="/updateCustomer/:customerId" element={<UpdateContact />} />
+        <Route path="/updateCustomer/:contactId" element={<UpdateContact />} />
 
 
         {/* Marketing Management Routes */}
@@ -87,6 +92,15 @@ function App() {
 
         {/* Activities Routes */}
         <Route path="/getAllactivities" element={<GetAllActivities />} />
+
+        {/* Task Routes */}
+        <Route path="/getAllTask" element={<GetTask />} />
+        <Route path="/createTask" element={<CreateTask />} />
+
+        {/* Call Routes */}
+        <Route path="/createCall" element={<CallCreate />} />
+        <Route path="/createMail" element={<MailCreate />} />
+        <Route path="/createMeeting" element={<MeetingCreate />} />
 
         
 

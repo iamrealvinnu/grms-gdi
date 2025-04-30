@@ -10,6 +10,10 @@ function GetAllOpportunity() {
   const [stages, setStages] = useState({});
   const [leads, setLeads] = useState({});
   const navigate = useNavigate();
+  const [filteredOpportunities,setFilteredOpportunities] = useState([]);
+  const [searchText,setSearchText] = useState("");
+  const [sortField,setSortField] = useState({ key: null,direction:"asc"});
+
 
   const fetchLeads = async () => {
     try {
@@ -49,7 +53,8 @@ function GetAllOpportunity() {
           }
         );
         setOpportunities(response.data.data || []);
-        // console.log("Opportunities:", response.data.data);
+        setFilteredOpportunities(response.data.data || []);
+        console.log("Opportunities:", response.data.data);
       } catch (error) {
         console.error("Error fetching opportunities:", error);
       }
@@ -96,6 +101,61 @@ function GetAllOpportunity() {
 
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
+  useEffect(() =>{
+    handleFilterSortSearch();
+  },[searchText.sortField,opportunities]);
+
+  const handleFilterSortSearch = () => {
+    let updated = [...opportunities];
+
+    if (searchText) {
+      updated = updated.filter((opportunity) => {
+        const lead = leads[opportunity.leadId] || { firstName: "", lastName: "" };
+        const leadName = `${lead.firstName} ${lead.lastName}`.toLowerCase();
+        const opportunityName = opportunity.name?.toLowerCase() || "";
+        return (
+          leadName.includes(searchText.toLowerCase()) ||
+          opportunityName.includes(searchText.toLowerCase())
+        );
+      });
+    }
+
+    if (sortField.key) {
+      updated.sort((a, b) => {
+        let aValue = a[sortField.key];
+        let bValue = b[sortField.key];
+
+        if (sortField.key === "leadName") {
+          const leadA = leads[a.leadId] || { firstName: "", lastName: "" };
+          const leadB = leads[b.leadId] || { firstName: "", lastName: "" };
+          aValue = `${leadA.firstName} ${leadA.lastName}`;
+          bValue = `${leadB.firstName} ${leadB.lastName}`;
+        }
+
+        if (typeof aValue === "string") aValue = aValue.toLowerCase();
+        if (typeof bValue === "string") bValue = bValue.toLowerCase();
+
+        if (aValue < bValue) return sortField.direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return sortField.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+
+    setFilteredOpportunities(updated);
+  };
+
+  useEffect(() => {
+    handleFilterSortSearch();
+  }, [searchText, sortField, opportunities, leads]);
+
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortField.key === key && sortField.direction === "asc") {
+      direction = "desc";
+    }
+    setSortField({ key, direction });
+  };
+
   return (
     <div className="p-5">
       {/* <div className="flex justify-end mb-4">
@@ -106,6 +166,17 @@ function GetAllOpportunity() {
           <PlusCircle size={20} /> Create Opportunity
         </Link>
       </div> */}
+      
+      {/* Search and Filter */}
+      <div className="flex flex-wrap gap-4 mb-4">
+        <input
+          type="text"
+          placeholder="Search by Lead or Opportunity Name"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          className="border px-3 py-2 rounded-lg w-64"
+        />
+        </div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
@@ -114,16 +185,16 @@ function GetAllOpportunity() {
               <th className="py-2 px-4 border-b text-left font-semibold">
                 S.no
               </th>
-              <th className="py-2 px-4 border-b text-left font-semibold">
+              <th className="py-2 px-4 border-b text-left font-semibold cursor-pointer" onClick={() => requestSort("leadName")}>
                 Lead Name
               </th>
-              <th className="py-2 px-4 border-b text-left font-semibold">
+              <th className="py-2 px-4 border-b text-left font-semibold cursor-pointer" onClick={() => requestSort("name")}>
                 Opportunity Name
               </th>
               <th className="py-2 px-4 border-b text-left font-semibold">
                 Opportunity Description
               </th>
-              <th className="py-2 px-4 border-b text-left font-semibold">
+              <th className="py-2 px-4 border-b text-left font-semibold cursor-pointer" onClick={() => requestSort("estimatedValue")}>
                 Opportunity Estimated Value
               </th>
               <th className="py-2 px-4 border-b text-left font-semibold">
@@ -142,7 +213,7 @@ function GetAllOpportunity() {
           </thead>
 
           <tbody>
-            {opportunities.map((opportunity, index) => {
+            {filteredOpportunities.map((opportunity, index) => {
               const lead = leads[opportunity.leadId] || {
                 firstName: "",
                 lastName: ""
