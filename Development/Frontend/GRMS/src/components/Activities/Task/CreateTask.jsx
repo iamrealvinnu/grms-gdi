@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 function CreateTask({ opportunityId, onClose }) {
   const [tasks, setTasks] = useState({
     name: "",
-    type: "Opportunity",
+    type: "Task",
     entityId: opportunityId,
     activityTypeId: "",
     description: "",
@@ -20,7 +20,7 @@ function CreateTask({ opportunityId, onClose }) {
 
   const [tableData, setTableData] = useState([]);
   const [users, setUsers] = useState([]);
-  const [opportunityName, setOpportunityName] = useState("");
+  // const [opportunityName, setOpportunityName] = useState("");
 
   const outcomeTypes =
     tableData.find((item) => item.name === "Outcomes")?.referenceItems || [];
@@ -32,7 +32,7 @@ function CreateTask({ opportunityId, onClose }) {
   useEffect(() => {
     fetchTableData();
     fetchUsers();
-    fetchOpportunityName();
+    // fetchOpportunityName();
     fetchCurrentUser();
   }, []);
 
@@ -72,29 +72,29 @@ function CreateTask({ opportunityId, onClose }) {
     }
   };
 
-  const fetchOpportunityName = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const response = await axios.get(
-        `https://grms-dev.gdinexus.com:49181/api/v1/marketing/Opportunity/one/${opportunityId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-      const opportunityData = response.data?.data || response.data;
-      setOpportunityName(opportunityData.name);
-      setTasks((prev) => ({
-        ...prev,
-        name: `Task for ${opportunityData.name}`
-      }));
-      // console.log("haa", opportunityData);
-    } catch (error) {
-      console.error("Error fetching opportunity details: error");
-      toast.error("Failed to load opportunity details");
-    }
-  };
+  // const fetchOpportunityName = async () => {
+  //   try {
+  //     const token = localStorage.getItem("accessToken");
+  //     const response = await axios.get(
+  //       `https://grms-dev.gdinexus.com:49181/api/v1/marketing/Opportunity/one/${opportunityId}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`
+  //         }
+  //       }
+  //     );
+  //     const opportunityData = response.data?.data || response.data;
+  //     setOpportunityName(opportunityData.name);
+  //     setTasks((prev) => ({
+  //       ...prev,
+  //       name: `Task for ${opportunityData.name}`
+  //     }));
+  //     // console.log("haa", opportunityData);
+  //   } catch (error) {
+  //     console.error("Error fetching opportunity details: error");
+  //     toast.error("Failed to load opportunity details");
+  //   }
+  // };
 
   const fetchCurrentUser = async () => {
     const token = localStorage.getItem("accessToken");
@@ -226,7 +226,7 @@ function CreateTask({ opportunityId, onClose }) {
                 </select>
               </div>
 
-              <div className="w-full md:w-[48%]">
+              {/* <div className="w-full md:w-[48%]">
                 <label className="block text-gray-700 font-medium mb-1">
                   Related To:
                 </label>
@@ -234,7 +234,7 @@ function CreateTask({ opportunityId, onClose }) {
                   <input
                     type="text"
                     name="entityId"
-                    value={opportunityName || tasks.entityId}
+                    value={ tasks.entityId}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                     placeholder="Related to what?"
@@ -246,12 +246,12 @@ function CreateTask({ opportunityId, onClose }) {
                     value={tasks.entityId} // Still keep the UUID in a hidden field
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div>
               <label className="block text-gray-700 font-medium">
-                Opportunity Name:
+                Subject:
               </label>
               <input
                 type="text"

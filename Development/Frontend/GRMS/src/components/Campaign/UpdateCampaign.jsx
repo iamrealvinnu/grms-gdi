@@ -26,7 +26,7 @@ function UpdateCampaign() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        `https://grms-dev.gdinexus.com:49181/api/v1/marketing/Campaign/one/${campaignId}`,
+        `${import.meta.env.VITE_API_URL}/marketing/Campaign/one/${campaignId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ function UpdateCampaign() {
         changedById: formMarketingData.changedById
       };
       const response = await axios.put(
-        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Campaign/update",
+        `${import.meta.env.VITE_API_URL}/marketing/Campaign/update`,
         updatedData,
         {
           headers: {

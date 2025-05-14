@@ -146,7 +146,7 @@ function CreateUser() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -177,7 +177,7 @@ function CreateUser() {
       };
 
       const response = await axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/User/create",
+        `${import.meta.env.VITE_API_URL}/v1/User/create`,
         formattedData,
         {
           headers: {

@@ -1,97 +1,47 @@
-// import axios from "axios";
-// import React, { useEffect, useState } from "react";
-// // import { FaTasks } from "react-icons/fa";
-// // import { IoCall } from "react-icons/io5";
-// // import { MdEmail } from "react-icons/md";
-// // import { FaPeopleGroup } from "react-icons/fa6";
-// // import { IoSettings } from "react-icons/io5";
-// // import { useNavigate } from "react-router-dom";
-
-// function GetAllActivities() {
-//   // const navigate = useNavigate();
-
-//   // const handleTask = () => {
-//   //   navigate("/createTask");
-//   // };
-
-//   const [activities, setActivities] = useState("");
-
-//   const fetchActivities = async () => {
-//     try {
-//       const token = localStorage.getItem("accessToken");
-//       const response = await axios.get(
-//         "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Activity/all/true",
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`
-//           }
-//         }
-//       );
-//       setActivities(response.data.data);
-//       console.log("fetched data:", response.data.data);
-//     } catch (error) {
-//       console.log("fetch datas: ", error);
-//       toast.error("Fetching activities error");
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchActivities();
-//   }, []);
-
-//   return (
-//     <div className="p-4">
-//       {/* <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-//         <div className="grid grid-cols-2 sm:flex sm:items-center sm:gap-8 gap-4 w-full sm:w-auto">
-//           <div
-//             className="p-3 bg-white border rounded shadow-md flex flex-col items-center cursor-pointer"
-//             onClick={handleTask}
-//           >
-//             <h2 className="text-center text-sm">Task</h2>
-//             <FaTasks className="size-6 sm:size-8 text-blue-500 hover:text-blue-700" />
-//           </div>
-
-//           <div className="p-3 bg-white border rounded shadow-md flex flex-col items-center cursor-pointer">
-//             <h2 className="text-center text-sm">Call</h2>
-//             <IoCall className="size-6 sm:size-8 text-green-500 hover:text-green-700" />
-//           </div>
-
-//           <div className="p-3 bg-white border rounded shadow-md flex flex-col items-center cursor-pointer">
-//             <h2 className="text-center text-sm">Email</h2>
-//             <MdEmail className="size-6 sm:size-8 text-yellow-500 hover:text-yellow-700" />
-//           </div>
-
-//           <div className="p-3 bg-white border rounded shadow-md flex flex-col items-center cursor-pointer">
-//             <h2 className="text-center text-sm">Meeting</h2>
-//             <FaPeopleGroup className="size-6 sm:size-8 text-purple-500 hover:text-purple-700" />
-//           </div>
-//         </div>
-
-//         <div className="p-3 bg-white border rounded shadow-md self-end sm:self-auto flex justify-center">
-//           <IoSettings className="size-6 sm:size-8 text-gray-600 hover:text-gray-800 transition-colors duration-200" />
-//         </div>
-//       </div> */}
-
-//       <div>
-//         <div className="mt-6">
-//           <h3 className="text-lg font-semibold">Upcoming Activities</h3>
-//         </div>
-//         <div>
-//           <h5>Tasks</h5>
-
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default GetAllActivities;
-
 import axios from "axios";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function GetAllActivities() {
-  const [activities, setActivities] = useState("");
+  const [activities, setActivities] = useState([]);
+  const [communications, setCommunications] = useState([]);
+  const navigate = useNavigate();
+  const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [outComes,setOutComes] = useState({});
+
+  const communicationTypes =
+      tableData.find((item) => item.name === "CommunicationTypes")?.referenceItems || [];  
+
+   // Fetch reference data
+   const fetchTableData = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      const referenceData = response.data?.data || response.data;
+      const outComesMap = {};
+      referenceData.forEach((reference) =>{
+        if (reference.name === "Outcomes") {
+          reference.referenceItems.forEach((item) => {
+            outComesMap[item.id] = item.code;
+          });
+        }
+      });
+      setOutComes(outComesMap);
+      setTableData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+    }
+  };
 
   const fetchActivities = async () => {
     try {
@@ -100,67 +50,224 @@ function GetAllActivities() {
         "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Activity/all/true",
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setActivities(response.data.data);
-      console.log("fetched data:", response.data.data);
+      console.log("Activities: ", response.data.data);
     } catch (error) {
-      console.log("fetch datas: ", error);
+      console.log("Fetching activities error: ", error);
       toast.error("Fetching activities error");
     }
   };
 
-  useEffect(() => {
-    fetchActivities();
-  }, []);
+  const fetchCommunications = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Communication/all/true",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setCommunications(response.data.data);
+      console.log("Communications: ", response.data.data);
+    } catch (error) {
+      console.log("Fetching communications error: ", error);
+      toast.error("Fetching communications error");
+    }
+  };
+
+useEffect(() => {
+  const fetchAllData = async () => {
+    await Promise.all([
+      fetchActivities(),
+      fetchCommunications(),
+      fetchTableData()
+    ]);
+    setLoading(false); // Now all data has been fetched
+  };
+
+  fetchAllData();
+}, []);
+
+
+  const handleTaskClick = (id) => {
+    navigate(`/updateTask/${id}`);
+  };
+
+  // Group communications by type
+  const getCommunicationsByType = (typeCode) => {
+    const type = communicationTypes.find((t) => t.code === typeCode);
+    if(!type) return [];
+    return communications.filter(comm => comm.typeId === type.id);
+  };
+
+  const getTypeName = (typeId) => {
+    const type = communicationTypes.find((t) => t.id === typeId);
+    return type ? type.code : "Unknown Type";
+  }
+
+if (loading) {
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <p>Loading...</p>
+    </div>
+  );
+}
+
 
   return (
     <div className="p-4">
-      <div>
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">Upcoming Activities</h3>
-          <div className="flex flex-wrap flex-col">
-            <div>
-              <h5>Task</h5>
-              {activities.length > 0 ? (
-                <div className="mt-4">
-                  {activities.map((activity, index) => (
-                    <div
-                      key={activity.id || index}
-                      className="p-4 mb-4 border rounded shadow-md bg-white"
-                    >
-                      <h4 className="font-bold text-md">{activity.name}</h4>
-                      <p>
-                        <strong>Type:</strong> {activity.type}
-                      </p>
-                      <p>
-                        <strong>Description:</strong> {activity.description}
-                      </p>
-                      <p>
-                        <strong>Notes:</strong> {activity.notes}
-                      </p>
-                      <p>
-                        <strong>Activity Date:</strong>{" "}
-                        {new Date(activity.activityDate).toLocaleString()}
-                      </p>
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold">Upcoming Activities</h3>
+        <div className="flex mt-4 flex-col space-y-6">
+          {/* Task Section */}
+          <div>
+            <h5 className="text-md font-medium mb-2">Task</h5>
+            {activities.length > 0 ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {activities.map((activity, index) => (
+                  <div
+                    key={activity.id || index}
+                    className="relative w-1/4 p-4 mb-4 border rounded shadow-md bg-white"
+                  >
+                    <div className="absolute top-2 right-2 flex space-x-2">
+                      <button onClick={() => handleTaskClick(activity.id)}>
+                        <FaEdit className="text-blue-500 hover:text-blue-700" />
+                      </button>
+                      <button onClick={() => console.log("Delete", activity)}>
+                        <FaTrash className="text-red-500 hover:text-red-700" />
+                      </button>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-600 mt-4">No activities found.</p>
+
+                    <h4 className="font-bold text-md mt-3">{activity.name}</h4>
+                    <p><strong>Type:</strong> {activity.type}</p>
+                    <p><strong>OutCome:</strong> {outComes[activity.outcomeId] || "N/A"}</p>
+                    <p><strong>Description:</strong> {activity.description}</p>
+                    <p>
+                      <strong>Activity Date:</strong>{" "}
+                      {new Date(activity.activityDate).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 mt-4">No activities found.</p>
+            )}
+          </div>
+
+          {/* Call Section */}
+          <div>
+            <h5 className="text-md font-medium mb-2">Call</h5>
+            {getCommunicationsByType("Phone").length > 0 ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {getCommunicationsByType("Phone").map((communication, index) => (
+                  <div
+                    key={communication.id || index}
+                    className="relative w-1/4 p-4 mb-4 border rounded shadow-md bg-white"
+                  >
+                    <div className="absolute top-2 right-2 flex space-x-2">
+                      <button >
+                        <FaEdit className="text-blue-500 hover:text-blue-700" />
+                      </button>
+                      <button >
+                        <FaTrash className="text-red-500 hover:text-red-700" />
+                      </button>
+                    </div>
+
+                    <h4 className="font-bold text-md mt-3">{communication.recipient}</h4>
+                    <p><strong>Type:</strong> {getTypeName(communication.typeId)}</p>
+                    <p><strong>Inbound:</strong>{" "}<span className={communication.inbound ? "text-green-600" : "text-red-600"}>
+                        {communication.inbound ? "Inbound" : "Outbound"}</span></p>
+                    <p><strong>Subject:</strong> {communication.subject}</p>
+                    <p>
+                      <strong>Date:</strong>{" "}
+                      {new Date(communication.initiationDate).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 mt-4">No Calls found.</p>
+            )}
+          </div>
+
+          {/* Meeting Sections */}
+          <div>
+            <h5 className="text-md font-medium mb-2">Meeting</h5>
+            {getCommunicationsByType("Online Meeting").length > 0 ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {getCommunicationsByType("Online Meeting").map((communication, index) => (
+                  <div
+                    key={communication.id || index}
+                    className="relative w-1/4 p-4 mb-4 border rounded shadow-md bg-white"
+                  >
+                    <div className="absolute top-2 right-2 flex space-x-2">
+                      <button >
+                        <FaEdit className="text-blue-500 hover:text-blue-700" />
+                      </button>
+                      <button >
+                        <FaTrash className="text-red-500 hover:text-red-700" />
+                      </button>
+                    </div>
+
+                    <h4 className="font-bold text-md mt-3">{communication.recipient}</h4>
+                    <p><strong>Type:</strong> {getTypeName(communication.typeId)}</p>
+                    <p><strong>Subject:</strong> {communication.subject}</p>
+                    <p>
+                      <strong>Date:</strong>{" "}
+                      {new Date(communication.initiationDate).toLocaleString()}
+                    </p>
+                    {communication.location && (
+                      <p><strong>Location:</strong> {communication.location}</p>
+                    )}
+                    {communication.duration && (
+                      <p><strong>Duration:</strong> {communication.duration} minutes</p>
+                    )}
+                    </div>
+                ))}
+                </div> 
+              ):(
+                <p className="text-gray-500">No meeting data available yet.</p>
               )}
-            </div>
-            <div>
-              <h5>Call</h5>
-            </div>
-            <div>
-              <h5>Meeting</h5>
-            </div>
-            <div>
-              <h5>Email</h5>
-            </div>
+          </div>
+
+           {/* Email Sections */}
+          <div>
+            <h5 className="text-md font-medium mb-2">Email</h5>
+            {getCommunicationsByType("Email").length > 0 ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {getCommunicationsByType("Email").map((communication,index) =>(
+                  <div key={communication.id || index}
+                  className="relative w-1/4 p-4 mb-4 border rounded shadow-md bg-white"
+                  >
+                    <div className="absolute top-2 right-2 flex space-x-2">
+                      <button >
+                        <FaEdit className="text-blue-500 hover:text-blue-700" />
+                      </button>
+                      <button >
+                        <FaTrash className="text-red-500 hover:text-red-700" />
+                      </button>
+                    </div>
+                    <h4 className="font-bold text-md mt-3">{communication.recipient}</h4>
+                    <p><strong>Escalated:</strong> {communication.participants}</p>
+                    <p><strong>Type:</strong>{getTypeName(communication.typeId)}</p>
+                    <p><strong>Subject:</strong>{communication.subject}</p>
+                    {/* <p><strong>Description:</strong>{communication.notes}</p> */}
+                    <p><strong>Date:</strong>{" "}{new Date(communication.initiationDate).toLocaleString()}</p>
+                    {communication.attachments?.length > 0 && (
+                      <p><strong>Attachments:</strong>{communication.attachments.length}</p>
+                      )}
+                    </div>
+                ))}
+                </div>
+            ) : (
+              <p className="text-gray-500">No email data available yet.</p>
+              )}
           </div>
         </div>
       </div>

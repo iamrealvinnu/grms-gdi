@@ -30,7 +30,7 @@ function GoogleCallback() {
             code,
             client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
             client_secret: import.meta.env.VITE_GOOGLE_CLIENT_SECRET,
-            redirect_uri: "http://localhost:5173/google/callback",
+            redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
             grant_type: "authorization_code",
           },
           {
@@ -54,10 +54,11 @@ function GoogleCallback() {
           surname: decoded.family_name,
           email: decoded.email,
         };
+        console.log("Request Data:", JSON.stringify(requestData, null, 2));
   
         // Step 4: Send to your backend
         const response = await axios.post(
-          "https://grms-dev.gdinexus.com:49181/api/v1/Auth/external",
+          `${import.meta.env.VITE_API_URL}/Auth/external`,
           requestData,
           { headers: { "Content-Type": "application/json" } }
         );

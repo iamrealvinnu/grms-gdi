@@ -93,7 +93,7 @@ function MarketingCreate() {
       };
 
       const response = await axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Campaign/create",
+        `${import.meta.env.VITE_API_URL}/marketing/Campaign/create`,
         requestData, // Send form data as the request body
         {
           headers: {

@@ -206,7 +206,7 @@ function ResetPassword() {
 
     try {
       await axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Auth/resetpassword",
+        `${import.meta.env.VITE_API_URL}/Auth/resetpassword`,
         { code, password },
         { headers: { "Content-Type": "application/json" } }
       );

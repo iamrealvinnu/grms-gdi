@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function CreateContactTask({ contactId, onClose }) {
+function CreateLeadTask({ contactId, onClose }) {
   const [tasks, setTasks] = useState({
     name: "",
     type: "Contact",
@@ -371,4 +371,4 @@ function CreateContactTask({ contactId, onClose }) {
   );
 }
 
-export default CreateContactTask;
+export default CreateLeadTask;

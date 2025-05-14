@@ -2,6 +2,11 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import { FaTasks } from "react-icons/fa";
+import { IoCall } from "react-icons/io5";
+import { MdEmail } from "react-icons/md";
+import { FaPeopleGroup } from "react-icons/fa6";
+import { IoSettings } from "react-icons/io5";
 
 function EditAccount() {
   const [formAccountData, setFormAccountData] = useState({
@@ -22,7 +27,7 @@ function EditAccount() {
     countryId: "",
     changedById: "",
     description: "",
-    number: ""
+    number: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -40,11 +45,11 @@ function EditAccount() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        `https://grms-dev.gdinexus.com:49181/api/v1/marketing/Account/one/${accountId}`,
+        `${import.meta.env.VITE_API_URL}/marketing/Account/one/${accountId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const AccountData = response.data?.data || response.data;
@@ -70,7 +75,7 @@ function EditAccount() {
         countryId: address.countryId || "",
         changedById: AccountData.changedById || "",
         description: AccountData.description || "",
-        number: AccountData.number || ""
+        number: AccountData.number || "",
       });
 
       console.log("anna", response.data);
@@ -84,11 +89,11 @@ function EditAccount() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const referenceData = response.data?.data || response.data;
@@ -143,12 +148,12 @@ function EditAccount() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/User/all/true",
+        `${import.meta.env.VITE_API_URL}/User/all/true`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
       setUserDetails(response.data.data);
@@ -177,17 +182,17 @@ function EditAccount() {
       const updateAccountData = {
         ...formAccountData,
         id: accountId,
-        changedById: formAccountData.changedById
+        changedById: formAccountData.changedById,
       };
 
       await axios.put(
-        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Account/update",
+        `${import.meta.env.VITE_API_URL}/marketing/Account/update`,
         updateAccountData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
       toast.success("Account updated successfully");
@@ -203,218 +208,83 @@ function EditAccount() {
 
   return (
     <div>
-      <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-        <form onSubmit={handleAccountSubmit}>
-          <div className="p-4">
-            <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-              Edit Account Details
-            </h3>
-            <div className="flex flex-wrap gap-4">
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Account Owner:
-                </label>
-                <select
-                  name="ownershipTypeId"
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                  value={formAccountData.ownershipTypeId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Ownership</option>
-                  {Object.entries(ownershipTypes).map(([id, description]) => (
-                    <option key={id} value={id}>
-                      {description}
-                    </option>
-                  ))}
-                </select>
-                {errors.ownershipTypeId && (
-                  <p className="text-red-500 text-sm">
-                    {errors.ownershipTypeId}
-                  </p>
-                )}
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Account Name:
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Account Name"
-                  value={formAccountData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Email:
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Company Email"
-                  value={formAccountData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Account Type:
-                </label>
-                <select
-                  name="accountTypeId"
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                  value={formAccountData.accountTypeId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select AccountType</option>
-                  {Object.entries(accountTypes).map(([id, description]) => (
-                    <option key={id} value={id}>
-                      {description}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Phone Number:
-                </label>
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  placeholder="Contact Number"
-                  value={formAccountData.phoneNumber}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  No.Of Employees:
-                </label>
-                <input
-                  type="number"
-                  name="numberOfEmployees"
-                  placeholder="Number of Employees"
-                  value={formAccountData.numberOfEmployees}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Account Number:
-                </label>
-                <input
-                  type="number"
-                  name="number"
-                  placeholder="Number of Employees"
-                  value={formAccountData.number}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Industry:
-                </label>
-                <select
-                  name="industryTypeId"
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                  value={formAccountData.industryTypeId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Industry</option>
-                  {Object.entries(industries).map(([id, description]) => (
-                    <option key={id} value={id}>
-                      {description}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Assigned To
-                </label>
-                <select
-                  name="assignedToId"
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                  value={formAccountData.assignedToId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Assign User</option>
-                  {userDetails &&
-                    Array.isArray(userDetails) &&
-                    userDetails.map((user) => (
-                      <option key={user.id} value={user.id}>
-                        {user.profile?.firstName}
-                        {user.profile?.lastName}
-                      </option>
-                    ))}
-                </select>
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Annual Revenue:
-                </label>
-                <input
-                  type="number"
-                  name="annualRevenue"
-                  value={formAccountData.annualRevenue}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                  placeholder="Enter Annual Revenue value..."
-                />
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium">
-                  Description:
-                </label>
-                <textarea
-                  rows="4"
-                  type="text"
-                  name="description"
-                  value={formAccountData.description}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                  placeholder="Enter Annual Revenue value..."
-                />
-              </div>
-
-              <div className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300">
-                {/* <label className="block font-medium text-gray-700">
-                  Add Address
-                </label> */}
-
-                <div className="w-full">
-                  <label className="block font-medium text-gray-700">
-                    Address
+      <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <div className="flex flex-col lg:flex-row gap-6">
+          <form
+            onSubmit={handleAccountSubmit}
+            className="bg-gray-50 w-full lg:flex-1"
+          >
+            <div className="p-4">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
+                Edit Account Details
+              </h3>
+              <div className="flex flex-wrap gap-4">
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Account Owner:
                   </label>
                   <select
-                    name="addressTypeId"
-                    className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                    value={formAccountData.addressTypeId}
+                    name="ownershipTypeId"
+                    className="w-full px-4 py-2 mt-1 border rounded-lg outline-none hover:outline-emerald-300"
+                    value={formAccountData.ownershipTypeId}
                     onChange={handleChange}
                     required
                   >
-                    <option value="">Select Address</option>
-                    {Object.entries(addressTypes).map(([id, description]) => (
+                    <option value="">Select Ownership</option>
+                    {Object.entries(ownershipTypes).map(([id, description]) => (
+                      <option key={id} value={id}>
+                        {description}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.ownershipTypeId && (
+                    <p className="text-red-500 text-sm">
+                      {errors.ownershipTypeId}
+                    </p>
+                  )}
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Account Name:
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Account Name"
+                    value={formAccountData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
+                  />
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Email:
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Company Email"
+                    value={formAccountData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
+                  />
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Account Type:
+                  </label>
+                  <select
+                    name="accountTypeId"
+                    className="w-full px-4 py-2 mt-1 border rounded-lg outline-none hover:outline-emerald-300"
+                    value={formAccountData.accountTypeId}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select AccountType</option>
+                    {Object.entries(accountTypes).map(([id, description]) => (
                       <option key={id} value={id}>
                         {description}
                       </option>
@@ -422,106 +292,289 @@ function EditAccount() {
                   </select>
                 </div>
 
-                {/* Street */}
-                <div className="w-full mt-4">
-                  <label className="block font-medium  text-gray-700 p-1">
-                    Address Line 1
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Phone Number:
                   </label>
                   <input
                     type="text"
-                    name="address1"
-                    value={formAccountData.address1}
+                    name="phoneNumber"
+                    placeholder="Contact Number"
+                    value={formAccountData.phoneNumber}
                     onChange={handleChange}
-                    placeholder="Street"
-                    className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                    className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
                   />
                 </div>
 
-                {/* Town */}
-                <div className="flex flex-wrap gap-4 mt-4">
-                  <div className="w-full md:w-[48%]">
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    No.Of Employees:
+                  </label>
+                  <input
+                    type="number"
+                    name="numberOfEmployees"
+                    placeholder="Number of Employees"
+                    value={formAccountData.numberOfEmployees}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
+                  />
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Account Number:
+                  </label>
+                  <input
+                    type="number"
+                    name="number"
+                    placeholder="Number of Employees"
+                    value={formAccountData.number}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
+                  />
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Industry:
+                  </label>
+                  <select
+                    name="industryTypeId"
+                    className="w-full px-4 py-2 mt-1 border rounded-lg outline-none hover:outline-emerald-300"
+                    value={formAccountData.industryTypeId}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select Industry</option>
+                    {Object.entries(industries).map(([id, description]) => (
+                      <option key={id} value={id}>
+                        {description}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Assigned To
+                  </label>
+                  <select
+                    name="assignedToId"
+                    className="w-full px-4 py-2 mt-1 border rounded-lg outline-none hover:outline-emerald-300"
+                    value={formAccountData.assignedToId}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Assign User</option>
+                    {userDetails &&
+                      Array.isArray(userDetails) &&
+                      userDetails.map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.profile?.firstName}
+                          {user.profile?.lastName}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Annual Revenue:
+                  </label>
+                  <input
+                    type="number"
+                    name="annualRevenue"
+                    value={formAccountData.annualRevenue}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
+                    placeholder="Enter Annual Revenue value..."
+                  />
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block text-gray-700 font-medium">
+                    Description:
+                  </label>
+                  <textarea
+                    rows="4"
+                    type="text"
+                    name="description"
+                    value={formAccountData.description}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
+                    placeholder="Enter Annual Revenue value..."
+                  />
+                </div>
+
+                <div className="w-full px-4 py-2 mt-1 border rounded-lg outline-none hover:outline-emerald-300">
+                  {/* <label className="block font-medium text-gray-700">
+                  Add Address
+                </label> */}
+
+                  <div className="w-full">
                     <label className="block font-medium text-gray-700">
-                      City
+                      Address
+                    </label>
+                    <select
+                      name="addressTypeId"
+                      className="w-full px-4 py-2 mt-1 border rounded-lg outline-none hover:outline-emerald-300"
+                      value={formAccountData.addressTypeId}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select Address</option>
+                      {Object.entries(addressTypes).map(([id, description]) => (
+                        <option key={id} value={id}>
+                          {description}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Street */}
+                  <div className="w-full mt-4">
+                    <label className="block font-medium  text-gray-700 p-1">
+                      Address Line 1
                     </label>
                     <input
                       type="text"
-                      name="city"
-                      value={formAccountData.city}
+                      name="address1"
+                      value={formAccountData.address1}
                       onChange={handleChange}
-                      placeholder="Town"
-                      className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                      placeholder="Street"
+                      className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
                     />
                   </div>
 
-                  {/* Pincode */}
-                  <div className="w-full md:w-[48%]">
-                    <label className="block font-medium text-gray-700">
-                      ZIP Code
-                    </label>
-                    <input
-                      type="text"
-                      name="zip"
-                      value={formAccountData.zip}
-                      onChange={handleChange}
-                      placeholder="Pincode"
-                      className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                    />
+                  {/* Town */}
+                  <div className="flex flex-wrap gap-4 mt-4">
+                    <div className="w-full md:w-[48%]">
+                      <label className="block font-medium text-gray-700">
+                        City
+                      </label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formAccountData.city}
+                        onChange={handleChange}
+                        placeholder="Town"
+                        className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
+                      />
+                    </div>
+
+                    {/* Pincode */}
+                    <div className="w-full md:w-[48%]">
+                      <label className="block font-medium text-gray-700">
+                        ZIP Code
+                      </label>
+                      <input
+                        type="text"
+                        name="zip"
+                        value={formAccountData.zip}
+                        onChange={handleChange}
+                        placeholder="Pincode"
+                        className="w-full px-4 py-2 mt-1 border text-emerald-600 rounded-lg outline-none hover:outline-emerald-300"
+                      />
+                    </div>
+                  </div>
+
+                  {/* State */}
+                  <div className="flex flex-wrap gap-4 mt-4">
+                    <div className="w-full md:w-[48%]">
+                      {" "}
+                      <label className="block font-medium text-gray-700">
+                        State
+                      </label>
+                      <select
+                        name="stateId"
+                        className="w-full px-4 py-2 mt-1 border rounded-lg outline-none hover:outline-emerald-300"
+                        value={formAccountData.stateId}
+                        onChange={handleChange}
+                      >
+                        <option value="">Select State</option>
+                        {Object.entries(states).map(([id, description]) => (
+                          <option key={id} value={id}>
+                            {description}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Country Dropdown */}
+                    <div className="w-full md:w-[48%]">
+                      <label className="block font-medium text-gray-700">
+                        Country
+                      </label>
+                      <select
+                        name="countryId"
+                        className="w-full px-4 py-2 mt-1 border rounded-lg outline-none hover:outline-emerald-300"
+                        value={formAccountData.countryId}
+                        onChange={handleChange}
+                      >
+                        <option value="">Select Country</option>
+                        {Object.entries(countries).map(([id, description]) => (
+                          <option key={id} value={id}>
+                            {description}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
 
-                {/* State */}
-                <div className="flex flex-wrap gap-4 mt-4">
-                  <div className="w-full md:w-[48%]">
-                    {" "}
-                    <label className="block font-medium text-gray-700">
-                      State
-                    </label>
-                    <select
-                      name="stateId"
-                      className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                      value={formAccountData.stateId}
-                      onChange={handleChange}
-                    >
-                      <option value="">Select State</option>
-                      {Object.entries(states).map(([id, description]) => (
-                        <option key={id} value={id}>
-                          {description}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                <button
+                  type="submit"
+                  className="w-full bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-75"
+                >
+                  UPDATE
+                </button>
+              </div>
+            </div>
+          </form>
 
-                  {/* Country Dropdown */}
-                  <div className="w-full md:w-[48%]">
-                    <label className="block font-medium text-gray-700">
-                      Country
-                    </label>
-                    <select
-                      name="countryId"
-                      className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                      value={formAccountData.countryId}
-                      onChange={handleChange}
-                    >
-                      <option value="">Select Country</option>
-                      {Object.entries(countries).map(([id, description]) => (
-                        <option key={id} value={id}>
-                          {description}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+          <div className="w-full lg:w-64 xl:w-72">
+            <div className="bg-emerald-50 rounded-lg shadow-md p-4 h-full">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Quick Actions
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                <button className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                  <FaTasks className="text-blue-500 text-2xl mb-2" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Task
+                  </span>
+                </button>
+                <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                  <IoCall className="text-green-500 text-2xl mb-2" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Call
+                  </span>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                  <MdEmail className="text-yellow-500 text-2xl mb-2" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Email
+                  </span>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                  <FaPeopleGroup className="text-purple-500 text-2xl mb-2" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Meeting
+                  </span>
                 </div>
               </div>
-
-              <button
-                type="submit"
-                className="w-full bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-75"
-              >
-                UPDATE
-              </button>
+              <div className="mt-4">
+                <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
+                  <IoSettings className="text-gray-600 text-2xl mb-2" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Settings
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </form>
+
+        </div>
         <ToastContainer />
       </div>
     </div>

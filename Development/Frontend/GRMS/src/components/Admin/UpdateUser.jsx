@@ -50,7 +50,7 @@ function UpdateUser() {
       }
 
       const response = await axios.get(
-        `https://grms-dev.gdinexus.com:49181/api/v1/User/one/${userId}`,
+        `${import.meta.env.VITE_API_URL}/User/one/${userId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -81,7 +81,7 @@ function UpdateUser() {
       }
 
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -150,7 +150,7 @@ function UpdateUser() {
       const updatedUser = { ...user, userId };  // Ensure userId is included
   
       await axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/User/update",
+        `${import.meta.env.VITE_API_URL}/User/update`,
         updatedUser,
         { headers: { Authorization: `Bearer ${token}` } }
       );

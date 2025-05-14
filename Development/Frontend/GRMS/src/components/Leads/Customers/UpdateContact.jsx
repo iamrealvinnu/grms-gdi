@@ -9,11 +9,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaTasks } from "react-icons/fa";
-import { IoCall } from "react-icons/io5";
-import { MdEmail } from "react-icons/md";
-import { FaPeopleGroup } from "react-icons/fa6";
-import { IoSettings } from "react-icons/io5";
+
 
 function UpdateContact() {
   const [clientData, setClientData] = useState({
@@ -191,7 +187,6 @@ function UpdateContact() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <div className="flex flex-col lg:flex-row gap-6">
         <ToastContainer />
         <form onSubmit={handleSubmit} className="w-full bg-gray-50 lg:flex-1">
           {/* Company Details Section */}
@@ -261,7 +256,7 @@ function UpdateContact() {
                     name="firstName"
                     value={clientData.firstName}
                     onChange={handleChange}
-                    className="w-full border-2 border-gray-400 rounded p-2"
+                    className="w-full border-2 border-gray-400 text-cyan-600 rounded p-2"
                     required
                   />
                 </div>
@@ -276,7 +271,7 @@ function UpdateContact() {
                     name="lastName"
                     value={clientData.lastName}
                     onChange={handleChange}
-                    className="w-full border-2 border-gray-400 rounded p-2"
+                    className="w-full border-2 border-gray-400 text-cyan-600 rounded p-2"
                   />
                 </div>
 
@@ -290,7 +285,7 @@ function UpdateContact() {
                     name="email"
                     value={clientData.email}
                     onChange={handleChange}
-                    className="w-full border-2 border-gray-400 rounded p-2"
+                    className="w-full border-2 border-gray-400 text-cyan-600 rounded p-2"
                     required
                   />
                 </div>
@@ -305,7 +300,7 @@ function UpdateContact() {
                     name="phoneNumber"
                     value={clientData.phoneNumber}
                     onChange={handleChange}
-                    className="w-full border-2 border-gray-400 rounded p-2"
+                    className="w-full border-2 border-gray-400 text-cyan-600 rounded p-2"
                     required
                   />
                 </div>
@@ -317,7 +312,7 @@ function UpdateContact() {
                   </label>
                   <select
                     name="departmentId"
-                    className="w-full  border-2 border-gray-400 rounded p-2 bg-white"
+                    className="w-full  border-2 border-gray-400 text-cyan-600 rounded p-2 bg-white"
                     value={clientData.departmentId}
                     onChange={handleChange}
                   >
@@ -342,7 +337,7 @@ function UpdateContact() {
                     name="mobileNumber"
                     value={clientData.mobileNumber}
                     onChange={handleChange}
-                    className="w-full border-2 border-gray-400 rounded p-2"
+                    className="w-full border-2 border-gray-400 text-cyan-600 rounded p-2"
                     required
                   />
                 </div>
@@ -360,43 +355,6 @@ function UpdateContact() {
             </button>
           </div>
         </form>
-
-        <div className="w-full lg:w-64 xl:w-72">
-          <div className="bg-blue-50 rounded-lg shadow-md p-4 h-full">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Quick Actions
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              <button className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <FaTasks className="text-blue-500 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">Task</span>
-              </button>
-              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <IoCall className="text-green-500 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">Call</span>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <MdEmail className="text-yellow-500 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">Email</span>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <FaPeopleGroup className="text-purple-500 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">
-                  Meeting
-                </span>
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <IoSettings className="text-gray-600 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">
-                  Settings
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

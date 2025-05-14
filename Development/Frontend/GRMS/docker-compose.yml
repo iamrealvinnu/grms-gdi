@@ -7,7 +7,7 @@ services:
     ports:
       - "59181:59181"  # Match the port inside the container
     volumes:
-    - "D:/Second_Pro_GRMS/GDI_Nexus_Relationship_Management_System/Development/Frontend/GRMS/certs:/etc/nginx/ssl:ro"
+    - "F:/Second_Pro_GRMS/GDI_Nexus_Relationship_Management_System/Development/Frontend/GRMS/certs:/etc/nginx/ssl:ro"
     restart: always
     networks:
       - grms-network

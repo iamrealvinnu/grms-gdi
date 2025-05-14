@@ -107,7 +107,7 @@ const Home = () => {
     try {
       // Send login request
       const response = await axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Auth/authorize",
+        `${import.meta.env.VITE_API_URL}/Auth/authorize`,
         {
           userName: formData.userName,
           password: formData.password
@@ -184,12 +184,12 @@ const Home = () => {
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <label htmlFor="email">
           {" "}
-          UserName <span>*</span>
+          Email / UserName <span>*</span>
         </label>
         <input
           type="email"
           name="userName"
-          placeholder="user name"
+          placeholder="email or user name"
           className="bg-slate-100 rounded-lg p-2"
           value={formData.userName}
           onChange={handleChange}

@@ -7,10 +7,8 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [marketDropDownOpen, setMarketDropDownOpen] = useState(false);
   const userDropdownRef = useRef(null);
   const profileDropdownRef = useRef(null);
-  const marketDropdownRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,9 +23,6 @@ function Header() {
       }
       if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
         setProfileDropdownOpen(false);
-      }
-      if (marketDropdownRef.current && !marketDropdownRef.current.contains(event.target)) {
-        setMarketDropDownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -84,29 +79,13 @@ function Header() {
               </li>
 
               {/* Campaign Dropdown */}
-              <li className="relative py-2 lg:py-0" ref={marketDropdownRef}>
-                <button
-                  className="text-white hover:bg-gray-600 rounded px-4 py-2 block"
-                  onClick={() => {
-                    setMarketDropDownOpen(!marketDropDownOpen);
-                    setUserDropdownOpen(false);
-                    setProfileDropdownOpen(false);
-                  }}
+              <li className=" py-2 lg:py-0">
+                <Link
+                  to="/campaignDetails"
+                  className="text-white no-underline hover:bg-gray-600 rounded px-4 py-2 block"
                 >
-                  Campaign ▼
-                </button>
-                {marketDropDownOpen && (
-                  <ul className="absolute lg:right-0 bg-white shadow-md rounded-md w-auto min-w-[150px] mt-2 z-10">
-                    <li>
-                      <Link
-                        to="/campaignDetails"
-                        className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                      >
-                        Campaign Details
-                      </Link>
-                    </li>
-                  </ul>
-                )}
+                  Campaign 
+                </Link>
               </li>
 
               {/* Other Links */}

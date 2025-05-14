@@ -32,7 +32,7 @@ function MarketingDetails() {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await axios.get(
-          "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Campaign/all/true",
+          `${import.meta.env.VITE_API_URL}/marketing/Campaign/all/true`,
           {
             headers: {
               Authorization: `Bearer ${token}`

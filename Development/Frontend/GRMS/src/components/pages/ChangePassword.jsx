@@ -1,3 +1,12 @@
+//
+// NAME:        ChangePassword.jsx
+// AUTHOR:      Krishna Murthy
+// COMPANY:     GDI Nexus
+// DATE:        02/12/2025
+// PURPOSE:     User's Change Password Page
+//
+
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -104,7 +113,7 @@ const ChangePassword = () => {
       console.log("Sending Payload:", formData);
 
       const response = await axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/User/profile/changepassword",
+        `${import.meta.env.VITE_API_URL}/User/profile/changepassword`,
         formData,
         {
           headers: {

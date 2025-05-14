@@ -8,6 +8,7 @@ function GetAllOpportunity() {
   const [error, setError] = useState(null);
   const [statuses, setStatuses] = useState({});
   const [stages, setStages] = useState({});
+  const [products,setProducts] = useState({});
   const [leads, setLeads] = useState({});
   const navigate = useNavigate();
   const [filteredOpportunities,setFilteredOpportunities] = useState([]);
@@ -19,7 +20,7 @@ function GetAllOpportunity() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Lead/all/true",
+        `${import.meta.env.VITE_API_URL}/marketing/Lead/all/true`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -45,7 +46,7 @@ function GetAllOpportunity() {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await axios.get(
-          "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Opportunity/all/true",
+          `${import.meta.env.VITE_API_URL}/marketing/Opportunity/all/true`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -67,7 +68,7 @@ function GetAllOpportunity() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -77,6 +78,7 @@ function GetAllOpportunity() {
       const data = response.data.data || [];
       const opportunitystatusMap = {};
       const opportunitystageMap = {};
+      const productsMap = {};
       data.forEach((reference) => {
         if (reference.name === "Opportunity Status") {
           reference.referenceItems.forEach((item) => {
@@ -86,10 +88,15 @@ function GetAllOpportunity() {
           reference.referenceItems.forEach((item) => {
             opportunitystageMap[item.id] = item.code;
           });
+        } else if (reference.name === "Opportunity Product Line") {
+          reference.referenceItems.forEach((item) => {
+            productsMap[item.id] = item.code;
+          });
         }
       });
       setStatuses(opportunitystatusMap);
       setStages(opportunitystageMap);
+      setProducts(productsMap);
     } catch (error) {
       console.error("Error fetching master table data:", error);
       setError("Failed to fetch master table data");
@@ -204,6 +211,9 @@ function GetAllOpportunity() {
                 Opportunity Status
               </th>
               <th className="py-2 px-4 border-b text-left font-semibold">
+                Opportunity Products
+              </th>
+              <th className="py-2 px-4 border-b text-left font-semibold">
                 Opportunity Stages
               </th>
               <th className="py-2 px-4 border-b text-left font-semibold">
@@ -238,6 +248,9 @@ function GetAllOpportunity() {
                   </td>
                   <td className="py-2 px-4 border-b">
                     {statuses[opportunity.statusId] || "N/A"}
+                  </td>
+                  <td className="py-2 px-4 border-b">
+                    {products[opportunity.productLineId] || "N/A"}
                   </td>
                   <td className="py-2 px-4 border-b">
                     {stages[opportunity.stageId] || "N/A"}

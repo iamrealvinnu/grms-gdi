@@ -8,7 +8,7 @@
 
 /* Main chat container */
 .chat-container {
-    width: 400px; /* Increased width for better readability */
+    width: 300px; /* Increased width for better readability */
     height: 600px; /* Increased height for more message space */
     background: linear-gradient(145deg, #ffffff, #f0f4f8); /* Subtle gradient */
     border-radius: 15px;
@@ -209,3 +209,11 @@
         transform: translateY(-10px);
     }
 }
+
+@media (max-width: 480px) {
+    .chat-container {
+      width: 90vw;
+      height: 80vh;
+    }
+  }
+  

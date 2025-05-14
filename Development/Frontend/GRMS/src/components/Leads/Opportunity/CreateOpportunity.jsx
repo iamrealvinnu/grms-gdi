@@ -17,32 +17,44 @@ function CreateOpportunity() {
     leadId: leadId, // Initialize with the leadId from URL
     statusId: "",
     createdById: "",
-    description: "" // Added notes field
+    productLineId: "",
+    description: "", // Added notes field
   });
 
-  const [tableOpportunityStatusData, setTableOpportunityStatusData] = useState([]);
+  const [tableOpportunityStatusData, setTableOpportunityStatusData] = useState(
+    []
+  );
   const [errors, setErrors] = useState({});
   const [user, setUser] = useState("");
   const [leadDetails, setLeadDetails] = useState(null);
 
   const opportunityStagesTypes =
-    tableOpportunityStatusData.find(item => item.name === "Opportunity Stages")?.referenceItems || [];
-    
+    tableOpportunityStatusData.find(
+      (item) => item.name === "Opportunity Stages"
+    )?.referenceItems || [];
+
   const opportunityStatusTypes =
-    tableOpportunityStatusData.find(item => item.name === "Opportunity Status")?.referenceItems || [];
+    tableOpportunityStatusData.find(
+      (item) => item.name === "Opportunity Status"
+    )?.referenceItems || [];
+
+  const opportunityProductLineTypes =
+    tableOpportunityStatusData.find(
+      (item) => item.name === "Opportunity Product Line"
+    )?.referenceItems || [];
 
   const fetchLeadDetails = async (leadId) => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        `https://grms-dev.gdinexus.com:49181/api/v1/marketing/Lead/one/${leadId}`,
+        `${import.meta.env.VITE_API_URL}/marketing/Lead/one/${leadId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       const leadData = response.data.data;
       setLeadDetails(leadData);
-      setFormOpportunityData(prevData => ({
+      setFormOpportunityData((prevData) => ({
         ...prevData,
         name: leadData.company || "Opportunity for " + leadData.company, // Use company name as default opportunity name
       }));
@@ -56,7 +68,7 @@ function CreateOpportunity() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -79,9 +91,11 @@ function CreateOpportunity() {
       try {
         const decodedToken = jwtDecode(token);
         const userId =
-          decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || "";
+          decodedToken[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+          ] || "";
         setUser(userId);
-        setFormOpportunityData(prev => ({ ...prev, createdById: userId }));
+        setFormOpportunityData((prev) => ({ ...prev, createdById: userId }));
       } catch (error) {
         console.error("Error decoding token:", error);
       }
@@ -114,6 +128,10 @@ function CreateOpportunity() {
       newErrors.statusId = "Opportunity status is required.";
       isValid = false;
     }
+    if (!formOpportunityData.productLineId) {
+      newErrors.productLineId = "Product line is required.";
+      isValid = false;
+    }
     if (!formOpportunityData.closeDate) {
       newErrors.closeDate = "Close date is required.";
       isValid = false;
@@ -126,10 +144,10 @@ function CreateOpportunity() {
   const handleOpportunitySubmit = async (e) => {
     e.preventDefault();
     if (!validForm()) return;
-  
+
     try {
       const token = localStorage.getItem("accessToken");
-      
+
       // Prepare the data in the exact format the API expects
       const requestOpportunityData = {
         name: formOpportunityData.name,
@@ -140,29 +158,29 @@ function CreateOpportunity() {
         openDate: new Date().toISOString(), // or opportunityData.openDate if set
         closeDate: new Date(formOpportunityData.closeDate).toISOString(), // or a future date
         estimatedValue: formOpportunityData.estimatedValue,
+        productLineId: formOpportunityData.productLineId,
         createdById: user, // make sure this comes from the logged-in user
       };
-      
-  
+
       console.log("Submitting Opportunity Data:", requestOpportunityData);
-  
+
       const response = await axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Opportunity/create",
+        `${import.meta.env.VITE_API_URL}/marketing/Opportunity/create`,
         requestOpportunityData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
         }
       );
-  
+
       console.log("Opportunity Created Response:", response.data);
       toast.success("Opportunity created successfully!");
       navigate("/getAllOpportunity");
     } catch (error) {
       console.error("Submission error:", error.response?.data || error.message);
-        toast.error("Error creating Opportunity. Please try again.");
+      toast.error("Error creating Opportunity. Please try again.");
     }
   };
 
@@ -182,7 +200,9 @@ function CreateOpportunity() {
         <form className="space-y-4" onSubmit={handleOpportunitySubmit}>
           {/* Opportunity Name */}
           <div>
-            <label className="block text-gray-700 font-medium">Opportunity Name:</label>
+            <label className="block text-gray-700 font-medium">
+              Opportunity Name:
+            </label>
             <input
               type="text"
               name="name"
@@ -191,12 +211,16 @@ function CreateOpportunity() {
               className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
               placeholder="Enter opportunity name..."
             />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name}</p>
+            )}
           </div>
 
           {/* Lead Name (read-only) */}
           <div>
-            <label className="block text-gray-700 font-medium">Related Lead:</label>
+            <label className="block text-gray-700 font-medium">
+              Related Lead:
+            </label>
             <input
               type="text"
               value={leadDetails?.company || "Loading..."}
@@ -207,7 +231,9 @@ function CreateOpportunity() {
 
           {/* Opportunity Status */}
           <div>
-            <label className="block text-gray-700 font-medium">Opportunity Status:</label>
+            <label className="block text-gray-700 font-medium">
+              Opportunity Status:
+            </label>
             <select
               name="statusId"
               value={formOpportunityData.statusId}
@@ -222,12 +248,16 @@ function CreateOpportunity() {
                 </option>
               ))}
             </select>
-            {errors.statusId && <p className="text-red-500 text-sm">{errors.statusId}</p>}
+            {errors.statusId && (
+              <p className="text-red-500 text-sm">{errors.statusId}</p>
+            )}
           </div>
 
           {/* Estimated Value */}
           <div>
-            <label className="block text-gray-700 font-medium">Estimated Value:</label>
+            <label className="block text-gray-700 font-medium">
+              Estimated Value:
+            </label>
             <input
               type="number"
               name="estimatedValue"
@@ -235,16 +265,18 @@ function CreateOpportunity() {
               onChange={handleChange}
               className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
               placeholder="Enter estimated value..."
-              min="0"
-              step="0.01"
               required
             />
-            {errors.estimatedValue && <p className="text-red-500 text-sm">{errors.estimatedValue}</p>}
+            {errors.estimatedValue && (
+              <p className="text-red-500 text-sm">{errors.estimatedValue}</p>
+            )}
           </div>
 
           {/* Opportunity Stages */}
           <div>
-            <label className="block text-gray-700 font-medium">Opportunity Stage:</label>
+            <label className="block text-gray-700 font-medium">
+              Opportunity Stage:
+            </label>
             <select
               name="stageId"
               value={formOpportunityData.stageId}
@@ -259,9 +291,35 @@ function CreateOpportunity() {
                 </option>
               ))}
             </select>
-            {errors.stageId && <p className="text-red-500 text-sm">{errors.stageId}</p>}
+            {errors.stageId && (
+              <p className="text-red-500 text-sm">{errors.stageId}</p>
+            )}
           </div>
 
+          {/* Opportunity Product Line */}
+          <div>
+            <label className="block text-gray-700 font-medium">
+              Opportunity Product Line:
+            </label>
+            <select
+              name="productLineId"
+              value={formOpportunityData.productLineId}
+              onChange={handleChange}
+              className="w-full border-2 border-gray-400 rounded p-2 bg-white sm:text-sm"
+              required
+            >
+              <option value="">Select product line</option>
+              {opportunityProductLineTypes.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.code}
+                </option>
+              ))}
+            </select>
+            {errors.productLineId && (
+              <p className="text-red-500 text-sm">{errors.productLineId}</p>
+            )}
+          </div>
+          
           {/* Close Date */}
           <div>
             <label className="text-gray-700 font-medium">Close Date:</label>
@@ -282,12 +340,16 @@ function CreateOpportunity() {
                 Clear
               </button>
             </div>
-            {errors.closeDate && <p className="text-red-500 text-sm">{errors.closeDate}</p>}
+            {errors.closeDate && (
+              <p className="text-red-500 text-sm">{errors.closeDate}</p>
+            )}
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-gray-700 font-medium">Description:</label>
+            <label className="block text-gray-700 font-medium">
+              Description:
+            </label>
             <textarea
               name="description"
               value={formOpportunityData.description}

@@ -24,10 +24,12 @@ function UpdateOpportunity() {
     stageId: "",
     description: "",
     closeDate: "",
-    changedById: ""
+    productLineId: "",
+    changedById: "",
   });
   const [opportunityStagesTypes, setOpportunityStagesTypes] = useState({});
   const [opportunityStatusTypes, setOpportunityStatusTypes] = useState({});
+  const [opportunityProductTypes, setOpportunityProductTypes] = useState({});
   const [errors, setErrors] = useState({});
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [showCallForm, setShowCallForm] = useState(false);
@@ -38,11 +40,11 @@ function UpdateOpportunity() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        `https://grms-dev.gdinexus.com:49181/api/v1/marketing/Opportunity/one/${opportunityId}`,
+        `${import.meta.env.VITE_API_URL}/marketing/Opportunity/one/${opportunityId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const opportunityData = response.data?.data || response.data;
@@ -52,11 +54,12 @@ function UpdateOpportunity() {
         estimatedValue: opportunityData.estimatedValue,
         stageId: opportunityData.stageId,
         description: opportunityData.description,
+        productLineId: opportunityData.productLineId,
         changedById: opportunityData.createdById,
         leadId: opportunityData.leadId,
         closeDate: opportunityData.closeDate
           ? opportunityData.closeDate.split("T")[0] // ✅ Only the date part
-          : ""
+          : "",
       });
       console.log("Opportunity data fetched successfully:", opportunityData);
     } catch (error) {
@@ -73,17 +76,18 @@ function UpdateOpportunity() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const referenceData = response.data.data;
 
       const opportunityStagesMap = {};
       const opportunityStatusMap = {};
+      const opportunityProductMap = {};
 
       referenceData.forEach((reference) => {
         if (reference.name === "Opportunity Stages") {
@@ -94,10 +98,15 @@ function UpdateOpportunity() {
           reference.referenceItems.forEach((item) => {
             opportunityStatusMap[item.id] = item.code;
           });
+        } else if (reference.name === "Opportunity Product Line") {
+          reference.referenceItems.forEach((item) => {
+            opportunityProductMap[item.id] = item.code;
+          });
         }
       });
       setOpportunityStagesTypes(opportunityStagesMap);
       setOpportunityStatusTypes(opportunityStatusMap);
+      setOpportunityProductTypes(opportunityProductMap);
     } catch (error) {
       console.error("Error fetching table data:", error);
       setErrors({ fetchError: "Failed to fetch table data." });
@@ -108,7 +117,7 @@ function UpdateOpportunity() {
     const { name, value } = e.target;
     setFormOpportunityData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
     setErrors({ ...errors, [name]: "" });
   };
@@ -116,7 +125,7 @@ function UpdateOpportunity() {
   const clearDate = (fieldName) => {
     setFormOpportunityData((prevState) => ({
       ...prevState,
-      [fieldName]: ""
+      [fieldName]: "",
     }));
   };
 
@@ -131,20 +140,21 @@ function UpdateOpportunity() {
         description: formOpportunityData.description,
         statusId: formOpportunityData.statusId,
         stageId: formOpportunityData.stageId,
+        productLineId: formOpportunityData.productLineId,
         estimatedValue: parseFloat(formOpportunityData.estimatedValue),
         closeDate: new Date(formOpportunityData.closeDate).toISOString(),
         openDate: new Date().toISOString(), // Or use the original openDate from DB if available
         changedById: formOpportunityData.changedById,
-        leadId: formOpportunityData.leadId
+        leadId: formOpportunityData.leadId,
       };
 
       const response = await axios.put(
-        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Opportunity/update",
+        `${import.meta.env.VITE_API_URL}/marketing/Opportunity/update`,
         updatedData,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -242,6 +252,7 @@ function UpdateOpportunity() {
             </div>
           </div>
         )}
+        
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 bg-white rounded-lg shadow-md p-6">
             <form className="space-y-4" onSubmit={handleSubmit}>
@@ -255,7 +266,7 @@ function UpdateOpportunity() {
                   name="name"
                   value={formOpportunityData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                  className="w-full px-4 py-2 mt-1 border rounded-lg text-yellow-600 focus:ring-yellow-300"
                   placeholder="Enter opportunity name..."
                 />
               </div>
@@ -291,12 +302,31 @@ function UpdateOpportunity() {
                   name="estimatedValue"
                   value={formOpportunityData.estimatedValue}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                  className="w-full px-4 py-2 mt-1 border rounded-lg text-yellow-600 focus:ring-yellow-300"
                   placeholder="Enter estimated value..."
-                  min="0"
-                  step="0.01"
                   required
                 />
+              </div>
+
+              {/* Opportunity Product Line */}
+              <div>
+                <label className="block text-gray-700 font-medium">
+                  Opportunity Product Line:
+                </label>
+                <select
+                  name="productLineId"
+                  value={formOpportunityData.productLineId}
+                  onChange={handleChange}
+                  className="w-full border-2 border-gray-400 rounded p-2 bg-white sm:text"
+                  required
+                >
+                  <option value="">Select product line</option>
+                  {Object.entries(opportunityProductTypes).map(([id, code]) => (
+                    <option key={id} value={id}>
+                      {code}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Opportunity Stages */}
@@ -329,7 +359,7 @@ function UpdateOpportunity() {
                     name="closeDate"
                     value={formOpportunityData.closeDate}
                     onChange={handleChange}
-                    className="px-4 py-2 w-full border rounded-lg focus:ring focus:ring-blue-300 sm:text-sm"
+                    className="px-4 py-2 w-full border rounded-lg text-yellow-600  focus:ring-yellow-300 sm:text-sm"
                     required
                   />
                   <button
@@ -351,7 +381,7 @@ function UpdateOpportunity() {
                   name="description"
                   value={formOpportunityData.description}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                  className="w-full px-4 py-2 mt-1 border rounded-lg text-yellow-600  focus:ring-yellow-300"
                   rows="3"
                   placeholder="Additional notes..."
                 />

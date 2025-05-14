@@ -35,27 +35,23 @@ function AddAccount() {
   const [loading, setLoading] = useState(true);
 
   const industriesTypes =
-    tableData.find((item) => item.name === "Industry Types")?.referenceItems ||
-    [];
+    tableData.find((item) => item.name === "Industry Types")?.referenceItems || [];
   const stateTypes =
     tableData.find((item) => item.name === "States")?.referenceItems || [];
   const countryTypes =
     tableData.find((item) => item.name === "Countries")?.referenceItems || [];
   const addressTypes =
-    tableData.find((item) => item.name === "Address Types")?.referenceItems ||
-    [];
+    tableData.find((item) => item.name === "Address Types")?.referenceItems || [];
   const accountTypes =
-    tableData.find((item) => item.name === "Account Types")?.referenceItems ||
-    [];
+    tableData.find((item) => item.name === "Account Types")?.referenceItems || [];
   const ownershipTypes =
-    tableData.find((item) => item.name === "Ownership Types")?.referenceItems ||
-    [];
+    tableData.find((item) => item.name === "Ownership Types")?.referenceItems || [];
 
   const fetchTableData = async () => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -75,7 +71,7 @@ function AddAccount() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/User/all/true",
+        `${import.meta.env.VITE_API_URL}/User/all/true`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -117,7 +113,10 @@ function AddAccount() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormAccountData((prevData) => ({ ...prevData, [name]: value }));
+    const newValue =
+      name === "numberOfEmployees" || name === "annualRevenue"
+        ? parseInt(value, 10) || "" : value;
+    setFormAccountData((prevData) => ({ ...prevData, [name]: newValue }));
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
@@ -141,11 +140,11 @@ function AddAccount() {
       newErrors.ownershipTypeId = "Account Owner is required.";
       isValid = false;
     }
-    if (!formAccountData.numberOfEmployees) {
+    if (formAccountData.numberOfEmployees === "" || isNaN(formAccountData.numberOfEmployees)) {
       newErrors.numberOfEmployees = "Number of employees is required.";
       isValid = false;
     }
-    if (!formAccountData.annualRevenue) {
+    if (formAccountData.annualRevenue === "" || isNaN(formAccountData.annualRevenue)) {
       newErrors.annualRevenue = "Annual revenue is required.";
       isValid = false;
     }
@@ -194,7 +193,7 @@ function AddAccount() {
       console.log("Data being sent:", dataPassed); // Log the data *before* sending
 
       const response = await axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Account/create",
+        `${import.meta.env.VITE_API_URL}/marketing/Account/create`,
         dataPassed,
         {
           headers: {
@@ -346,7 +345,7 @@ function AddAccount() {
                 No.Of Employees:
               </label>
               <input
-                type="number"
+                type="text"
                 name="numberOfEmployees"
                 placeholder="Number of Employees"
                 value={formAccountData.numberOfEmployees}
@@ -365,7 +364,7 @@ function AddAccount() {
                 Account Number:
               </label>
               <input
-                type="number"
+                type="text"
                 name="number"
                 placeholder="Enter the Account Number"
                 value={formAccountData.number}
@@ -426,7 +425,7 @@ function AddAccount() {
                 Annual Revenue:
               </label>
               <input
-                type="number"
+                type="text"
                 name="annualRevenue"
                 value={formAccountData.annualRevenue}
                 onChange={handleChange}

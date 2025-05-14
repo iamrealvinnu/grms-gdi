@@ -34,6 +34,7 @@ const checkInactivity = () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("lastActivity");
+      localStorage.removeItem("pkce_verifier");
 
       // Display a warning notification to inform the user about session expiration
       toast.warn("Session expired! You have been logged out.", {
