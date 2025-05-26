@@ -3,9 +3,9 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-function MailCreate({ opportunityId, onClose }) {
+function MailCreate() {
   const [form, setForm] = useState({
     recipient: "",
     participants: "",
@@ -14,7 +14,7 @@ function MailCreate({ opportunityId, onClose }) {
     initiationDate: "",
     notes: "",
     attachments: [],
-    entityId: opportunityId,
+    entityId: "",
     entityTypeId: "",
     typeId: "",
     createdById: "",
@@ -23,6 +23,7 @@ function MailCreate({ opportunityId, onClose }) {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const {opportunityId,leadId} = useParams();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -35,7 +36,7 @@ function MailCreate({ opportunityId, onClose }) {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([fetchTableData(), fetchCurrentUser()]).then(() => {
+    Promise.all([fetchTableData(), fetchCurrentUser(),fetchOpportunityDetails(),fetchLeadDetails(leadId)]).then(() => {
       setLoading(false);
     });
   }, []);
@@ -45,7 +46,7 @@ function MailCreate({ opportunityId, onClose }) {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -139,7 +140,7 @@ function MailCreate({ opportunityId, onClose }) {
         subject: form.subject,
         hiddenParticipants: form.hiddenParticipants,
         notes: form.notes,
-        entityId: form.entityId,
+        entityId: opportunityId,
         entityTypeId: form.entityTypeId,
         typeId: form.typeId,
         initiationDate: form.initiationDate,
@@ -147,7 +148,7 @@ function MailCreate({ opportunityId, onClose }) {
         attachments: attachments,
       };
       const response = await axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Communication/create",
+        `${import.meta.env.VITE_API_URL}/marketing/Communication/create`,
         formData,
         {
           headers: {
@@ -156,8 +157,8 @@ function MailCreate({ opportunityId, onClose }) {
           },
         }
       );
-      toast.success("Meeting created successfully!");
-      onClose(); // Close the modal after successful submission
+      toast.success("Mail created successfully!");
+      navigate("/getCommunications");
     } catch (error) {
       console.error("Error sending email:", error);
       toast.error("Error sending email. Please try again.");
@@ -172,6 +173,63 @@ function MailCreate({ opportunityId, onClose }) {
       reader.onerror = (error) => reject(error);
     });
 
+
+    const fetchOpportunityDetails = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/marketing/Opportunity/one/${opportunityId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const opportunityData = response.data?.data || response.data;
+      setForm((prevData) => ({
+        ...prevData,
+        name: opportunityData.name,
+        statusId: opportunityData.statusId,
+        estimatedValue: opportunityData.estimatedValue,
+        stageId: opportunityData.stageId,
+        description: opportunityData.description,
+        productLineId: opportunityData.productLineId,
+        changedById: opportunityData.createdById,
+        leadId: opportunityData.leadId,
+        closeDate: opportunityData.closeDate
+          ? opportunityData.closeDate.split("T")[0]
+          : "",
+      }));
+      return opportunityData;
+    } catch (error) {
+      console.error("Error fetching opportunity details:", error);
+    }
+  };
+
+  const fetchLeadDetails = async (leadId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/marketing/Lead/one/${leadId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const leadData = response.data.data;
+      setForm((prevData) => ({
+        ...prevData,
+        name: leadData.company || "Opportunity for " + leadData.company,
+        firstName: leadData.firstName || "",
+        lastName: leadData.lastName || "",
+        leadName: leadData.company || "",
+        email: leadData.email || "",
+      }));
+      console.log("view", leadData);
+    } catch (error) {
+      console.error("Error fetching lead details:", error);
+    }
+  };  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -184,28 +242,30 @@ function MailCreate({ opportunityId, onClose }) {
   }
 
   return (
-    <div className="relative">
-      <button
+  <div className="min-h-screen bg-gray-200 p-4 md:p-8">
+      {/* <button
         onClick={onClose}
         className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
         disabled={loading}
       >
         X
-      </button>
-      <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-md">
+      </button> */}
+    <div className="mx-auto max-w-6xl">
         <div className="flex justify-between items-center mb-4">
           <button>Email</button>
-          <button onClick={handleEmailTemplateCreate}>Create Email Template</button>
+          <button className="bg-slate-50 hover:bg-slate-400 p-2 rounded-md " onClick={handleEmailTemplateCreate}>Create Email Template</button>
           <button>Mass Email</button>
         </div>
-        <h2 className="text-2xl font-bold mb-4">Compose Mail</h2>
-        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+      <h2 className="text-lg md:text-2xl font-bold mb-6 text-gray-800"> Compose Email </h2>
+              <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+
+        <form onSubmit={handleSubmit} className="flex-1 bg-white rounded-lg shadow-md p-4 md:p-6 space-y-4">
           <div>
             <label className="block font-semibold">To:</label>
             <input
               type="email"
-              name="participants"
-              value={form.participants}
+              name="recipient"
+              value={form.recipient}
               onChange={handleChange}
               className="w-full p-2 border rounded focus:outline-none"
               required
@@ -216,8 +276,8 @@ function MailCreate({ opportunityId, onClose }) {
             <label className="block font-semibold">CC:</label>
             <input
               type="email"
-              name="recipient"
-              value={form.recipient}
+              name="participants"
+              value={form.participants}
               onChange={handleChange}
               className="w-full p-2 border rounded"
             />
@@ -293,6 +353,23 @@ function MailCreate({ opportunityId, onClose }) {
             Send
           </button>
         </form>
+
+         {/* Sidebar */}
+        <div className="w-full lg:w-64 xl:w-72 mt-4 lg:mt-0">
+          <div className="bg-blue-50 rounded-lg shadow-md p-4 h-full">
+            <h2 className="text-xl md:text-lg font-semibold mb-4">
+              Opportunity Details
+            </h2>
+            <div><strong>Opportunity Name:</strong> {form.name}</div>
+            <div><strong>Description:</strong> {form.description}</div>
+            <div><strong>Estimated Value:</strong> ₹{form.estimatedValue}</div>
+            <div><strong>Close Date:</strong> {form.closeDate}</div>
+            <div><strong>Lead Name:</strong> {form.leadName || "N/A"}</div>
+            <div><strong>Customer Name:</strong> {form.firstName} {form.lastName}</div>
+            <div><strong>Email:</strong> {form.email}</div>
+          </div>
+        </div>
+        </div>
       </div>
       <ToastContainer />
     </div>

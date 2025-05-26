@@ -3,11 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaTasks } from "react-icons/fa";
-import { IoCall } from "react-icons/io5";
-import { MdEmail } from "react-icons/md";
-import { FaPeopleGroup } from "react-icons/fa6";
-import { IoSettings } from "react-icons/io5";
 
 function UpdateLeadData() {
   const [clientData, setClientData] = useState({
@@ -204,14 +199,49 @@ function UpdateLeadData() {
     }
   };
 
-  const handleConvertToOpportunity = () => {
-    if (
-      clientData.statusId &&
-      statusTypes[clientData.statusId] === "Qualified"
-    ) {
+  const handleConvertToOpportunity = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (
+        clientData.statusId &&
+        statusTypes[clientData.statusId] === "Qualified") {
+
+        const qualifiedStatusId = Object.entries(statusTypes).find(
+          ([id, code]) => code === "Qualified"
+        )?.[0];
+
+        if (!qualifiedStatusId) {
+          throw new Error("Qualified status not found");
+        }
+
+        const updateData = {
+          ...clientData,
+          statusId: qualifiedStatusId,
+          userId: clientData.changedById,
+          leadId: leadId,
+        };
+
+        await axios.put(
+          `${import.meta.env.VITE_API_URL}/marketing/Lead/update`,
+          updateData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        // Update local state
+        setClientData((prev) => ({
+          ...prev,
+          statusId: qualifiedStatusId,
+        }));
+      }
       navigate(`/createOpportunity/${leadId}`);
-    } else {
-      toast.error("Lead must be 'Qualified' to convert to opportunity");
+    } catch (error) {
+      toast.error("Error converting to opportunity: " + error.message);
+      console.error("Conversion error:", error);
     }
   };
 
@@ -221,66 +251,112 @@ function UpdateLeadData() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <div className="flex flex-col lg:flex-row gap-6">
-        <form onSubmit={handleSubmit} className="w-full bg-gray-50  lg:flex-1">
-          {/* Company Details Section */}
-          <div className="p-4">
-            <h3 className="text-2xl font-semibold mb-4">Company Details</h3>
-            <div className="flex flex-wrap gap-4">
-              {/* Company Name */}
-              <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">
-                  Company Name
-                </label>
-                <input
-                  type="text"
-                  name="company"
-                  value={clientData.company}
-                  onChange={handleChange}
-                  placeholder="Company Name"
-                  className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
-                />
-              </div>
+      <form onSubmit={handleSubmit} className="w-full bg-gray-50  lg:flex-1">
+        {/* Company Details Section */}
+        <div className="p-4">
+          <h3 className="text-2xl font-semibold mb-4">Company Details</h3>
+          <div className="flex flex-wrap gap-4">
+            {/* Company Name */}
+            <div className="w-full md:w-[48%]">
+              <label className="block font-medium text-gray-700">
+                Company Name
+              </label>
+              <input
+                type="text"
+                name="company"
+                value={clientData.company}
+                onChange={handleChange}
+                placeholder="Company Name"
+                className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
+              />
+            </div>
 
-              {/* Lead Owner */}
-              <div className="w-full md:w-[48%]">
+            {/* Lead Owner */}
+            <div className="w-full md:w-[48%]">
+              <label className="block font-medium text-gray-700">
+                Lead Owner
+              </label>
+              <select
+                name="assignedToId"
+                value={clientData.assignedToId}
+                onChange={handleChange}
+                className="w-full border-2 border-gray-400 text-blue-700 rounded p-2"
+              >
+                <option value="" disabled>
+                  Select Lead Owner
+                </option>
+                {userDetails &&
+                  Array.isArray(userDetails) &&
+                  userDetails.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.profile?.firstName} {user.profile?.lastName}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            {/* Industry Dropdown */}
+            <div className="w-full md:w-[48%]">
+              <label className="block font-medium text-gray-700">
+                Industry
+              </label>
+              <select
+                name="industryId"
+                value={clientData.industryId}
+                onChange={handleChange}
+                className="w-full border-2 border-gray-400 rounded p-2 bg-white"
+              >
+                <option value="" disabled>
+                  Select Industry
+                </option>
+                {Object.entries(industries).map(([id, description]) => (
+                  <option key={id} value={id}>
+                    {description}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="w-full md:w-[48%]">
+              <label className="block font-medium text-gray-700">
+                Lead Status <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="statusId"
+                className="w-full border-2 border-gray-400 rounded p-2 bg-white"
+                value={clientData.statusId}
+                onChange={handleChange}
+                required
+              >
+                <option value="" disabled>
+                  Select Status
+                </option>
+                {Object.entries(statusTypes).map(([id, code]) => (
+                  <option key={id} value={id}>
+                    {code}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="w-full border-gray-400 rounded ">
+              {/* <label className="block font-medium text-gray-700">
+                Add Address
+              </label> */}
+
+              <div className="w-full px-1">
                 <label className="block font-medium text-gray-700">
-                  Lead Owner
+                  Address
                 </label>
                 <select
-                  name="assignedToId"
-                  value={clientData.assignedToId}
+                  name="addressTypeId"
+                  className="w-full border-2 border-gray-400 text-blue-700 rounded p-2 bg-white"
+                  value={clientData.addressTypeId}
                   onChange={handleChange}
-                  className="w-full border-2 border-gray-400 text-blue-700 rounded p-2"
+                  required
                 >
-                  <option value="" disabled>
-                    Select Lead Owner
-                  </option>
-                  {userDetails &&
-                    Array.isArray(userDetails) &&
-                    userDetails.map((user) => (
-                      <option key={user.id} value={user.id}>
-                        {user.profile?.firstName} {user.profile?.lastName}
-                      </option>
-                    ))}
-                </select>
-              </div>
-
-              {/* Industry Dropdown */}
-              <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">
-                  Industry
-                </label>
-                <select
-                  name="industryId"
-                  value={clientData.industryId}
-                  onChange={handleChange}
-                  className="w-full border-2 border-gray-400 rounded p-2 bg-white"
-                >
-                  <option value="" disabled>
-                    Select Industry
-                  </option>
-                  {Object.entries(industries).map(([id, description]) => (
+                  <option value="">Select Address</option>
+                  {Object.entries(addressTypes).map(([id, description]) => (
                     <option key={id} value={id}>
                       {description}
                     </option>
@@ -288,309 +364,223 @@ function UpdateLeadData() {
                 </select>
               </div>
 
+              <div className="w-full mt-4">
+                <label className="block font-medium  text-gray-700 p-1">
+                  Address Line 1
+                </label>
+                <input
+                  type="text"
+                  name="address1"
+                  value={clientData.address1}
+                  onChange={handleChange}
+                  className="w-full border-2 text-blue-700 border-gray-400 rounded p-2"
+                  placeholder="Address Line 1"
+                />
+              </div>
+              <div className="flex flex-wrap gap-4 mt-4">
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={clientData.city}
+                    onChange={handleChange}
+                    className="w-full border-2 text-blue-700 border-gray-400 rounded p-2"
+                    placeholder="City"
+                  />
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    ZIP Code
+                  </label>
+                  <input
+                    type="text"
+                    name="zip"
+                    value={clientData.zip}
+                    onChange={handleChange}
+                    className="w-full border-2 text-blue-700 border-gray-400 rounded p-2"
+                    placeholder="ZIP Code"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-4 mt-4">
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    Country
+                  </label>
+                  <select
+                    name="countryId"
+                    value={clientData.countryId}
+                    onChange={handleChange}
+                    className="w-full border-2 border-gray-400 rounded p-2 bg-white"
+                  >
+                    <option value="">Select Country</option>
+                    {Object.entries(countryTypes).map(([id, name]) => (
+                      <option key={id} value={id}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="w-full md:w-[48%]">
+                  <label className="block font-medium text-gray-700">
+                    State
+                  </label>
+                  <select
+                    name="stateId"
+                    value={clientData.stateId}
+                    onChange={handleChange}
+                    className="w-full border-2 border-gray-400 rounded p-2 bg-white"
+                  >
+                    <option value="">Select State</option>
+                    {Object.entries(stateTypes).map(([id, name]) => (
+                      <option key={id} value={id}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Information Section */}
+        <div className="mb-6 border-b pb-4 mt-6">
+          <div className="p-4">
+            <h3 className="text-2xl font-semibold mb-4">Contact Information</h3>
+            <div className="flex flex-wrap gap-4">
+              {/* First Name */}
               <div className="w-full md:w-[48%]">
                 <label className="block font-medium text-gray-700">
-                  Lead Status <span className="text-red-500">*</span>
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={clientData.firstName}
+                  onChange={handleChange}
+                  placeholder="First Name"
+                  className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
+                />
+              </div>
+
+              {/* Last Name */}
+              <div className="w-full md:w-[48%]">
+                <label className="block font-medium text-gray-700">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={clientData.lastName}
+                  onChange={handleChange}
+                  placeholder="Last Name"
+                  className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
+                />
+              </div>
+
+              {/* Email */}
+              <div className="w-full md:w-[48%]">
+                <label className="block font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={clientData.email}
+                  onChange={handleChange}
+                  placeholder="Email"
+                  className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
+                />
+              </div>
+
+              {/* Phone Number */}
+              <div className="w-full md:w-[48%]">
+                <label className="block font-medium text-gray-700">
+                  Mobile Number
+                </label>
+                <input
+                  type="number"
+                  name="phoneNumber"
+                  value={clientData.phoneNumber}
+                  onChange={handleChange}
+                  placeholder="Phone Number"
+                  className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
+                />
+              </div>
+
+              {/* Department Dropdown */}
+              <div className="w-full md:w-[48%]">
+                <label className="block font-medium text-gray-700">
+                  Department
                 </label>
                 <select
-                  name="statusId"
-                  className="w-full border-2 border-gray-400 rounded p-2 bg-white"
-                  value={clientData.statusId}
+                  name="departmentId"
+                  value={clientData.departmentId}
                   onChange={handleChange}
-                  required
+                  className="w-full border-2 border-gray-400 rounded p-2 bg-white"
                 >
                   <option value="" disabled>
-                    Select Status
+                    Select Department
                   </option>
-                  {Object.entries(statusTypes).map(([id, code]) => (
+                  {Object.entries(departments).map(([id, description]) => (
                     <option key={id} value={id}>
-                      {code}
+                      {description}
                     </option>
                   ))}
                 </select>
               </div>
 
-              <div className="w-full border-gray-400 rounded ">
-                {/* <label className="block font-medium text-gray-700">
-                Add Address
-              </label> */}
-
-                <div className="w-full px-1">
-                  <label className="block font-medium text-gray-700">
-                    Address
-                  </label>
-                  <select
-                    name="addressTypeId"
-                    className="w-full border-2 border-gray-400 text-blue-700 rounded p-2 bg-white"
-                    value={clientData.addressTypeId}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select Address</option>
-                    {Object.entries(addressTypes).map(([id, description]) => (
-                      <option key={id} value={id}>
-                        {description}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="w-full mt-4">
-                  <label className="block font-medium  text-gray-700 p-1">
-                    Address Line 1
-                  </label>
-                  <input
-                    type="text"
-                    name="address1"
-                    value={clientData.address1}
-                    onChange={handleChange}
-                    className="w-full border-2 text-blue-700 border-gray-400 rounded p-2"
-                    placeholder="Address Line 1"
-                  />
-                </div>
-                <div className="flex flex-wrap gap-4 mt-4">
-                  <div className="w-full md:w-[48%]">
-                    <label className="block font-medium text-gray-700">
-                      City
-                    </label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={clientData.city}
-                      onChange={handleChange}
-                      className="w-full border-2 text-blue-700 border-gray-400 rounded p-2"
-                      placeholder="City"
-                    />
-                  </div>
-
-                  <div className="w-full md:w-[48%]">
-                    <label className="block font-medium text-gray-700">
-                      ZIP Code
-                    </label>
-                    <input
-                      type="text"
-                      name="zip"
-                      value={clientData.zip}
-                      onChange={handleChange}
-                      className="w-full border-2 text-blue-700 border-gray-400 rounded p-2"
-                      placeholder="ZIP Code"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-4 mt-4">
-                  <div className="w-full md:w-[48%]">
-                    <label className="block font-medium text-gray-700">
-                      Country
-                    </label>
-                    <select
-                      name="countryId"
-                      value={clientData.countryId}
-                      onChange={handleChange}
-                      className="w-full border-2 border-gray-400 rounded p-2 bg-white"
-                    >
-                      <option value="">Select Country</option>
-                      {Object.entries(countryTypes).map(([id, name]) => (
-                        <option key={id} value={id}>
-                          {name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="w-full md:w-[48%]">
-                    <label className="block font-medium text-gray-700">
-                      State
-                    </label>
-                    <select
-                      name="stateId"
-                      value={clientData.stateId}
-                      onChange={handleChange}
-                      className="w-full border-2 border-gray-400 rounded p-2 bg-white"
-                    >
-                      <option value="">Select State</option>
-                      {Object.entries(stateTypes).map(([id, name]) => (
-                        <option key={id} value={id}>
-                          {name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+              {/* Discussion */}
+              <div className="w-full">
+                <label className="block font-medium text-gray-700">
+                  Notes:
+                </label>
+                <textarea
+                  name="notes"
+                  value={clientData.notes}
+                  onChange={handleChange}
+                  placeholder="Discussion"
+                  className="w-full border-2 border-gray-400  text-blue-700 rounded p-4"
+                  rows={4}
+                />
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Contact Information Section */}
-          <div className="mb-6 border-b pb-4 mt-6">
-            <div className="p-4">
-              <h3 className="text-2xl font-semibold mb-4">
-                Contact Information
-              </h3>
-              <div className="flex flex-wrap gap-4">
-                {/* First Name */}
-                <div className="w-full md:w-[48%]">
-                  <label className="block font-medium text-gray-700">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={clientData.firstName}
-                    onChange={handleChange}
-                    placeholder="First Name"
-                    className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
-                  />
-                </div>
-
-                {/* Last Name */}
-                <div className="w-full md:w-[48%]">
-                  <label className="block font-medium text-gray-700">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={clientData.lastName}
-                    onChange={handleChange}
-                    placeholder="Last Name"
-                    className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
-                  />
-                </div>
-
-                {/* Email */}
-                <div className="w-full md:w-[48%]">
-                  <label className="block font-medium text-gray-700">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={clientData.email}
-                    onChange={handleChange}
-                    placeholder="Email"
-                    className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
-                  />
-                </div>
-
-                {/* Phone Number */}
-                <div className="w-full md:w-[48%]">
-                  <label className="block font-medium text-gray-700">
-                    Mobile Number
-                  </label>
-                  <input
-                    type="number"
-                    name="phoneNumber"
-                    value={clientData.phoneNumber}
-                    onChange={handleChange}
-                    placeholder="Phone Number"
-                    className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
-                  />
-                </div>
-
-                {/* Department Dropdown */}
-                <div className="w-full md:w-[48%]">
-                  <label className="block font-medium text-gray-700">
-                    Department
-                  </label>
-                  <select
-                    name="departmentId"
-                    value={clientData.departmentId}
-                    onChange={handleChange}
-                    className="w-full border-2 border-gray-400 rounded p-2 bg-white"
-                  >
-                    <option value="" disabled>
-                      Select Department
-                    </option>
-                    {Object.entries(departments).map(([id, description]) => (
-                      <option key={id} value={id}>
-                        {description}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Discussion */}
-                <div className="w-full">
-                  <label className="block font-medium text-gray-700">
-                    Notes:
-                  </label>
-                  <textarea
-                    name="notes"
-                    value={clientData.notes}
-                    onChange={handleChange}
-                    placeholder="Discussion"
-                    className="w-full border-2 border-gray-400  text-blue-700 rounded p-4"
-                    rows={4}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:justify-between">
-            <button
-              className="px-4 py-2 bg-gray-400 text-white rounded-lg shadow hover:bg-gray-500"
-              onClick={() => navigate("/leadDetails")}
-            >
-              Cancel
-            </button>
+        {/* Buttons */}
+        <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:justify-between">
+          <button
+            className="px-4 py-2 bg-gray-400 text-white rounded-lg shadow hover:bg-gray-500"
+            onClick={() => navigate("/leadDetails")}
+          >
+            Cancel
+          </button>
+          {statusTypes[clientData.statusId] !== "Qualified" && (
             <button
               type="submit"
               className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
             >
               Update Lead
             </button>
-            {statusTypes[clientData.statusId] === "Qualified" && (
-              <button
-                type="button"
-                className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
-                onClick={handleConvertToOpportunity}
-              >
-                Convert to Opportunity
-              </button>
-            )}
-          </div>
-        </form>
-
-        <div className="w-full lg:w-64 xl:w-72">
-          <div className="bg-blue-50 rounded-lg shadow-md p-4 h-full">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Quick Actions
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              <button className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <FaTasks className="text-blue-500 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">Task</span>
-              </button>
-              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <IoCall className="text-green-500 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">Call</span>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <MdEmail className="text-yellow-500 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">Email</span>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <FaPeopleGroup className="text-purple-500 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">
-                  Meeting
-                </span>
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <IoSettings className="text-gray-600 text-2xl mb-2" />
-                <span className="text-sm font-medium text-gray-700">
-                  Settings
-                </span>
-              </div>
-            </div>
-          </div>
+          )}
+          {statusTypes[clientData.statusId] === "Qualified" && (
+            <button
+              type="button"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
+              onClick={handleConvertToOpportunity}
+            >
+              Convert to Opportunity
+            </button>
+          )}
         </div>
-        <ToastContainer />
-      </div>
+      </form>
+      <ToastContainer />
     </div>
   );
 }

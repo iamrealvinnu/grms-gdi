@@ -45,6 +45,10 @@ import MeetingCreate from "./components/Activities/Meeting/MeetingCreate";
 import UpdateTask from "./components/Activities/Task/UpdateTask";
 import MicrosoftCallback from "./components/pages/MicroSoftCallback";
 import CreateTemplate from "./components/Activities/Email/CreateTemplate";
+import ViewOpportunity from "./components/Leads/Opportunity/ViewOpportunity";
+import GetTasks from "./components/Activities/Task/GetTasks";
+import GetCommunications from "./components/Activities/GetCommunications";
+import CreateAccount from "./components/Account/CreateAccount";
 
 function App() {
   return (
@@ -76,6 +80,7 @@ function App() {
         <Route path="/getAllOpportunity" element={<GetAllOpportunity />} />
         <Route path="/createOpportunity/:leadId" element={<CreateOpportunity />} />
         <Route path="/updateOpportunity/:opportunityId" element={<UpdateOpportunity />} />
+        <Route path="/viewOpportunity/:opportunityId/:leadId" element={<ViewOpportunity />} />
 
         {/* Customers Routes */}
         <Route path="/getCustomerList" element={<GetListCustomers />} />
@@ -90,25 +95,28 @@ function App() {
 
         {/* Account Routes */}
         <Route path="/getAllaccount" element={<GetAllAccount />} />
-        <Route path="/addAccount" element={<AddAccount />} />
+        <Route path="/addAccount" element={<CreateAccount />} />
+        <Route path="/addAccount/:opportunityId" element={<AddAccount />} />
         <Route path="/updateAccount/:accountId" element={<EditAccount />} />
 
         {/* Activities Routes */}
         <Route path="/getAllactivities" element={<GetAllActivities />} />
+        <Route path="/getTasks" element={<GetTasks />} />
+        <Route path="/getCommunications" element={<GetCommunications />} />
 
         {/* Task Routes */}
-        <Route path="/createTask" element={<CreateTask />} />
+        <Route path="/createTask/:opportunityId/:leadId" element={<CreateTask />} />
         <Route path="/updateTask/:activityId" element={<UpdateTask />} />
 
         {/* Call Routes */}
-        <Route path="/createCall" element={<CallCreate />} />
+        <Route path="/createCall/:opportunityId/:leadId" element={<CallCreate />} />
         
         {/* Email Routes */}
-        <Route path="/createMail" element={<MailCreate />} />
+        <Route path="/createMail/:opportunityId/:leadId" element={<MailCreate />} />
         <Route path="/createTemplate" element={<CreateTemplate />} />
 
         {/* Meeting Routes */}
-        <Route path="/createMeeting" element={<MeetingCreate />} />
+        <Route path="/createMeeting/:opportunityId/:leadId" element={<MeetingCreate />} />
 
       </Routes>
     </Router>

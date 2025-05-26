@@ -3,12 +3,13 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useParams,useNavigate } from "react-router-dom";
 
-function CallCreate({ opportunityId, onClose }) {
+function CallCreate() {
   const [formData, setFormData] = useState({
     recipient: "",
     subject: "",
-    entityId: opportunityId,
+    entityId: "",
     createdById: "",
     initiationDate: "",
     typeId: "",
@@ -18,12 +19,16 @@ function CallCreate({ opportunityId, onClose }) {
 
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { opportunityId, leadId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       await fetchTableData();
       await fetchCurrentUser();
+      await fetchOpportunityDetails();
+      await fetchLeadDetails(leadId);
       setLoading(false);
     };
     fetchData();
@@ -42,7 +47,7 @@ function CallCreate({ opportunityId, onClose }) {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-        "https://grms-dev.gdinexus.com:49181/api/v1/Reference/all",
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -106,7 +111,7 @@ function CallCreate({ opportunityId, onClose }) {
     }
   }, [loading, tableData]);
 
-  const handleSubmit = (e) => {
+  const handleCallSubmit = (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("accessToken");
@@ -123,7 +128,7 @@ function CallCreate({ opportunityId, onClose }) {
         inbound: formData.inbound,
       };
       const response = axios.post(
-        "https://grms-dev.gdinexus.com:49181/api/v1/marketing/Communication/create",
+       `${import.meta.env.VITE_API_URL}/marketing/Communication/create`,
         requestData,
         {
           headers: {
@@ -133,10 +138,66 @@ function CallCreate({ opportunityId, onClose }) {
       );
       toast.success("Call log created successfully!");
       console.log("Call log created successfully:", response.data);
-      onClose();
+      navigate("/getCommunications");
     } catch (error) {
       console.error("Error creating call log:", error);
       toast.error("Failed to create call log. Please try again.");
+    }
+  };
+
+  const fetchOpportunityDetails = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/marketing/Opportunity/one/${opportunityId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const opportunityData = response.data?.data || response.data;
+      setFormData((prevData) => ({
+        ...prevData,
+        name: opportunityData.name,
+        statusId: opportunityData.statusId,
+        estimatedValue: opportunityData.estimatedValue,
+        stageId: opportunityData.stageId,
+        description: opportunityData.description,
+        productLineId: opportunityData.productLineId,
+        changedById: opportunityData.createdById,
+        leadId: opportunityData.leadId,
+        closeDate: opportunityData.closeDate
+          ? opportunityData.closeDate.split("T")[0]
+          : "",
+      }));
+      return opportunityData;
+    } catch (error) {
+      console.error("Error fetching opportunity details:", error);
+    }
+  };
+
+  const fetchLeadDetails = async (leadId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/marketing/Lead/one/${leadId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const leadData = response.data.data;
+      setFormData((prevData) => ({
+        ...prevData,
+        name: leadData.company || "Opportunity for " + leadData.company,
+        firstName: leadData.firstName || "",
+        lastName: leadData.lastName || "",
+        leadName: leadData.company || "",
+        phoneNumber: leadData.phoneNumber || "",
+      }));
+      console.log("view", leadData);
+    } catch (error) {
+      console.error("Error fetching lead details:", error);
     }
   };
 
@@ -148,19 +209,16 @@ function CallCreate({ opportunityId, onClose }) {
     );
   }
 
-  return (
-    <div className="relative">
-      <button
-        onClick={onClose}
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-        disabled={loading}
-      >
-        X
-      </button>
-      <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Call Log Form</h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+ return (
+  <div className="min-h-screen bg-gray-200 p-4 md:p-8">
+    <div className="mx-auto max-w-6xl">
+      <h2 className="text-lg md:text-2xl font-bold mb-6 text-gray-800">
+        Call Log Form
+      </h2>
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+        
+        {/* Form Section */}
+        <form onSubmit={handleCallSubmit} className="flex-1 bg-white rounded-lg shadow-md p-4 md:p-6 space-y-4">
           <div>
             <label className="block text-gray-700 mb-1">Recipient</label>
             <input
@@ -185,12 +243,7 @@ function CallCreate({ opportunityId, onClose }) {
             />
           </div>
 
-          {/* Hidden inputs for hardcoded values */}
-          <input
-            type="hidden"
-            name="entityTypeId"
-            value={formData.entityTypeId}
-          />
+          <input type="hidden" name="entityTypeId" value={formData.entityTypeId} />
           <input type="hidden" name="typeId" value={formData.typeId} />
 
           <div>
@@ -220,17 +273,32 @@ function CallCreate({ opportunityId, onClose }) {
 
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white w-full md:w-auto px-4 py-2 rounded-md hover:bg-blue-700 transition"
           >
             Save Call
           </button>
         </form>
 
-        <hr className="my-6" />
-      </div>
-      <ToastContainer />
-    </div>
-  );
-}
+        {/* Sidebar */}
+        <div className="w-full lg:w-64 xl:w-72 mt-4 lg:mt-0">
+          <div className="bg-blue-50 rounded-lg shadow-md p-4 h-full">
+            <h2 className="text-xl md:text-lg font-semibold mb-4">
+              Opportunity Details
+            </h2>
+            <div><strong>Opportunity Name:</strong> {formData.name}</div>
+            <div><strong>Description:</strong> {formData.description}</div>
+            <div><strong>Estimated Value:</strong> ₹{formData.estimatedValue}</div>
+            <div><strong>Close Date:</strong> {formData.closeDate}</div>
+            <div><strong>Lead Name:</strong> {formData.leadName || "N/A"}</div>
+            <div><strong>Customer Name:</strong> {formData.firstName} {formData.lastName}</div>
+            <div><strong>Mobile Number:</strong> {formData.phoneNumber || "N/A"}</div>
 
+          </div>
+        </div>
+      </div>
+    </div>
+    <ToastContainer />
+  </div>
+);
+}
 export default CallCreate;

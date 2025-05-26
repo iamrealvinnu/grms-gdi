@@ -2,11 +2,6 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { FaTasks } from "react-icons/fa";
-import { IoCall } from "react-icons/io5";
-import { MdEmail } from "react-icons/md";
-import { FaPeopleGroup } from "react-icons/fa6";
-import { IoSettings } from "react-icons/io5";
 
 function EditAccount() {
   const [formAccountData, setFormAccountData] = useState({
@@ -209,7 +204,6 @@ function EditAccount() {
   return (
     <div>
       <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-        <div className="flex flex-col lg:flex-row gap-6">
           <form
             onSubmit={handleAccountSubmit}
             className="bg-gray-50 w-full lg:flex-1"
@@ -532,7 +526,7 @@ function EditAccount() {
             </div>
           </form>
 
-          <div className="w-full lg:w-64 xl:w-72">
+          {/* <div className="w-full lg:w-64 xl:w-72">
             <div className="bg-emerald-50 rounded-lg shadow-md p-4 h-full">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 Quick Actions
@@ -572,9 +566,8 @@ function EditAccount() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
-        </div>
         <ToastContainer />
       </div>
     </div>

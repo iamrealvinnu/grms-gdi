@@ -28,6 +28,8 @@ function AddAccount() {
   });
 
   const [errors, setErrors] = useState({});
+  const [contactForms, setContactForms] = useState([]);
+  const [showContactForm, setShowContactForm] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [users, setUsers] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
@@ -35,17 +37,21 @@ function AddAccount() {
   const [loading, setLoading] = useState(true);
 
   const industriesTypes =
-    tableData.find((item) => item.name === "Industry Types")?.referenceItems || [];
+    tableData.find((item) => item.name === "Industry Types")?.referenceItems ||
+    [];
   const stateTypes =
     tableData.find((item) => item.name === "States")?.referenceItems || [];
   const countryTypes =
     tableData.find((item) => item.name === "Countries")?.referenceItems || [];
   const addressTypes =
-    tableData.find((item) => item.name === "Address Types")?.referenceItems || [];
+    tableData.find((item) => item.name === "Address Types")?.referenceItems ||
+    [];
   const accountTypes =
-    tableData.find((item) => item.name === "Account Types")?.referenceItems || [];
+    tableData.find((item) => item.name === "Account Types")?.referenceItems ||
+    [];
   const ownershipTypes =
-    tableData.find((item) => item.name === "Ownership Types")?.referenceItems || [];
+    tableData.find((item) => item.name === "Ownership Types")?.referenceItems ||
+    [];
 
   const fetchTableData = async () => {
     try {
@@ -115,7 +121,8 @@ function AddAccount() {
     const { name, value } = e.target;
     const newValue =
       name === "numberOfEmployees" || name === "annualRevenue"
-        ? parseInt(value, 10) || "" : value;
+        ? parseInt(value, 10) || ""
+        : value;
     setFormAccountData((prevData) => ({ ...prevData, [name]: newValue }));
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
@@ -140,11 +147,17 @@ function AddAccount() {
       newErrors.ownershipTypeId = "Account Owner is required.";
       isValid = false;
     }
-    if (formAccountData.numberOfEmployees === "" || isNaN(formAccountData.numberOfEmployees)) {
+    if (
+      formAccountData.numberOfEmployees === "" ||
+      isNaN(formAccountData.numberOfEmployees)
+    ) {
       newErrors.numberOfEmployees = "Number of employees is required.";
       isValid = false;
     }
-    if (formAccountData.annualRevenue === "" || isNaN(formAccountData.annualRevenue)) {
+    if (
+      formAccountData.annualRevenue === "" ||
+      isNaN(formAccountData.annualRevenue)
+    ) {
       newErrors.annualRevenue = "Annual revenue is required.";
       isValid = false;
     }
@@ -237,15 +250,30 @@ function AddAccount() {
     );
   }
 
+  const handleAddContact = () => {
+    setShowContactForm(true);
+  };
+
+  const handleCloseContactForm = (index) => {
+    const updatedForms = [...contactForms];
+    updatedForms.splice(index, 1);
+    setContactForms(updatedForms);
+  };
+
+  const handleAddNewContact = () => {
+    setContactForms([...contactForms, {}]);
+    setShowContactForm(false);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="max-w-7xl mx-auto p-2 bg-white shadow-lg rounded-lg">
       <form onSubmit={handleAccountSubmit}>
-        <div className="p-4">
+        <div className="p-2">
           <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
             Add Account Details
           </h3>
-          <div className="flex flex-wrap gap-4">
-            <div className="w-full md:w-[48%]">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-4">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">
                 Account Owner:
               </label>
@@ -268,7 +296,7 @@ function AddAccount() {
               )}
             </div>
 
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">
                 Account Name:
               </label>
@@ -285,7 +313,7 @@ function AddAccount() {
               )}
             </div>
 
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">Email:</label>
               <input
                 type="email"
@@ -300,7 +328,7 @@ function AddAccount() {
               )}
             </div>
 
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">
                 Account Type:
               </label>
@@ -323,7 +351,7 @@ function AddAccount() {
               )}
             </div>
 
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">
                 Phone Number:
               </label>
@@ -340,7 +368,7 @@ function AddAccount() {
               )}
             </div>
 
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">
                 No.Of Employees:
               </label>
@@ -359,7 +387,7 @@ function AddAccount() {
               )}
             </div>
 
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">
                 Account Number:
               </label>
@@ -373,7 +401,7 @@ function AddAccount() {
               />
             </div>
 
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">
                 Industry:
               </label>
@@ -397,30 +425,7 @@ function AddAccount() {
               )}
             </div>
 
-            <div className="w-full md:w-[48%]">
-              <label className="block text-gray-700 font-medium">
-                Assigned To
-              </label>
-              <select
-                name="assignedToId"
-                className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                value={formAccountData.assignedToId}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Assign User</option>
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.profile?.firstName} {user.profile?.lastName}
-                  </option>
-                ))}
-              </select>
-              {errors.assignedToId && (
-                <p className="text-red-500 text-sm">{errors.assignedToId}</p>
-              )}
-            </div>
-
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">
                 Annual Revenue:
               </label>
@@ -437,7 +442,7 @@ function AddAccount() {
               )}
             </div>
 
-            <div className="w-full md:w-[48%]">
+            <div className="w-full">
               <label className="block text-gray-700 font-medium">
                 Description:
               </label>
@@ -451,12 +456,16 @@ function AddAccount() {
                 placeholder="Enter Notes..."
               />
             </div>
+          </div>
 
-            <div className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300">
-              <label className="block font-medium text-gray-700">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Address Section */}
+            <div className="w-full md:w-1/2 px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300">
+              <label className="block font-bold text-gray-700">
                 Add Address
               </label>
 
+              {/* Address Type */}
               <div className="w-full">
                 <select
                   name="addressTypeId"
@@ -484,79 +493,325 @@ function AddAccount() {
                 className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
               />
 
-              {/* Town */}
-              <input
-                type="text"
-                name="city"
-                value={formAccountData.city}
-                onChange={handleChange}
-                placeholder="Town"
-                className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-              />
-
-              {/* Pincode */}
-              <input
-                type="text"
-                name="zip"
-                value={formAccountData.zip}
-                onChange={handleChange}
-                placeholder="Pincode"
-                className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-              />
-
-              {/* State */}
-              <div className="w-full border-b-2 p-2 bg-white">
-                <label className="block font-medium text-gray-700">State</label>
-                <select
-                  name="stateId"
-                  className="w-full p-2 bg-white"
-                  value={formAccountData.stateId}
-                  onChange={handleChange}
-                >
-                  <option value="">Select State</option>
-                  {stateTypes.map((stateType) => (
-                    <option key={stateType.id} value={stateType.id}>
-                      {stateType.description}
-                    </option>
-                  ))}
-                </select>
-                {errors.stateId && (
-                  <p className="text-red-500 text-sm">{errors.stateId}</p>
-                )}
+              {/* City & ZIP */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div className="w-full">
+                  <label className="block font-medium text-gray-700">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formAccountData.city}
+                    onChange={handleChange}
+                    placeholder="City"
+                    className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                  />
+                </div>
+                <div className="w-full">
+                  <label className="block font-medium text-gray-700">
+                    ZIP Code
+                  </label>
+                  <input
+                    type="text"
+                    name="zip"
+                    value={formAccountData.zip}
+                    onChange={handleChange}
+                    placeholder="ZIP Code"
+                    className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                  />
+                </div>
               </div>
 
-              {/* Country Dropdown */}
-              <div className="w-full border-b-2 p-2 bg-white">
-                <label className="block font-medium text-gray-700">
-                  Country
-                </label>
-                <select
-                  name="countryId"
-                  className="w-full p-2 bg-white"
-                  value={formAccountData.countryId}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Country</option>
-                  {countryTypes.map((countryType) => (
-                    <option key={countryType.id} value={countryType.id}>
-                      {countryType.description}
-                    </option>
-                  ))}
-                </select>
-                {errors.countryId && (
-                  <p className="text-red-500 text-sm">{errors.countryId}</p>
-                )}
+              {/* State & Country */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div className="w-full">
+                  <label className="block font-medium text-gray-700">
+                    State
+                  </label>
+                  <select
+                    name="stateId"
+                    className="w-full p-2 bg-white"
+                    value={formAccountData.stateId}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select State</option>
+                    {stateTypes.map((stateType) => (
+                      <option key={stateType.id} value={stateType.id}>
+                        {stateType.description}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.stateId && (
+                    <p className="text-red-500 text-sm">{errors.stateId}</p>
+                  )}
+                </div>
+                <div className="w-full">
+                  <label className="block font-medium text-gray-700">
+                    Country
+                  </label>
+                  <select
+                    name="countryId"
+                    className="w-full p-2 bg-white"
+                    value={formAccountData.countryId}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Country</option>
+                    {countryTypes.map((countryType) => (
+                      <option key={countryType.id} value={countryType.id}>
+                        {countryType.description}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.countryId && (
+                    <p className="text-red-500 text-sm">{errors.countryId}</p>
+                  )}
+                </div>
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-75"
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save"}
-            </button>
+            {/* Contact Information Section */}
+            <div className="w-full md:w-1/2 px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300">
+              <label className="block font-bold text-gray-700">
+                Contact Information
+              </label>
+
+              {/* Render existing contact forms */}
+              {contactForms.map((contact, index) => (
+                <div
+                  key={index}
+                  className="relative mb-4 p-4 border rounded-lg"
+                >
+                  <button
+                    type="button"
+                    onClick={() => handleCloseContactForm(index)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                  >
+                    ✕
+                  </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="w-full">
+                      <label className="block font-medium text-gray-700">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        name={`firstName-${index}`}
+                        value={contact.firstName || ""}
+                        onChange={(e) => {
+                          const updatedForms = [...contactForms];
+                          updatedForms[index].firstName = e.target.value;
+                          setContactForms(updatedForms);
+                        }}
+                        placeholder="First Name"
+                        className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label className="block font-medium text-gray-700">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        name={`lastName-${index}`}
+                        value={contact.lastName || ""}
+                        onChange={(e) => {
+                          const updatedForms = [...contactForms];
+                          updatedForms[index].lastName = e.target.value;
+                          setContactForms(updatedForms);
+                        }}
+                        placeholder="Last Name"
+                        className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email & Phone */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="w-full">
+                      <label className="block font-medium text-gray-700">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name={`email-${index}`}
+                        value={contact.email || ""}
+                        onChange={(e) => {
+                          const updatedForms = [...contactForms];
+                          updatedForms[index].email = e.target.value;
+                          setContactForms(updatedForms);
+                        }}
+                        placeholder="Email"
+                        className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label className="block text-gray-700 font-medium">
+                        Assigned To
+                      </label>
+                      <select
+                        name={`assignedToId-${index}`}
+                        className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                        value={formAccountData.assignedToId}
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="">Assign User</option>
+                        {users.map((user) => (
+                          <option key={user.id} value={user.id}>
+                            {user.profile?.firstName} {user.profile?.lastName}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.assignedToId && (
+                        <p className="text-red-500 text-sm">
+                          {errors.assignedToId}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Mobile & Department */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="w-full">
+                      <label className="block font-medium text-gray-700">
+                        Mobile Number
+                      </label>
+                      <input
+                        type="tel"
+                        name={`mobile-${index}`}
+                        value={contact.mobile || ""}
+                        onChange={(e) => {
+                          const updatedForms = [...contactForms];
+                          updatedForms[index].mobile = e.target.value;
+                          setContactForms(updatedForms);
+                        }}
+                        placeholder="Mobile Number"
+                        className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label className="block font-medium text-gray-700">
+                        Department
+                      </label>
+                      <input
+                        type="text"
+                        name={`department-${index}`}
+                        value={contact.department || ""}
+                        onChange={(e) => {
+                          const updatedForms = [...contactForms];
+                          updatedForms[index].department = e.target.value;
+                          setContactForms(updatedForms);
+                        }}
+                        placeholder="Department"
+                        className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Add Contact Button */}
+              <div className="flex items-center justify-center mt-4 rounded-md p-2">
+                <button
+                  type="button"
+                  onClick={handleAddContact}
+                  className="bg-slate-300 gap-2 p-2 rounded"
+                >
+                  + Add Contact
+                </button>
+              </div>
+            </div>
           </div>
+
+          {/* Modal for new contact form */}
+          {showContactForm && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg w-full max-w-md">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold">Add New Contact</h3>
+                  <button
+                    onClick={() => setShowContactForm(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="w-full">
+                    <label className="block font-medium text-gray-700">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      name="newFirstName"
+                      className="w-full px-4 py-2 mt-1 border rounded-lg"
+                      placeholder="First Name"
+                    />
+                  </div>
+                  <div className="w-full">
+                    <label className="block font-medium text-gray-700">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      name="newLastName"
+                      className="w-full px-4 py-2 mt-1 border rounded-lg"
+                      placeholder="Last Name"
+                    />
+                  </div>
+                  <div className="w-full">
+                    <label className="block font-medium text-gray-700">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="newEmail"
+                      className="w-full px-4 py-2 mt-1 border rounded-lg"
+                      placeholder="Email"
+                    />
+                  </div>
+                  <div className="w-full">
+                    <label className="block font-medium text-gray-700">
+                      Phone
+                    </label>
+                    <input
+                      type="tel"
+                      name="newPhone"
+                      className="w-full px-4 py-2 mt-1 border rounded-lg"
+                      placeholder="Phone"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowContactForm(false)}
+                    className="px-4 py-2 border rounded-lg"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAddNewContact}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                  >
+                    Add Contact
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-75"
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
+          </button>
         </div>
       </form>
       <ToastContainer />

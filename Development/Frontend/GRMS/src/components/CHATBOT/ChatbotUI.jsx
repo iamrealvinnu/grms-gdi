@@ -100,7 +100,7 @@ const ChatbotUI = ({ closeChat, isChatOpen }) => {
             const token = localStorage.getItem("accessToken");
     
             const response = await axios.post(
-                "https://grms-dev.gdinexus.com:49181/api/v1/intelligence/Chat/session",
+                `${import.meta.env.VITE_API_URL}/intelligence/Chat/session`,
                 {
                     request: messageToSend,
                     userId: currentUserId,

@@ -22,7 +22,7 @@ function MarketingDetails() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({
     key: null,
-    direction: "ascending"
+    direction: "ascending",
   });
   const [filterStartDate, setFilterStartDate] = useState("");
   const [filterEndDate, setFilterEndDate] = useState("");
@@ -35,8 +35,8 @@ function MarketingDetails() {
           `${import.meta.env.VITE_API_URL}/marketing/Campaign/all/true`,
           {
             headers: {
-              Authorization: `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         if (response.data && response.data.success && response.data.data) {
@@ -130,24 +130,29 @@ function MarketingDetails() {
 
   return (
     <div className="p-5">
-      <div className="flex justify-end mb-4 gap-3">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4">
+        {/* Search Container - Full width on mobile, then flex-1 on larger screens */}
+        <div className="w-full sm:flex-1 flex items-center gap-2">
           <Search className="w-5 h-5 text-gray-500" />
           <input
             type="text"
             placeholder="Search Campaigns..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300 w-64"
+            className="px-4 py-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300 w-full sm:w-64"
           />
         </div>
 
-        <Link
-          to="/campaignCreate"
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
-        >
-          <PlusCircle size={20} /> Add Campaign
-        </Link>
+        {/* Button Container - Full width on mobile, auto width on larger screens */}
+        <div className="w-full sm:w-auto flex justify-end">
+          <Link
+            to="/campaignCreate"
+            className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition w-full sm:w-auto"
+          >
+            <PlusCircle size={20} />
+            <span>Add Campaign</span>
+          </Link>
+        </div>
       </div>
 
       <div className="overflow-x-auto">

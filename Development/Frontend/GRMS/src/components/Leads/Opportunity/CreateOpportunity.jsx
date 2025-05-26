@@ -259,7 +259,7 @@ function CreateOpportunity() {
               Estimated Value:
             </label>
             <input
-              type="number"
+              type="text"
               name="estimatedValue"
               value={formOpportunityData.estimatedValue}
               onChange={handleChange}

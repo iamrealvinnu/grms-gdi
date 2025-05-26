@@ -220,7 +220,7 @@ function AddLead() {
                 {users && users.length > 0 ? (
                   users.map((user) => (
                     <option key={user.id} value={user.id}>
-                      {user.profile?.firstName}
+                      {user.profile?.firstName} {user.profile?.lastName}
                     </option>
                   ))
                 ) : (

@@ -120,9 +120,9 @@ function GetAllAccount() {
               <th className="py-2 px-4 border-b text-left font-semibold">
                 Account Name
               </th>
-              <th className="py-2 px-4 border-b text-left font-semibold">
+              {/* <th className="py-2 px-4 border-b text-left font-semibold">
                 Account Type
-              </th>
+              </th> */}
               <th className="py-2 px-4 border-b text-left font-semibold">
                 Account Industry
               </th>
@@ -135,12 +135,12 @@ function GetAllAccount() {
               <th className="py-2 px-4 border-b text-left font-semibold">
                 Assigned To
               </th>
-              <th className="py-2 px-4 border-b text-left font-semibold">
+              {/* <th className="py-2 px-4 border-b text-left font-semibold">
                 Annual Revenue
-              </th>
-              <th className="py-2 px-4 border-b text-left font-semibold">
+              </th> */}
+              {/* <th className="py-2 px-4 border-b text-left font-semibold">
                 Address
-              </th>
+              </th> */}
               <th className="py-2 px-4 border-b text-left font-semibold">
                 Action
               </th>
@@ -158,9 +158,9 @@ function GetAllAccount() {
                 <td className="py-2 px-4 border-b">
                   {account.name}
                 </td>
-                <td className="py-2 px-4 border-b">
+                {/* <td className="py-2 px-4 border-b">
                   {accountTypes[account.accountTypeId] || "N/A"}
-                </td>
+                </td> */}
                 <td className="py-2 px-4 border-b">
                   {industries[account.industryTypeId] || "N/A"}
                 </td>
@@ -180,14 +180,14 @@ function GetAllAccount() {
                       : "N/A";
                   })()}
                 </td>
-                <td className="py-2 px-4 border-b">
+                {/* <td className="py-2 px-4 border-b">
                   {account.annualRevenue}
-                </td>
-                <td className="py-2 px-4 border-b">
+                </td> */}
+                {/* <td className="py-2 px-4 border-b">
                   {account.addresses?.[0]?.address
                     ? `${account.addresses[0].address.address1}, ${account.addresses[0].address.city}, ${account.addresses[0].address.zip}`
                     : "N/A"}
-                </td>
+                </td> */}
                 <td className="py-2 px-4 border-b">
                   <button onClick={()=> navigate(`/updateAccount/${account.id}`)} className="text-emerald-600 hover:text-blue-800">Edit</button>
                 </td>
