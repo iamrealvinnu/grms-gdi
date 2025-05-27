@@ -177,7 +177,7 @@ function CreateUser() {
       };
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/v1/User/create`,
+        `${import.meta.env.VITE_API_URL}/User/create`,
         formattedData,
         {
           headers: {

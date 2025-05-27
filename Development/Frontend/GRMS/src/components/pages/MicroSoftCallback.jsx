@@ -51,19 +51,25 @@ const MicrosoftCallback = () => {
 
         // Step 2: Decode ID token to extract user info
         const decoded = jwtDecode(id_token);
-        console.log("Decoded Microsoft Token:", JSON.stringify(decoded, null, 2));
+        console.log(
+          "Decoded Microsoft Token:",
+          JSON.stringify(decoded, null, 2)
+        );
 
         // Step 3: Build payload for backend
         const requestData = {
-  source: "google",
-  nameIdentifier: decoded.sub,
-  givenName: decoded.given_name || decoded.name?.split(" ")[0] || "test",
-  surname: decoded.family_name || decoded.name?.split(" ").slice(1).join(" ") || "test",
-  email: decoded.email || decoded.preferred_username,
-};
+          source: "microsoft",
+          nameIdentifier: decoded.sub,
+          givenName:
+            decoded.given_name || decoded.name?.split(" ")[0] || "test",
+          surname:
+            decoded.family_name ||
+            decoded.name?.split(" ").slice(1).join(" ") ||
+            "test",
+          email: decoded.email || decoded.preferred_username,
+        };
 
-console.log("Request Data:", JSON.stringify(requestData, null, 2));
-
+        console.log("Request Data:", JSON.stringify(requestData, null, 2));
 
         // Step 4: Send to your backend
         const authResponse = await axios.post(
@@ -85,7 +91,10 @@ console.log("Request Data:", JSON.stringify(requestData, null, 2));
           navigate("/");
         }
       } catch (error) {
-        console.error("Microsoft Auth Error:", error.response?.data || error.message);
+        console.error(
+          "Microsoft Auth Error:",
+          error.response?.data || error.message
+        );
         toast.error("Login failed. Please try again.");
         navigate("/");
       } finally {
@@ -98,7 +107,11 @@ console.log("Request Data:", JSON.stringify(requestData, null, 2));
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
-      {loading ? <p>Authenticating with Microsoft...</p> : <p>Redirecting...</p>}
+      {loading ? (
+        <p>Authenticating with Microsoft...</p>
+      ) : (
+        <p>Redirecting...</p>
+      )}
     </div>
   );
 };
