@@ -12,12 +12,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import withAuth from "../withAuth";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const GetUserList = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [genders, setGenders] = useState({});
   const [countries, setCountries] = useState({});
   const [userTypes, setUserTypes] = useState({});
@@ -49,10 +49,9 @@ const GetUserList = () => {
       } else {
         throw new Error("Unexpected API response format.");
       }
-      setLoading(false);
     } catch (error) {
-      setError(error.message);
-      setLoading(false);
+      console.error("Error fetching data:", error);
+      toast.error("Failed to fetch data. Please try again later.");
     }
   };
 
@@ -99,9 +98,9 @@ const GetUserList = () => {
       setCountries(countriesMap);
       setUserTypes(userTypesMap);
       setClaimTypes(claimTypesMap);
-
     } catch (error) {
-      setError(error.message);
+      console.error("Error fetching accounts:", error);
+      toast.error("Failed to fetch account data.");
     }
   };
 
@@ -114,7 +113,7 @@ const GetUserList = () => {
 
   const sortedUsers = React.useMemo(() => {
     if (!users) return [];
-    
+
     const sortedData = [...users].sort((a, b) => {
       const valueA = a[sortColumn]?.toString().toLowerCase() || "";
       const valueB = b[sortColumn]?.toString().toLowerCase() || "";
@@ -139,96 +138,133 @@ const GetUserList = () => {
   };
 
   return (
-    <div className="p-6 max-w-8xl mx-auto">
+    <div className="p-5">
+      <ToastContainer />
       <h2 className="text-2xl font-bold mb-4">User List</h2>
 
       {/* Search Input */}
-      <input
-        type="text"
-        placeholder="Search by name or email..."
-        className="mb-4 px-4 py-2 w-full sm:w-[400px] md:w-[500px] lg:w-[600px] border rounded-lg"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <div className="flex flex-wrap items-center gap-4">
+        <input
+          type="text"
+          className="border p-2 rounded flex-1 min-w-[250px]"
+          placeholder="Search Users..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
 
-      {loading ? (
-        <p className="text-center text-lg">Loading users...</p>
-      ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
-      ) : sortedUsers.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border rounded-lg shadow-md">
-            <thead>
-              <tr className="bg-gray-200">
+      <div className="mt-4 shadow-lg rounded-lg overflow-hidden">
+        <div className="overflow-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
+          <table className="min-w-full bg-white">
+            <thead className="sticky top-0 z-10">
+              <tr className="bg-gray-200 text-left">
+                <th className="py-3 px-4 border-r ">S.No</th>
                 <th
-                  className="px-4 py-2 border cursor-pointer"
+                  className="py-3 px-4 border-r cursor-pointer"
                   onClick={() => handleSort("userName")}
                 >
-                  User Name {sortColumn === "userName" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                  User Name{" "}
+                  {sortColumn === "userName"
+                    ? sortOrder === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
                 </th>
                 <th
-                  className="px-4 py-2 border cursor-pointer"
+                  className="py-3 px-4 border-r cursor-pointer"
                   onClick={() => handleSort("email")}
                 >
-                  Email {sortColumn === "email" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                  Email{" "}
+                  {sortColumn === "email"
+                    ? sortOrder === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
                 </th>
                 <th
-                  className="px-4 py-2 border cursor-pointer"
+                  className="py-3 px-4 border-r cursor-pointer"
                   onClick={() => handleSort("profile.firstName")}
                 >
-                  First Name {sortColumn === "profile.firstName" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                  First Name{" "}
+                  {sortColumn === "profile.firstName"
+                    ? sortOrder === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
                 </th>
                 <th
-                  className="px-4 py-2 border cursor-pointer"
+                  className="py-3 px-4 border-r cursor-pointer"
                   onClick={() => handleSort("profile.lastName")}
                 >
-                  Last Name {sortColumn === "profile.lastName" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                  Last Name{" "}
+                  {sortColumn === "profile.lastName"
+                    ? sortOrder === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
                 </th>
-                <th className="px-4 py-2 border">Mobile Number</th>
-                <th className="px-4 py-2 border">Country</th>
-                <th className="px-4 py-2 border">Gender</th>
-                <th className="px-4 py-2 border">User Type</th>
-                <th className="px-4 py-2 border">Phone Number</th>
-                <th className="px-4 py-2 border">Claim Type</th>
-                <th className="px-4 py-2 border">Actions</th>
+                <th className="py-3 px-4 border-r">Mobile Number</th>
+                <th className="py-3 px-4 border-r">Country</th>
+                <th className="py-3 px-4 border-r">Gender</th>
+                <th className="py-3 px-4 border-r">User Type</th>
+                <th className="py-3 px-4 border-r">Phone Number</th>
+                <th className="py-3 px-4 border-r">Claim Type</th>
+                <th className="py-3 px-4 border-r">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {sortedUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-100 text-center">
-                  <td className="py-2 px-4 border">{user.userName || "N/A"}</td>
-                  <td className="py-2 px-4 border">{user.email || "N/A"}</td>
-                  <td className="py-2 px-4 border">{user.profile?.firstName || "N/A"}</td>
-                  <td className="py-2 px-4 border">{user.profile?.lastName || "N/A"}</td>
-                  <td className="py-2 px-4 border">{user.mobileNumber || "N/A"}</td>
-                  <td className="py-2 px-4 border">{countries[user.profile?.countryId] || "N/A"}</td>
-                  <td className="py-2 px-4 border">{genders[user.profile?.genderId] || "N/A"}</td>
-                  <td className="py-2 px-4 border">{userTypes[user.profile?.userTypeId] || "N/A"}</td>
-                  <td className="py-2 px-4 border">{user.phoneNumber || "N/A"}</td>
-                  <td className="py-2 px-4 border">
+              {sortedUsers.map((user, index) => (
+                <tr key={user.id} className="hover:bg-gray-100">
+                  <td className="py-3 px-4 border text-left">
+                    {index + 1}
+                  </td>
+                  <td className="py-3 px-4 border text-left">{user.userName || "N/A"}</td>
+                  <td className="py-3 px-4 border text-left">{user.email || "N/A"}</td>
+                  <td className="py-3 px-4 border text-left">
+                    {user.profile?.firstName || "N/A"}
+                  </td>
+                  <td className="py-3 px-4 border text-left">
+                    {user.profile?.lastName || "N/A"}
+                  </td>
+                  <td className="py-3 px-4 border text-left">
+                    {user.mobileNumber || "N/A"}
+                  </td>
+                  <td className="py-3 px-4 border text-left">
+                    {countries[user.profile?.countryId] || "N/A"}
+                  </td>
+                  <td className="py-3 px-4 border text-left">
+                    {genders[user.profile?.genderId] || "N/A"}
+                  </td>
+                  <td className="py-3 px-4 border text-left">
+                    {userTypes[user.profile?.userTypeId] || "N/A"}
+                  </td>
+                  <td className="py-3 px-4 border text-left">
+                    {user.phoneNumber || "N/A"}
+                  </td>
+                  <td className="py-3 px-4 border text-left">
                     {user.claims
                       ?.map((claim) => claimTypes[claim.claimValue] || "N/A")
                       .join(", ")}
                   </td>
-                  <td className="py-2 px-4 border">
-                    <button
-                      className="bg-blue-500 text-white px-3 py-1 rounded mr-2 hover:bg-blue-600"
-                      onClick={() => handleEdit(user.id)}
-                    >
-                      Edit
-                    </button>
-                    <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                      Delete
-                    </button>
+                  <td className="py-3 px-4 border text-left ">
+                    <div className="flex space-x-2">
+                      <button
+                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                        onClick={() => handleEdit(user.id)}
+                      >
+                        Edit
+                      </button>
+                      <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      ) : (
-        <p className="text-center text-lg">No users found.</p>
-      )}
+      </div>
     </div>
   );
 };

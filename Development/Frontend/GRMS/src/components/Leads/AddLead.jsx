@@ -38,6 +38,7 @@ function AddLead() {
     notes: ""
   });
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const industriesTypes =
@@ -120,27 +121,92 @@ function AddLead() {
         console.error("Error decoding token:", error); // Log error if token decoding fails
       }
     }
-  });
+  },[]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setClientData((prevData) => ({ ...prevData, [name]: value }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: ""}))
   };
+
+  const validLeadForm = () =>{
+    let isValid = true;
+    let newErrors = {};
+
+    if (!clientData.company) {
+      newErrors.company = "Company name is required.";
+      isValid = false;
+    }
+    if (!clientData.assignedToId) {
+      newErrors.assignedToId = "Assign User is required.";
+      isValid = false;
+    }
+    if (!clientData.industryId) {
+      newErrors.industryId = "Industry is required.";
+      isValid = false;
+    }
+    if (!clientData.statusId) {
+      newErrors.statusId = "AtLeast select the one Status"
+      isValid = false;
+    }
+    if (!clientData.addressTypeId) {
+      newErrors.addressTypeId = "Select the Type Of Address";
+      isValid = false;
+    }
+    if (!clientData.address1) {
+      newErrors.address1 = "Enter the Street Name";
+      isValid = false;
+    }
+    if (!clientData.city) {
+      newErrors.city = "Enter the City Name";
+      isValid = false;
+    }
+    if (!clientData.zip) {
+      newErrors.zip = "Enter the Pincode.";
+      isValid = false;
+    }
+    if (!clientData.stateId) {
+      newErrors.stateId = "Select the One State";
+      isValid = false;
+    }
+    if (!clientData.countryId) {
+      newErrors.countryId = "Select Our Country.";
+      isValid = false;
+    }
+    if (!clientData.firstName) {
+      newErrors.firstName = "FirstName is required.";
+      isValid = false;
+    }
+    if (!clientData.lastName) {
+      newErrors.lastName = "LastName is required.";
+      isValid = false;
+    }
+    if (!clientData.email) {
+      newErrors.email = "Email is required.";
+      isValid = false;
+    } 
+    if (!clientData.phoneNumber) {
+      newErrors.phoneNumber = "Phone Number is required.";
+      isValid = false;
+    }
+    if (!clientData.departmentId) {
+      newErrors.departmentId = "Altleast Select One Department.";
+      isValid = false;
+    }
+    if (!clientData.notes) {
+      newErrors.notes = "Notes is required.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitting form:", clientData);
 
-    // Validate required fields
-    if (
-      !clientData.company ||
-      !clientData.firstName ||
-      !clientData.email ||
-      !clientData.phoneNumber
-    ) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
+    if(!validLeadForm()) return;
 
     try {
       const token = localStorage.getItem("accessToken");
@@ -191,7 +257,7 @@ function AddLead() {
             {/* Company Name */}
             <div className="w-full md:w-[48%]">
               <label className="block font-medium text-gray-700">
-                Company Name <span className="text-red-500">*</span>
+                Company Name 
               </label>
               <input
                 type="text"
@@ -200,21 +266,22 @@ function AddLead() {
                 className="w-full border-dashed border-2 border-gray-400 rounded p-2"
                 value={clientData.company}
                 onChange={handleChange}
-                required
               />
+              {errors.company && (
+                <p className="text-red-500 text-sm">{errors.company}</p>
+              )}
             </div>
 
             {/* Lead Owner */}
             <div className="w-full md:w-[48%]">
               <label className="block font-medium text-gray-700">
-                Assigned To <span className="text-red-500">*</span>
+                Assigned To 
               </label>
               <select
                 name="assignedToId"
                 className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
                 value={clientData.assignedToId}
                 onChange={handleChange}
-                required
               >
                 <option value="">Select User</option>
                 {users && users.length > 0 ? (
@@ -227,19 +294,21 @@ function AddLead() {
                   <option disabled>Loading users...</option>
                 )}
               </select>
+              {errors.assignedToId && (
+                <p className="text-red-500 text-sm">{errors.assignedToId}</p>
+              )}
             </div>
 
             {/* Industry Dropdown */}
             <div className="w-full md:w-[48%]">
               <label className="block font-medium text-gray-700">
-                Industry <span className="text-red-500">*</span>
+                Industry 
               </label>
               <select
                 name="industryId"
                 className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
                 value={clientData.industryId}
                 onChange={handleChange}
-                required
               >
                 <option value="">Select Industry</option>
                 {industriesTypes.map((industry) => (
@@ -248,18 +317,20 @@ function AddLead() {
                   </option>
                 ))}
               </select>
+              {errors.industryId && (
+                <p className="text-red-500 text-sm">{errors.industryId}</p>
+              )}
             </div>
 
             <div className="w-full md:w-[48%]">
               <label className="block font-medium text-gray-700">
-                Lead Status <span className="text-red-500">*</span>
+                Lead Status 
               </label>
               <select
                 name="statusId"
                 className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
                 value={clientData.statusId}
                 onChange={handleChange}
-                required
               >
                 <option value="">Select Industry</option>
                 {statusTypes.map((statusType) => (
@@ -268,6 +339,9 @@ function AddLead() {
                   </option>
                 ))}
               </select>
+              {errors.statusId && (
+                <p className="text-red-500 text-sm">{errors.statusId}</p>
+              )}
             </div>
 
             {/* Address Section */}
@@ -278,14 +352,13 @@ function AddLead() {
 
               <div className="w-full">
                 <label className="block font-medium text-gray-700">
-                  Address <span className="text-red-500">*</span>
+                  Address 
                 </label>
                 <select
                   name="addressTypeId"
                   className="w-full border-dashed border-2 border-gray-400 rounded p-2 bg-white"
                   value={clientData.addressTypeId}
                   onChange={handleChange}
-                  required
                 >
                   <option value="">Select Address</option>
                   {AddressTypes.map((addressType) => (
@@ -294,6 +367,9 @@ function AddLead() {
                     </option>
                   ))}
                 </select>
+                {errors.addressTypeId && (
+                <p className="text-red-500 text-sm">{errors.addressTypeId}</p>
+              )}
               </div>
 
               {/* Street */}
@@ -305,6 +381,9 @@ function AddLead() {
                 value={clientData.address1}
                 onChange={handleChange}
               />
+              {errors.address1 && (
+                <p className="text-red-500 text-sm">{errors.address1}</p>
+              )}
 
               {/* Town */}
               <input
@@ -315,6 +394,9 @@ function AddLead() {
                 value={clientData.city}
                 onChange={handleChange}
               />
+              {errors.city && (
+                <p className="text-red-500 text-sm">{errors.city}</p>
+              )}
 
               {/* Pincode */}
               <input
@@ -325,6 +407,9 @@ function AddLead() {
                 value={clientData.zip}
                 onChange={handleChange}
               />
+              {errors.zip && (
+                <p className="text-red-500 text-sm">{errors.zip}</p>
+              )}
 
               {/* State */}
               <div className="w-full border-b-2 p-2 bg-white">
@@ -342,6 +427,9 @@ function AddLead() {
                     </option>
                   ))}
                 </select>
+                {errors.stateId && (
+                <p className="text-red-500 text-sm">{errors.stateId}</p>
+              )}
               </div>
 
               {/* Country Dropdown */}
@@ -362,6 +450,9 @@ function AddLead() {
                     </option>
                   ))}
                 </select>
+                {errors.countryId && (
+                <p className="text-red-500 text-sm">{errors.countryId}</p>
+              )}
               </div>
             </div>
           </div>
@@ -375,7 +466,7 @@ function AddLead() {
               {/* First Name */}
               <div className="w-full md:w-[48%]">
                 <label className="block font-medium text-gray-700">
-                  First Name <span className="text-red-500">*</span>
+                  First Name 
                 </label>
                 <input
                   type="text"
@@ -384,8 +475,10 @@ function AddLead() {
                   className="w-full border-2 border-dashed border-gray-400 rounded p-2"
                   value={clientData.firstName}
                   onChange={handleChange}
-                  required
                 />
+                {errors.firstName && (
+                <p className="text-red-500 text-sm">{errors.firstName}</p>
+              )}
               </div>
 
               {/* Last Name */}
@@ -401,12 +494,15 @@ function AddLead() {
                   value={clientData.lastName}
                   onChange={handleChange}
                 />
+                {errors.lastName && (
+                <p className="text-red-500 text-sm">{errors.lastName}</p>
+              )}
               </div>
 
               {/* Email */}
               <div className="w-full md:w-[48%]">
                 <label className="block font-medium text-gray-700">
-                  Email <span className="text-red-500">*</span>
+                  Email 
                 </label>
                 <input
                   type="email"
@@ -415,14 +511,16 @@ function AddLead() {
                   className="w-full border-2 border-dashed border-gray-400 rounded p-2"
                   value={clientData.email}
                   onChange={handleChange}
-                  required
                 />
+                {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email}</p>
+              )}
               </div>
 
               {/* Phone Number */}
               <div className="w-full md:w-[48%]">
                 <label className="block font-medium text-gray-700">
-                  Mobile Number <span className="text-red-500">*</span>
+                  Mobile Number 
                 </label>
                 <input
                   type="number"
@@ -431,8 +529,10 @@ function AddLead() {
                   className="w-full border-2 border-dashed border-gray-400 rounded p-2"
                   value={clientData.phoneNumber}
                   onChange={handleChange}
-                  required
                 />
+                {errors.phoneNumber && (
+                <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
+              )}
               </div>
 
               {/* Department Dropdown */}
@@ -453,6 +553,9 @@ function AddLead() {
                     </option>
                   ))}
                 </select>
+                {errors.departmentId && (
+                <p className="text-red-500 text-sm">{errors.departmentId}</p>
+              )}
               </div>
 
               {/* Discussion */}
@@ -465,8 +568,10 @@ function AddLead() {
                   className="w-full border-dashed border-2 border-gray-400 rounded p-2"
                   value={clientData.notes}
                   onChange={handleChange}
-                  required
                 />
+                {errors.notes && (
+                <p className="text-red-500 text-sm">{errors.notes}</p>
+              )}
               </div>
             </div>
           </div>

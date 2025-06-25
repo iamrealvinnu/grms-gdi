@@ -272,13 +272,13 @@ function GetAllOpportunity() {
                 className="py-2 px-4 border-r border-gray-300 text-left font-semibold cursor-pointer"
                 onClick={() => requestSort("estimatedValue")}
               >
-                Opportunity Estimated Value
+                Estimated Value
               </th>
               <th className="py-2 px-4 border-r border-gray-300 text-left font-semibold">
-                Opportunity Products
+                Product Line
               </th>
               <th className="py-2 px-4 border-r border-gray-300 text-left font-semibold">
-                Opportunity Stages
+                Stages
               </th>
               <th className="py-2 px-4 border-r border-gray-300 text-left font-semibold hidden md:table-cell">
                 Action

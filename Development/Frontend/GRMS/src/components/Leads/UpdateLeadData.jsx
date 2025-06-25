@@ -36,6 +36,7 @@ function UpdateLeadData() {
   const [countryTypes, setCountryTypes] = useState({});
   const [stateTypes, setStateTypes] = useState({});
   const [addressTypes, setAddressTypes] = useState({});
+  const [errors,setErrors] = useState({});
 
   useEffect(() => {
     fetchLeadDetails();
@@ -168,10 +169,87 @@ function UpdateLeadData() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setClientData((prevClient) => ({ ...prevClient, [name]: value }));
+    setErrors((prevErrors) => ({...prevErrors,[name]: ""}))
   };
+
+  const updateLeadForm = () =>{
+    let isValid = true;
+    let newErrors = {};
+
+   if (!clientData.company) {
+      newErrors.company = "Company name is required.";
+      isValid = false;
+    }
+    if (!clientData.assignedToId) {
+      newErrors.assignedToId = "Assign User is required.";
+      isValid = false;
+    }
+    if (!clientData.industryId) {
+      newErrors.industryId = "Industry is required.";
+      isValid = false;
+    }
+    if (!clientData.statusId) {
+      newErrors.statusId = "AtLeast select the one Status"
+      isValid = false;
+    }
+    if (!clientData.addressTypeId) {
+      newErrors.addressTypeId = "Select the Type Of Address";
+      isValid = false;
+    }
+    if (!clientData.address1) {
+      newErrors.address1 = "Enter the Street Name";
+      isValid = false;
+    }
+    if (!clientData.city) {
+      newErrors.city = "Enter the City Name";
+      isValid = false;
+    }
+    if (!clientData.zip) {
+      newErrors.zip = "Enter the Pincode.";
+      isValid = false;
+    }
+    if (!clientData.stateId) {
+      newErrors.stateId = "Select the One State";
+      isValid = false;
+    }
+    if (!clientData.countryId) {
+      newErrors.countryId = "Select Our Country.";
+      isValid = false;
+    }
+    if (!clientData.firstName) {
+      newErrors.firstName = "FirstName is required.";
+      isValid = false;
+    }
+    if (!clientData.lastName) {
+      newErrors.lastName = "LastName is required.";
+      isValid = false;
+    }
+    if (!clientData.email) {
+      newErrors.email = "Email is required.";
+      isValid = false;
+    } 
+    if (!clientData.phoneNumber) {
+      newErrors.phoneNumber = "Phone Number is required.";
+      isValid = false;
+    }
+    if (!clientData.departmentId) {
+      newErrors.departmentId = "Altleast Select One Department.";
+      isValid = false;
+    }
+    if (!clientData.notes) {
+      newErrors.notes = "Notes is required.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if(!updateLeadForm()) return;
+
     try {
       const token = localStorage.getItem("accessToken");
       const updatedData = {
@@ -269,6 +347,9 @@ function UpdateLeadData() {
                 placeholder="Company Name"
                 className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
               />
+              {errors.company && (
+                <p className="text-red-500 text-sm">{errors.company}</p>
+              )}
             </div>
 
             {/* Lead Owner */}
@@ -293,6 +374,9 @@ function UpdateLeadData() {
                     </option>
                   ))}
               </select>
+              {errors.assignedToId && (
+                <p className="text-red-500 text-sm">{errors.assignedToId}</p>
+              )}
             </div>
 
             {/* Industry Dropdown */}
@@ -315,11 +399,14 @@ function UpdateLeadData() {
                   </option>
                 ))}
               </select>
+              {errors.industryId && (
+                <p className="text-red-500 text-sm">{errors.industryId}</p>
+              )}
             </div>
 
             <div className="w-full md:w-[48%]">
-              <label className="block font-medium text-gray-700">
-                Lead Status <span className="text-red-500">*</span>
+              <label className="block font-medium text-red-700">
+                Lead Status
               </label>
               <select
                 name="statusId"
@@ -337,6 +424,9 @@ function UpdateLeadData() {
                   </option>
                 ))}
               </select>
+              {errors.statusId && (
+                <p className="text-red-500 text-sm">{errors.statusId}</p>
+              )}
             </div>
 
             <div className="w-full border-gray-400 rounded ">
@@ -362,6 +452,9 @@ function UpdateLeadData() {
                     </option>
                   ))}
                 </select>
+                {errors.addressTypeId && (
+                <p className="text-red-500 text-sm">{errors.addressTypeId}</p>
+              )}
               </div>
 
               <div className="w-full mt-4">
@@ -376,6 +469,10 @@ function UpdateLeadData() {
                   className="w-full border-2 text-blue-700 border-gray-400 rounded p-2"
                   placeholder="Address Line 1"
                 />
+                {errors.address1 && (
+                <p className="text-red-500 text-sm">{errors.address1}</p>
+              )}
+
               </div>
               <div className="flex flex-wrap gap-4 mt-4">
                 <div className="w-full md:w-[48%]">
@@ -390,6 +487,9 @@ function UpdateLeadData() {
                     className="w-full border-2 text-blue-700 border-gray-400 rounded p-2"
                     placeholder="City"
                   />
+                  {errors.city && (
+                <p className="text-red-500 text-sm">{errors.city}</p>
+              )}
                 </div>
 
                 <div className="w-full md:w-[48%]">
@@ -405,6 +505,9 @@ function UpdateLeadData() {
                     placeholder="ZIP Code"
                   />
                 </div>
+                {errors.zip && (
+                <p className="text-red-500 text-sm">{errors.zip}</p>
+              )}
               </div>
 
               <div className="flex flex-wrap gap-4 mt-4">
@@ -425,6 +528,9 @@ function UpdateLeadData() {
                       </option>
                     ))}
                   </select>
+                  {errors.countryId && (
+                <p className="text-red-500 text-sm">{errors.countryId}</p>
+              )}
                 </div>
 
                 <div className="w-full md:w-[48%]">
@@ -444,6 +550,9 @@ function UpdateLeadData() {
                       </option>
                     ))}
                   </select>
+                  {errors.stateId && (
+                <p className="text-red-500 text-sm">{errors.stateId}</p>
+              )}
                 </div>
               </div>
             </div>
@@ -468,6 +577,9 @@ function UpdateLeadData() {
                   placeholder="First Name"
                   className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
                 />
+                {errors.firstName && (
+                <p className="text-red-500 text-sm">{errors.firstName}</p>
+              )}
               </div>
 
               {/* Last Name */}
@@ -483,6 +595,9 @@ function UpdateLeadData() {
                   placeholder="Last Name"
                   className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
                 />
+                {errors.lastName && (
+                <p className="text-red-500 text-sm">{errors.lastName}</p>
+              )}
               </div>
 
               {/* Email */}
@@ -496,6 +611,9 @@ function UpdateLeadData() {
                   placeholder="Email"
                   className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
                 />
+                {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email}</p>
+              )}
               </div>
 
               {/* Phone Number */}
@@ -511,6 +629,9 @@ function UpdateLeadData() {
                   placeholder="Phone Number"
                   className="w-full border-2 border-gray-400  text-blue-700 rounded p-2"
                 />
+                {errors.phoneNumber && (
+                <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
+              )}
               </div>
 
               {/* Department Dropdown */}
@@ -533,6 +654,9 @@ function UpdateLeadData() {
                     </option>
                   ))}
                 </select>
+                {errors.departmentId && (
+                <p className="text-red-500 text-sm">{errors.departmentId}</p>
+              )}
               </div>
 
               {/* Discussion */}
@@ -548,6 +672,9 @@ function UpdateLeadData() {
                   className="w-full border-2 border-gray-400  text-blue-700 rounded p-4"
                   rows={4}
                 />
+                {errors.notes && (
+                <p className="text-red-500 text-sm">{errors.notes}</p>
+              )}
               </div>
             </div>
           </div>

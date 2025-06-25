@@ -3,6 +3,8 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { IoSettings } from "react-icons/io5";
+
 
 function GetCommunications() {
   const [communications, setCommunications] = useState([]);
@@ -10,6 +12,8 @@ function GetCommunications() {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [outComes, setOutComes] = useState({});
+  const [selectedFilter, setSelectedFilter] = useState("All Time");
+
 
   const communicationTypes =
     tableData.find((item) => item.name === "CommunicationTypes")
@@ -71,11 +75,34 @@ function GetCommunications() {
     fetchAllData();
   }, []);
 
+  // Apply date filtering
+  const getFilteredCommunications = () => {
+    const now = new Date();
+    return communications.filter((comm) => {
+      const commDate = new Date(comm.initiationDate);
+      switch (selectedFilter) {
+        case "Last 7 Days":
+          return commDate >= new Date(now.setDate(now.getDate() - 7));
+        case "Next 7 Days":
+          const future = new Date();
+          return commDate >= now && commDate <= new Date(future.setDate(future.getDate() + 7));
+        case "Last 30 Days":
+          return commDate >= new Date(new Date().setDate(new Date().getDate() - 30));
+        case "All Time":
+        default:
+          return true;
+      }
+    });
+  };
+
+  const filteredCommunications = getFilteredCommunications();
+
+
   // Group communications by type
   const getCommunicationsByType = (typeCode) => {
     const type = communicationTypes.find((t) => t.code === typeCode);
     if (!type) return [];
-    return communications.filter((comm) => comm.typeId === type.id);
+    return filteredCommunications.filter((comm) => comm.typeId === type.id);
   };
 
   const getTypeName = (typeId) => {
@@ -99,27 +126,15 @@ function GetCommunications() {
           <h5 className="text-md font-medium mb-2">Call</h5>
           {getCommunicationsByType("Phone").length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
-              {getCommunicationsByType("Phone").map((communication, index) => (
-                <div
-                  key={communication.id || index}
-                  className="relative w-full p-4 border rounded shadow-md bg-white"
-                >
+              {getCommunicationsByType("Phone").map((communication) => (
+                <div key={communication.id} className="relative w-full p-4 border rounded shadow-md bg-white">
                   <div className="absolute top-2 right-2 flex space-x-2">
-                    <button>
-                      <FaEdit className="text-blue-500 hover:text-blue-700" />
-                    </button>
-                    <button>
-                      <FaTrash className="text-red-500 hover:text-red-700" />
-                    </button>
+                    <button><FaEdit className="text-blue-500 hover:text-blue-700" /></button>
+                    <button><FaTrash className="text-red-500 hover:text-red-700" /></button>
                   </div>
-                  <p><strong>Recipient:</strong>{communication.recipient}</p>
-                  <p>
-                    <strong>Subject:</strong> {communication.subject}
-                  </p>
-                  <p>
-                    <strong>Date:</strong>{" "}
-                    {new Date(communication.initiationDate).toLocaleString()}
-                  </p>
+                  <p><strong>Recipient:</strong> {communication.recipient}</p>
+                  <p><strong>Subject:</strong> {communication.subject}</p>
+                  <p><strong>Date:</strong> {new Date(communication.initiationDate).toLocaleString()}</p>
                 </div>
               ))}
             </div>
@@ -133,36 +148,18 @@ function GetCommunications() {
           <h5 className="text-md font-medium mb-2">Meeting</h5>
           {getCommunicationsByType("Online Meeting").length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
-              {getCommunicationsByType("Online Meeting").map(
-                (communication, index) => (
-                  <div
-                    key={communication.id || index}
-                    className="relative w-full p-4 border rounded shadow-md bg-white"
-                  >
-                    <div className="absolute top-2 right-2 flex space-x-2">
-                      <button>
-                        <FaEdit className="text-blue-500 hover:text-blue-700" />
-                      </button>
-                      <button>
-                        <FaTrash className="text-red-500 hover:text-red-700" />
-                      </button>
-                    </div>
-                    <p><strong>Participants:</strong>{communication.participants}</p>
-                    <p>
-                      <strong>Subject:</strong> {communication.subject}
-                    </p>
-                    <p>
-                      <strong>Date:</strong>{" "}
-                      {new Date(communication.initiationDate).toLocaleString()}
-                    </p>
-                    {communication.location && (
-                      <p>
-                        <strong>Location:</strong> {communication.location}
-                      </p>
-                    )}
+              {getCommunicationsByType("Online Meeting").map((communication) => (
+                <div key={communication.id} className="relative w-full p-4 border rounded shadow-md bg-white">
+                  <div className="absolute top-2 right-2 flex space-x-2">
+                    <button><FaEdit className="text-blue-500 hover:text-blue-700" /></button>
+                    <button><FaTrash className="text-red-500 hover:text-red-700" /></button>
                   </div>
-                )
-              )}
+                  <p><strong>Participants:</strong> {communication.participants}</p>
+                  <p><strong>Subject:</strong> {communication.subject}</p>
+                  <p><strong>Date:</strong> {new Date(communication.initiationDate).toLocaleString()}</p>
+                  {communication.location && <p><strong>Location:</strong> {communication.location}</p>}
+                </div>
+              ))}
             </div>
           ) : (
             <p className="text-gray-500">No meeting data available yet.</p>
@@ -174,33 +171,60 @@ function GetCommunications() {
           <h5 className="text-md font-medium mb-2">Email</h5>
           {getCommunicationsByType("Email").length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
-              {getCommunicationsByType("Email").map((communication, index) => (
-                <div
-                  key={communication.id || index}
-                  className="relative w-full p-4 border rounded shadow-md bg-white"
-                >
+              {getCommunicationsByType("Email").map((communication) => (
+                <div key={communication.id} className="relative w-full p-4 border rounded shadow-md bg-white">
                   <div className="absolute top-2 right-2 flex space-x-2">
-                    <button>
-                      <FaEdit className="text-blue-500 hover:text-blue-700" />
-                    </button>
-                    <button>
-                      <FaTrash className="text-red-500 hover:text-red-700" />
-                    </button>
-                  </div>  
-                  <p><strong>To:</strong>{communication.recipient}</p>
-                  <p>
-                    <strong>Subject:</strong> {communication.subject}
-                  </p>
-                  <p>
-                    <strong>Date:</strong>{" "}
-                    {new Date(communication.initiationDate).toLocaleString()}
-                  </p>
+                    <button><FaEdit className="text-blue-500 hover:text-blue-700" /></button>
+                    <button><FaTrash className="text-red-500 hover:text-red-700" /></button>
+                  </div>
+                  <p><strong>To:</strong> {communication.recipient}</p>
+                  <p><strong>Subject:</strong> {communication.subject}</p>
+                  <p><strong>Date:</strong> {new Date(communication.initiationDate).toLocaleString()}</p>
                 </div>
               ))}
             </div>
           ) : (
             <p className="text-gray-500">No email data available yet.</p>
           )}
+        </div>
+
+        {/* Settings Section */}
+        <div className="w-full lg:w-1/3 p-3 bg-gray-300 rounded-md">
+          <div className="flex items-center justify-center mb-4">
+            <IoSettings size={24} className="text-gray-700 mr-2" />
+            <h5 className="text-lg font-semibold text-gray-800">Settings</h5>
+          </div>
+          <p className="mb-2">Date Range</p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              className={`py-2 px-4 rounded ${selectedFilter === "Last 7 Days" ? "bg-blue-500 text-white" : "bg-blue-100 text-blue-800"
+                }`}
+              onClick={() => setSelectedFilter("Last 7 Days")}
+            >
+              Last 7 Days
+            </button>
+            <button
+              className={`py-2 px-4 rounded ${selectedFilter === "Next 7 Days" ? "bg-green-500 text-white" : "bg-green-100 text-green-800"
+                }`}
+              onClick={() => setSelectedFilter("Next 7 Days")}
+            >
+              Next 7 Days
+            </button>
+            <button
+              className={`py-2 px-4 rounded ${selectedFilter === "All Time" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800"
+                }`}
+              onClick={() => setSelectedFilter("All Time")}
+            >
+              All Time
+            </button>
+            <button
+              className={`py-2 px-4 rounded ${selectedFilter === "Last 30 Days" ? "bg-purple-600 text-white" : "bg-purple-100 text-purple-800"
+                }`}
+              onClick={() => setSelectedFilter("Last 30 Days")}
+            >
+              Last 30 Days
+            </button>
+          </div>
         </div>
       </div>
     </div>

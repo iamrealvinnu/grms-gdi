@@ -223,7 +223,7 @@ function CreateCustomer() {
             <div className="flex flex-wrap gap-4">
               {/* First Name */}
               <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">First Name</label>
+                <label className="block font-medium text-gray-700">First Name <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   name="firstName"
@@ -236,7 +236,7 @@ function CreateCustomer() {
 
               {/* Last Name */}
               <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">Last Name</label>
+                <label className="block font-medium text-gray-700">Last Name <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   name="lastName"
@@ -248,7 +248,7 @@ function CreateCustomer() {
 
               {/* Email */}
               <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">Email</label>
+                <label className="block font-medium text-gray-700">Email <span className="text-red-500">*</span></label>
                 <input
                   type="email"
                   name="email"
@@ -261,7 +261,7 @@ function CreateCustomer() {
 
               {/* Phone Number */}
               <div className="w-full md:w-[48%]">
-                <label className="block font-medium text-gray-700">Phone Number</label>
+                <label className="block font-medium text-gray-700">Phone Number <span className="text-red-500">*</span></label>
                 <input
                   type="number"
                   name="phoneNumber"
@@ -275,7 +275,7 @@ function CreateCustomer() {
                {/* Department Dropdown */}
                <div className="w-full md:w-[48%]">
                  <label className="block font-medium text-gray-700">
-                   Department
+                   Department <span className="text-red-500">*</span>
                  </label>
                  <select
                   name="departmentId"

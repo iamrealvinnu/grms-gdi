@@ -16,7 +16,7 @@ function CreateTask() {
     notes: "",
     assignedToId: "",
     createdById: "",
-    activityDate: "",
+    activityDate: "", // This will be used for activityDueDate in the API
   });
 
   const [tableData, setTableData] = useState([]);
@@ -35,9 +35,14 @@ function CreateTask() {
     fetchTableData();
     fetchUsers();
     fetchCurrentUser();
-    fetchLeadDetails(leadId);
-    fetchOpportunityDetails();
-  }, []);
+    // Only fetch lead/opportunity details if IDs are present in URL
+    if (leadId) {
+      fetchLeadDetails(leadId);
+    }
+    if (opportunityId) {
+      fetchOpportunityDetails();
+    }
+  }, [opportunityId, leadId]); // Add dependencies to useEffect
 
   // Fetch reference data
   const fetchTableData = async () => {
@@ -54,6 +59,7 @@ function CreateTask() {
       setTableData(response.data.data);
     } catch (error) {
       console.error("Error fetching table data:", error);
+      toast.error("Failed to load reference data.");
     }
   };
 
@@ -72,6 +78,7 @@ function CreateTask() {
       setUsers(response.data.data);
     } catch (error) {
       console.error("Error fetching users:", error);
+      toast.error("Failed to load user data.");
     }
   };
 
@@ -87,6 +94,7 @@ function CreateTask() {
         setTasks((prev) => ({ ...prev, createdById: userId }));
       } catch (error) {
         console.error("Error decoding token:", error);
+        toast.error("Failed to get current user info.");
       }
     }
   };
@@ -106,63 +114,6 @@ function CreateTask() {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate required fields
-    if (!tasks.name.trim()) {
-      toast.error("Please enter a task name");
-      return;
-    }
-    if (!tasks.assignedToId) {
-      toast.error("Please select an assignee");
-      return;
-    }
-    if (!tasks.activityDate) {
-      toast.error("Please select a due date");
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem("accessToken");
-
-      // Format the payload exactly as the API expects
-      const requestData = {
-        name: tasks.name,
-        type: tasks.type,
-        entityId: opportunityId,
-        activityTypeId: tasks.activityTypeId,
-        description: tasks.description,
-        outcomeId: tasks.outcomeId,
-        notes: tasks.notes,
-        assignedToId: tasks.assignedToId,
-        createdById: tasks.createdById,
-        activityDate: new Date(tasks.activityDate).toISOString(),
-        // Add any other required fields from API documentation
-      };
-
-      console.log("Submitting:", requestData); // Debug log
-
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/marketing/Activity/create`,
-        requestData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      toast.success("Task created successfully!");
-      navigate("/getTasks");
-      console.log("Task", requestData.data);
-    } catch (error) {
-      console.error("Error details:", error.response?.data || error.message);
-      toast.error("Error fetching Task Created");
-    }
-  };
-
   const fetchOpportunityDetails = async () => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -179,19 +130,22 @@ function CreateTask() {
       const opportunityData = response.data?.data || response.data;
       setTasks((prevData) => ({
         ...prevData,
-        statusId: opportunityData.statusId,
+        // Assuming entityId for a task is the opportunityId
+        entityId: opportunityId,
+        company: opportunityData.companyName || "", // Assuming companyName from opportunity
         estimatedValue: opportunityData.estimatedValue,
-        stageId: opportunityData.stageId,
-        productLineId: opportunityData.productLineId,
-        changedById: opportunityData.createdById,
-        leadId: opportunityData.leadId,
         closeDate: opportunityData.closeDate
           ? opportunityData.closeDate.split("T")[0]
           : "",
+        leadId: opportunityData.leadId,
+        // Include other fields if needed for task payload directly
+        // statusId: opportunityData.statusId,
+        // stageId: opportunityData.stageId,
+        // productLineId: opportunityData.productLineId,
       }));
-      return opportunityData;
     } catch (error) {
       console.error("Error fetching opportunity details:", error);
+      toast.error("Failed to load opportunity details.");
     }
   };
 
@@ -213,88 +167,159 @@ function CreateTask() {
         leadName: leadData.company || "",
         phoneNumber: leadData.phoneNumber || "",
       }));
-      console.log("view", leadData);
     } catch (error) {
       console.error("Error fetching lead details:", error);
+      toast.error("Failed to load lead details.");
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate required fields for the Task
+    if (!tasks.name.trim()) {
+      toast.error("Please enter a task name (Subject)");
+      return;
+    }
+    if (!tasks.assignedToId) {
+      toast.error("Please select an assignee");
+      return;
+    }
+    if (!tasks.activityTypeId) {
+      toast.error("Please select an activity type");
+      return;
+    }
+    if (!tasks.createdById) {
+      toast.error("Creator ID is missing. Please refresh or log in again.");
+      return;
+    }
+    if (!tasks.entityId) {
+      toast.error("Opportunity ID is missing. Cannot create task.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        toast.error("Authentication token not found. Please log in.");
+        navigate("/login");
+        return;
+      }
+
+      // --- 1. Prepare Payload for Activity Creation ---
+      const activityPayload = {
+        name: tasks.name,
+        type: tasks.type,
+        entityId: tasks.entityId, // This should be the opportunityId fetched and set
+        activityTypeId: tasks.activityTypeId,
+        description: tasks.description,
+        outcomeId: tasks.outcomeId || null, // Send null if not selected
+        notes: tasks.notes,
+        assignedToId: tasks.assignedToId,
+        createdById: tasks.createdById,
+        activityDate: new Date().toISOString(), // Current timestamp for when activity is "active"
+        // Add any other required fields from API documentation for Activity create
+      };
+
+      console.log("Submitting Activity:", activityPayload);
+
+      // --- 1.1. Call API to Create Activity ---
+      const activityResponse = await axios.post(
+        `${import.meta.env.VITE_API_URL}/marketing/Activity/create`,
+        activityPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      toast.success("Task created successfully!");
+      console.log("Task creation response:", activityResponse.data);
+      navigate("/getTasks");
+
+    } catch (error) {
+      console.error("Error creating task:", error.response?.data || error.message);
+      const errorMessage = error.response?.data?.message || "Error creating task. Please try again.";
+      toast.error(errorMessage);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-200 p-4 md:p-8">
-      {/* <button
-        onClick={onClose}
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-      >
-        X
-      </button> */}
       <div className="mx-auto max-w-6xl w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 lg:gap-6">
-          <form onSubmit={handleSubmit}>
-            <div className="p-4">
-              <h3 className="text-xl font-bold  md:text-2xl text-gray-800 mb-6 text-center">
-                Add Task
-              </h3>
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+          <form onSubmit={handleSubmit} className="flex-1 bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-xl font-bold md:text-2xl text-gray-800 mb-6 text-center">
+              Add Task
+            </h3>
 
-              <div className="flex flex-wrap gap-4">
-                <div className="w-full md:w-[48%]">
-                  <label className="block text-gray-700 font-medium mb-1">
-                    Assigned To:
-                  </label>
-                  <select
-                    name="assignedToId"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    value={tasks.assignedToId}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select User</option>
-                    {users.map((user) => (
-                      <option key={user.id} value={user.id}>
-                        {user.profile?.firstName || "Unnamed User"}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="w-full md:w-[48%]">
-                  <label className="block text-gray-700 font-medium mb-1">
-                    Activity Type:
-                  </label>
-                  <select
-                    name="activityTypeId"
-                    value={tasks.activityTypeId}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  >
-                    <option value="">Select Activity Type</option>
-                    {activitiesTypes.map((activity) => (
-                      <option key={activity.id} value={activity.id}>
-                        {activity.code}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="assignedToId" className="block text-gray-700 font-medium mb-1">
+                  Assigned To: <span className="text-red-500">*</span>
+                </label>
+                <select
+                  id="assignedToId"
+                  name="assignedToId"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  value={tasks.assignedToId}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select User</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.profile?.firstName || "Unnamed User"} {user.profile?.lastName || ""}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div className="mt-4">
-                <label className="block text-gray-700 font-medium">
-                  Subject:
+              <div>
+                <label htmlFor="activityTypeId" className="block text-gray-700 font-medium mb-1">
+                  Activity Type: <span className="text-red-500">*</span>
+                </label>
+                <select
+                  id="activityTypeId"
+                  name="activityTypeId"
+                  value={tasks.activityTypeId}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  required
+                >
+                  <option value="">Select Activity Type</option>
+                  {activitiesTypes.map((activity) => (
+                    <option key={activity.id} value={activity.id}>
+                      {activity.code}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="col-span-1 md:col-span-2">
+                <label htmlFor="name" className="block text-gray-700 font-medium mb-1">
+                  Subject: <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
+                  id="name"
                   name="name"
                   value={tasks.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
+                  className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300 border-gray-300"
                   placeholder="Enter Subject name..."
+                  required
                 />
               </div>
 
-              <div className="mt-4">
-                <label className="block text-gray-700 font-medium mb-1">
+              <div className="col-span-1 md:col-span-2">
+                <label htmlFor="description" className="block text-gray-700 font-medium mb-1">
                   Description:
                 </label>
                 <textarea
+                  id="description"
                   name="description"
                   value={tasks.description}
                   onChange={handleChange}
@@ -304,111 +329,120 @@ function CreateTask() {
                 />
               </div>
 
-              <div className="flex flex-wrap gap-4">
-                <div className="w-full">
-                  <label className="block text-gray-700 font-medium mb-1">
-                    Due Date:
-                  </label>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                    <input
-                      type="date"
-                      name="activityDate"
-                      value={tasks.activityDate}
-                      onChange={handleChange}
-                      className="px-4 py-2 w-full border rounded-lg focus:ring focus:ring-blue-300"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => clearDate("activityDate")}
-                      className="px-4 py-2 sm:w-auto text-white bg-red-500 hover:bg-red-600 transition duration-200 rounded-lg"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                </div>
-
-                <div className="w-full md:w-[48%]">
-                  <label className="block text-gray-700 font-medium mb-1">
-                    Outcome:
-                  </label>
-                  <select
-                    name="outcomeId"
-                    value={tasks.outcomeId}
+              <div className="col-span-1 md:col-span-2">
+                <label htmlFor="activityDate" className="block text-gray-700 font-medium mb-1">
+                  Due Date: <span className="text-red-500">*</span>
+                </label>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <input
+                    type="date"
+                    id="activityDate"
+                    name="activityDate"
+                    value={tasks.activityDate}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    className="px-4 py-2 w-full border rounded-lg focus:ring focus:ring-blue-300 border-gray-300"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => clearDate("activityDate")}
+                    className="px-4 py-2 sm:w-auto text-white bg-red-500 hover:bg-red-600 transition duration-200 rounded-lg"
                   >
-                    <option value="">Select Outcome Type</option>
-                    {outcomeTypes.map((outcome) => (
-                      <option key={outcome.id} value={outcome.id}>
-                        {outcome.code}
-                      </option>
-                    ))}
-                  </select>
+                    Clear
+                  </button>
                 </div>
               </div>
 
-              <div className="w-full mt-4">
-                <label className="block text-gray-700 font-medium mb-1">
-                  Reminder:
+              <div>
+                <label htmlFor="outcomeId" className="block text-gray-700 font-medium mb-1">
+                  Outcome:
+                </label>
+                <select
+                  id="outcomeId"
+                  name="outcomeId"
+                  value={tasks.outcomeId}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  <option value="">Select Outcome Type</option>
+                  {outcomeTypes.map((outcome) => (
+                    <option key={outcome.id} value={outcome.id}>
+                      {outcome.code}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="col-span-1 md:col-span-2">
+                <label htmlFor="notes" className="block text-gray-700 font-medium mb-1">
+                  Notes:
                 </label>
                 <textarea
-                  type="text"
+                  id="notes"
                   rows={3}
                   name="notes"
                   value={tasks.notes}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  placeholder="Enter reminder details..."
+                  placeholder="Enter notes..."
                 />
               </div>
+            </div>
 
-              <div className="flex justify-between gap-4 pt-6">
-                <button
-                  type="button"
-                  className="w-1/2 bg-gray-500 text-white py-3 rounded-lg uppercase hover:bg-gray-600 transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="w-1/2 bg-blue-600 text-white py-3 rounded-lg uppercase hover:bg-blue-700 transition"
-                >
-                  Save
-                </button>
-              </div>
+            <div className="flex justify-between gap-4 pt-6">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="w-1/2 bg-gray-500 text-white py-3 rounded-lg uppercase hover:bg-gray-600 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="w-1/2 bg-blue-600 text-white py-3 rounded-lg uppercase hover:bg-blue-700 transition"
+              >
+                Save
+              </button>
             </div>
           </form>
 
           {/* Sidebar */}
-          <div className="w-full lg:w-64 xl:w-72 mt-4 lg:mt-0">
-            <div className="bg-blue-50 rounded-lg shadow-md p-4 h-full">
-              <h2 className="text-xl md:text-lg font-semibold mb-4">
-                Opportunity Details
-              </h2>
+          <div className="w-full lg:w-72 xl:w-80 mt-4 lg:mt-0 bg-blue-50 rounded-lg shadow-md p-6 h-fit">
+            <h2 className="text-xl md:text-lg font-semibold mb-4 text-gray-800">
+              Opportunity Details
+            </h2>
+            <div className="space-y-2 text-gray-700">
               <div>
-                <strong>Opportunity Name:</strong> {tasks.company}
+                <strong className="block text-sm font-medium">Opportunity Name:</strong>{" "}
+                <span className="text-base">{tasks.company || "N/A"}</span>
               </div>
               <div>
-                <strong>Estimated Value:</strong> ₹{tasks.estimatedValue}
+                <strong className="block text-sm font-medium">Estimated Value:</strong>{" "}
+                <span className="text-base">₹{tasks.estimatedValue || "0.00"}</span>
               </div>
               <div>
-                <strong>Close Date:</strong> {tasks.closeDate}
+                <strong className="block text-sm font-medium">Close Date:</strong>{" "}
+                <span className="text-base">{tasks.closeDate || "N/A"}</span>
               </div>
               <div>
-                <strong>Lead Name:</strong> {tasks.leadName || "N/A"}
+                <strong className="block text-sm font-medium">Lead Name:</strong>{" "}
+                <span className="text-base">{tasks.leadName || "N/A"}</span>
               </div>
               <div>
-                <strong>Customer Name:</strong> {tasks.firstName}{" "}
-                {tasks.lastName}
+                <strong className="block text-sm font-medium">Customer Name:</strong>{" "}
+                <span className="text-base">
+                  {tasks.firstName} {tasks.lastName || "N/A"}
+                </span>
               </div>
               <div>
-                <strong>Mobile Number:</strong> {tasks.phoneNumber || "N/A"}
+                <strong className="block text-sm font-medium">Mobile Number:</strong>{" "}
+                <span className="text-base">{tasks.phoneNumber || "N/A"}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </div>
   );
 }

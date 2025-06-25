@@ -282,7 +282,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; // import useNavigate
 
 function GetAllActivities() {
-  const navigate = useNavigate(); // initialize the navigate function
+  const navigate = useNavigate(); 
 
   return (
     <div className="flex justify-center items-center mt-10 gap-4 flex-wrap p-4">

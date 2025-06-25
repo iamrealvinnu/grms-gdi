@@ -2,21 +2,24 @@ import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function GetTasks() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [outComes, setOutComes] = useState({});
+  const [selectedFilter, setSelectedFilter] = useState("All Time");
+  const navigate = useNavigate();
 
   const fetchTableData = async () => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
-       `${import.meta.env.VITE_API_URL}/Reference/all`,
+        `${import.meta.env.VITE_API_URL}/Reference/all`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const referenceData = response.data?.data || response.data;
@@ -60,28 +63,44 @@ function GetTasks() {
     fetchAllData();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  const getFilteredActivities = () => {
+    const now = new Date();
+    return activities.filter((activity) => {
+      const actDate = new Date(activity.activityDate);
+      switch (selectedFilter) {
+        case "Last 7 Days":
+          return actDate >= new Date(new Date().setDate(new Date().getDate() - 7));
+        case "Next 7 Days":
+          return (
+            actDate >= now &&
+            actDate <= new Date(new Date().setDate(new Date().getDate() + 7))
+          );
+        case "Last 30 Days":
+          return actDate >= new Date(new Date().setDate(new Date().getDate() - 30));
+        case "All Time":
+        default:
+          return true;
+      }
+    });
+  };
 
-  // Group tasks based on status (determined from outcome label)
   const grouped = {
     todo: [],
     inprogress: [],
     followup: [],
-    completed: []
+    completed: [],
   };
 
-  activities.forEach((activity) => {
+  const handleEditTask = (id) => {
+    navigate(`/updateTask/${id}`);
+  };
+
+  getFilteredActivities().forEach((activity) => {
     const label = outComes[activity.outcomeId]?.toLowerCase() || "";
     if (label.includes("progress")) {
       grouped.inprogress.push(activity);
-    } else if(label.includes("follow up")){
-        grouped.followup.push(activity)
+    } else if (label.includes("follow up")) {
+      grouped.followup.push(activity);
     } else if (label.includes("complete")) {
       grouped.completed.push(activity);
     } else {
@@ -100,7 +119,7 @@ function GetTasks() {
               className="bg-white p-3 mb-3 rounded shadow relative"
             >
               <div className="absolute top-2 right-2 flex space-x-2">
-                <button onClick={() => console.log("Edit", activity.id)}>
+                <button onClick={() => handleEditTask(activity.id)}>
                   <FaEdit className="text-blue-500 hover:text-blue-700" />
                 </button>
                 <button onClick={() => console.log("Delete", activity.id)}>
@@ -114,7 +133,7 @@ function GetTasks() {
                 {outComes[activity.outcomeId] || "Unspecified"}
               </p>
               <p className="text-sm">
-                <strong>Date:</strong>{" "}
+                <strong>Due Date:</strong>{" "}
                 {new Date(activity.activityDate).toLocaleString()}
               </p>
             </div>
@@ -126,13 +145,40 @@ function GetTasks() {
     </div>
   );
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-6">Kanban View</h2>
+      <h2 className="text-2xl font-bold mb-6">Tasks</h2>
+
+      {/* Date Range Filters */}
+      <div className="mb-4 flex flex-wrap gap-2">
+        {["Last 7 Days", "Next 7 Days", "Last 30 Days", "All Time"].map((filter) => (
+          <button
+            key={filter}
+            onClick={() => setSelectedFilter(filter)}
+            className={`py-2 px-4 rounded ${
+              selectedFilter === filter
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+            }`}
+          >
+            {filter}
+          </button>
+        ))}
+      </div>
+
+      {/* Kanban Columns */}
       <div className="flex flex-col md:flex-row -mx-2 gap-4">
         {renderColumn("To Do", grouped.todo, "red")}
         {renderColumn("In Progress", grouped.inprogress, "yellow")}
-        {renderColumn("Follow Up",grouped.followup,"blue")}
+        {renderColumn("Follow Up", grouped.followup, "blue")}
         {renderColumn("Completed", grouped.completed, "green")}
       </div>
     </div>

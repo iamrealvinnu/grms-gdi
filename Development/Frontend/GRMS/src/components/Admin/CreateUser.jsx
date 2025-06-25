@@ -32,6 +32,7 @@ function CreateUser() {
   const [errors, setErrors] = useState({});
   const [tableData, setTableData] = useState([]);
   const [showClaims, setShowClaims] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Extract relevant data from tableData
   const countries =
@@ -169,6 +170,10 @@ function CreateUser() {
 
     if (!validateForm()) return;
 
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     try {
       const token = localStorage.getItem("accessToken");
       const formattedData = {
@@ -234,6 +239,8 @@ function CreateUser() {
 
       // ✅ Show the extracted error message in a toast
       toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -474,9 +481,10 @@ function CreateUser() {
           {/* Submit Button */}
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-75"
           >
-            Sign Up
+            {isSubmitting ? "Creating...": "Create User"}
           </button>
         </form>
       </div>

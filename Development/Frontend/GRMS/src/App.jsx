@@ -64,7 +64,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/changePassword" element={<ChangePassword />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:userId" element={<Profile />} />
 
         {/* User-Management Routes */}
         <Route path="/userCreate" element={<CreateUser />} />
@@ -106,7 +106,7 @@ function App() {
 
         {/* Task Routes */}
         <Route path="/createTask/:opportunityId/:leadId" element={<CreateTask />} />
-        <Route path="/updateTask/:activityId" element={<UpdateTask />} />
+        <Route path="/updateTask/:id" element={<UpdateTask />} />
 
         {/* Call Routes */}
         <Route path="/createCall/:opportunityId/:leadId" element={<CallCreate />} />
