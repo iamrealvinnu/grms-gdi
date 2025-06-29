@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PlusCircle } from "lucide-react";
 import axios from "axios";
+import { GrFormView } from "react-icons/gr";
+import { FaPhone } from "react-icons/fa6";
+import { CiMail } from "react-icons/ci";
+import { MdGroupAdd } from "react-icons/md";
+import { FaTasks } from "react-icons/fa";
+import { CiMenuKebab } from "react-icons/ci";
+
 
 
 function LeadData() {
@@ -10,13 +17,11 @@ function LeadData() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
-  const [industries, setIndustries] = useState({});
   const [statuses, setStatuses] = useState({});
-  const [countries, setCountries] = useState({});
-  const [states, setStates] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,34 +105,17 @@ function LeadData() {
       );
       const referenceData = response.data?.data || response.data;
 
-      const industryMap = {};
       const statusMap = {};
-      const countryMap = {};
-      const stateMap = {};
 
       referenceData.forEach((reference) => {
-        if (reference.name === "Industry Types") {
-          reference.referenceItems.forEach((item) => {
-            industryMap[item.id] = item.description;
-          });
-        } else if (reference.name === "Lead Status") {
+        if (reference.name === "Lead Status") {
           reference.referenceItems.forEach((item) => {
             statusMap[item.id] = item.code;
           });
-        } else if (reference.name === "Countries") {
-          reference.referenceItems.forEach((item) => {
-            countryMap[item.id] = item.description;
-          });
-        } else if (reference.name === "States") {
-          reference.referenceItems.forEach((item) => {
-            stateMap[item.id] = item.description;
-          });
         }
       });
-      setIndustries(industryMap);
       setStatuses(statusMap);
-      setCountries(countryMap);
-      setStates(stateMap);
+
     } catch (error) {
       console.error("Error fetching reference data:", error);
       setError("Failed to fetch reference data.");
@@ -171,7 +159,7 @@ function LeadData() {
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
-            <option value="All">All Statuses</option>
+            <option value="All">All Status</option>
             {Object.values(statuses).map((status, idx) => (
               <option key={idx} value={status}>
                 {status}
@@ -196,9 +184,9 @@ function LeadData() {
         <table className="min-w-full border border-gray-300 bg-white">
           <thead className="bg-gray-800 text-white">
             <tr>
-              <th className="py-3 px-4 text-left">S.No</th>
+              <th className="py-3 px-4 border-r text-left">S.No</th>
               <th
-                className="py-3 px-4 text-left cursor-pointer"
+                className="py-3 px-4 border-r text-left cursor-pointer"
                 onClick={() => handleSort("firstName")}
               >
                 Customer Name{" "}
@@ -209,7 +197,7 @@ function LeadData() {
                   : ""}
               </th>
               <th
-                className="py-3 px-4 text-left cursor-pointer"
+                className="py-3 px-4 border-r text-left cursor-pointer"
                 onClick={() => handleSort("company")}
               >
                 Company Name{" "}
@@ -219,73 +207,109 @@ function LeadData() {
                     : " ▼"
                   : ""}
               </th>
-              <th className="py-3 px-4 text-left">Lead Owner</th>
-              <th className="py-3 px-4 text-left">Email</th>
-              {/* <th className="py-3 px-4 text-left">Industry</th> */}
-              <th className="py-3 px-4 text-left">Number</th>
-              <th className="py-3 px-4 text-left">Status</th>
-              {/* <th className="py-3 px-4 text-left">Address</th> */}
+              <th className="py-3 px-4 border-r text-left">Lead Owner</th>
+              <th className="py-3 px-4 border-r text-left">Email</th>
+              <th className="py-3 px-4 border-r text-left">Number</th>
+              <th className="py-3 px-4 border-r text-left">Status</th>
+              <th className="py-3 px-4 border-r text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredCustomers
-              // .filter((customer) => statuses[customer.statusId] !== "Qualified")
               .map((customer, index) => {
                 const isQualified = statuses[customer.statusId] === "Qualified";
                 return (
-                <tr
-                  key={customer.id}
-                  className="border-b hover:bg-gray-100"
-                >
-                  <td className="py-2 px-4">{index + 1}</td>
+                  <tr
+                    key={customer.id}
+                    className="border-b  hover:bg-gray-100"
+                  >
+                    <td className="py-2 px-4 border-r">{index + 1}</td>
 
-                  <td className="py-2 px-4 hover:text-blue-700">
-                    <Link to={`/clientData/${customer.id}`}>
-                      {customer.firstName} {customer.lastName}
-                    </Link>
-                  </td>
+                    <td className="py-2 px-4 border-r hover:text-blue-700">
+                      <Link to={`/clientData/${customer.id}`}>
+                        {customer.firstName} {customer.lastName}
+                      </Link>
+                    </td>
 
-                  <td className="py-2 px-4">{customer.company || "N/A"}</td>
+                    <td className="py-2 px-4 border-r">{customer.company || "N/A"}</td>
 
-                  <td className="py-2 px-4">
-                    {(() => {
-                      const user = users.find(
-                        (user) => user.id === customer.assignedToId
-                      );
-                      return user ? user.profile?.firstName : "N/A";
-                    })()}
-                  </td>
+                    <td className="py-2 px-4 border-r">
+                      {(() => {
+                        const user = users.find(
+                          (user) => user.id === customer.assignedToId
+                        );
+                        return user ? user.profile?.firstName : "N/A";
+                      })()}
+                    </td>
 
-                  <td className="py-2 px-4 text-blue-600 underline">
-                    <a href={`mailto:${customer.email}`}>{customer.email}</a>
-                  </td>
+                    <td className="py-2 px-4 border-r text-blue-600 underline">
+                      <a href={`mailto:${customer.email}`}>{customer.email}</a>
+                    </td>
 
-                  {/* <td className="py-2 px-4">
-                    {industries[customer.industryId] || "N/A"}
-                  </td> */}
+                    <td className="py-2 px-4 border-r">{customer.phoneNumber || "N/A"}</td>
 
-                  <td className="py-2 px-4">{customer.phoneNumber || "N/A"}</td>
-
-                  <td className={`py-2 px-4 ${ statuses[customer.statusId] === "Qualified" ? "text-green-600 font-bold" : "" }`}>
-                    {statuses[customer.statusId] || "Active"}
-                  </td>
-
-                  {/* <td className="py-2 px-4">
-                    {customer.addresses.length > 0 &&
-                    customer.addresses[0].address ? (
-                      <>
-                        {customer.addresses[0].address.address1},{" "}
-                        {customer.addresses[0].address.city},{" "}
-                        {customer.addresses[0].address.zip},{" "}
-                        {states[customer.addresses[0].address.stateId]},{" "}
-                        {countries[customer.addresses[0].address.countryId]}
-                      </>
-                    ) : (
-                      "No Address"
-                    )}
-                  </td> */}
-
-                </tr>
+                    <td className={`py-2 px-4 border-r ${statuses[customer.statusId] === "Qualified" ? "text-blue-600 font-bold"
+                      : statuses[customer.statusId] === "Converted" ? "text-green-600 font-bold" : ""}`}>
+                      {statuses[customer.statusId] || "Active"}
+                      {statuses[customer.statusId] !== "Qualified" &&
+                        statuses[customer.statusId] !== "Converted" && (
+                          <button
+                            onClick={() => {
+                              // You can call your convert function here if needed
+                              console.log("Convert to Account clicked", customer.id);
+                            }}
+                            className="bg-gray-100 ml-4 text-xs p-2 rounded-md hover:bg-gray-300"
+                          >
+                            Convert to account</button>
+                        )}
+                    </td>
+                    <td>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => navigate(`/viewleadData/${customer.id}`)}
+                          className="text-neutral-600 hover:text-neutral-800"
+                          title="View Opportunity"
+                        >
+                          <GrFormView className="w-6 h-6" />
+                        </button>
+                        <button
+                          className="text-blue-600 hover:text-blue-800"
+                          title="Call"
+                          onClick={() => navigate(`/createLeadCall/${customer.id}`)}
+                        >
+                          <FaPhone className="w-4 h-4" />
+                        </button>
+                        <button
+                          className="text-orange-600 hover:text-orange-800"
+                          title="Mail"
+                          onClick={() => navigate(`/createLeadMail/${customer.id}`)}
+                        >
+                          <CiMail className="w-5 h-5" />
+                        </button>
+                        <button
+                          className="text-green-600 hover:text-green-800"
+                          title="Group"
+                          onClick={() => navigate(`/createLeadMeeting/${customer.id}`)}
+                        >
+                          <MdGroupAdd className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/createLeadTask/${customer.id}`)}
+                          className="text-gray-600 hover:text-stone-800"
+                          title="Tasks"
+                        >
+                          <FaTasks className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/createLeadTask/${customer.id}`)}
+                          // className="text-green-600 hover:text-stone-800"
+                          title="Convert to Account"
+                        >
+                          <CiMenuKebab className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 );
               })}
           </tbody>

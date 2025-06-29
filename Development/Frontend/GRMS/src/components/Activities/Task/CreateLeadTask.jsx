@@ -3,23 +3,33 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useParams, useNavigate } from "react-router-dom";
 
-function CreateLeadTask({ contactId, onClose }) {
+
+function CreateLeadTask() {
   const [tasks, setTasks] = useState({
     name: "",
-    type: "Contact",
-    entityId: contactId,
+    type: "Task",
+    entityId: "",
     activityTypeId: "",
     description: "",
     outcomeId: "",
     notes: "",
     assignedToId: "",
     createdById: "",
-    activityDate: ""
+    activityDate: "",
+    company: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    address: "",
   });
 
   const [tableData, setTableData] = useState([]);
   const [users, setUsers] = useState([]);
+  const { leadId } = useParams();
+  const navigate = useNavigate();
 
   const outcomeTypes =
     tableData.find((item) => item.name === "Outcomes")?.referenceItems || [];
@@ -31,9 +41,11 @@ function CreateLeadTask({ contactId, onClose }) {
   useEffect(() => {
     fetchTableData();
     fetchUsers();
-    fetchContactData();
     fetchCurrentUser();
-  }, []);
+    if (leadId) {
+      fetchLeadDetails(leadId);
+    }
+  }, [leadId]);
 
   // Fetch reference data
   const fetchTableData = async () => {
@@ -71,28 +83,6 @@ function CreateLeadTask({ contactId, onClose }) {
     }
   };
 
-  const fetchContactData = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/marketing/Account/contact/one/${contactId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-
-      const contactData = response.data?.data || response.data;
-      setTasks({
-        
-      })
-      
-      console.log("ajja", response.data.data);
-    } catch (error) {
-      console.error("Error fetching contact data:", error);
-      setErrors({ fetch: "Failed to fetch contact data." });
-    }
-  };
-
   const fetchCurrentUser = async () => {
     const token = localStorage.getItem("accessToken");
     if (token) {
@@ -100,12 +90,43 @@ function CreateLeadTask({ contactId, onClose }) {
         const decodedToken = jwtDecode(token);
         const userId =
           decodedToken[
-            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
           ] || "";
         setTasks((prev) => ({ ...prev, createdById: userId }));
       } catch (error) {
         console.error("Error decoding token:", error);
       }
+    }
+  };
+
+  const fetchLeadDetails = async (leadId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/marketing/Lead/one/${leadId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const leadData = response.data.data;
+      const addressObj = leadData.addresses?.[0]?.address;
+      const fullAddress = addressObj
+        ? `${addressObj.address1 || ""}, ${addressObj.city || ""}, ${addressObj.zip || ""}`
+        : "";
+
+      setTasks((prevData) => ({
+        ...prevData,
+        company: leadData.company || "",
+        firstName: leadData.firstName || "",
+        lastName: leadData.lastName || "",
+        email: leadData.email || "",
+        phoneNumber: leadData.phoneNumber || "",
+        address: fullAddress || "",
+      }));
+      console.log('Lead Data', leadData)
+    } catch (error) {
+      console.error("Error fetching lead details:", error);
+      toast.error("Failed to load lead details.");
     }
   };
 
@@ -148,7 +169,7 @@ function CreateLeadTask({ contactId, onClose }) {
       const requestData = {
         name: tasks.name,
         type: tasks.type,
-        entityId: tasks.entityId,
+        entityId: leadId,
         activityTypeId: tasks.activityTypeId,
         description: tasks.description,
         outcomeId: tasks.outcomeId,
@@ -173,7 +194,6 @@ function CreateLeadTask({ contactId, onClose }) {
       );
 
       toast.success("Task created successfully!");
-      onClose();
     } catch (error) {
       console.error("Error details:", error.response?.data || error.message);
 
@@ -187,88 +207,62 @@ function CreateLeadTask({ contactId, onClose }) {
     }
   };
 
+  const InfoRow = ({ label, value }) => (
+  <div>
+    <strong className="block text-sm font-medium">{label}:</strong>
+    <span className="text-base">{value || "N/A"}</span>
+  </div>
+);
+
+
   return (
-    <div className="relative">
-      <button
-        onClick={onClose}
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-      >
-        X
-      </button>
-      <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-        <form onSubmit={handleSubmit}>
-          <div className="p-4">
-            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-              Add Task
-            </h3>
+  <div className="min-h-screen bg-gray-100 p-4 md:p-8">
+    <div className="mx-auto max-w-7xl w-full">
+      <h3 className="text-3xl font-bold mb-8 text-center text-gray-800">
+        Add Lead Task
+      </h3>
 
-            <div className="flex flex-wrap gap-4">
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium mb-1">
-                  Assigned To:
-                </label>
-                <select
-                  name="assignedToId"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  value={tasks.assignedToId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select User</option>
-                  {users.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.profile?.firstName || "Unnamed User"}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="w-full md:w-[48%]">
-                <label className="block text-gray-700 font-medium mb-1">
-                  Related To:
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    name="entityId"
-                    value={opportunityName || tasks.entityId}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    placeholder="Related to what?"
-                    readOnly
-                  />
-                  <input
-                    type="hidden"
-                    name="entityId"
-                    value={tasks.entityId} // Still keep the UUID in a hidden field
-                  />
-                </div>
-              </div>
-            </div>
-
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Form Section */}
+        <form
+          onSubmit={handleSubmit}
+          className="w-full bg-white p-6 rounded-lg shadow-md"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Assigned To */}
             <div>
-              <label className="block text-gray-700 font-medium">
-                Opportunity Name:
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={tasks.name}
-                onChange={handleChange}
-                className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"
-                placeholder="Enter opportunity name..."
-              />
-            </div>
-
-            <div className="w-full md:w-[48%] mt-4">
-              <label className="block text-gray-700 font-medium mb-1">
-                Activity Type:
+              <label htmlFor="assignedToId" className="block text-sm font-semibold text-gray-700 mb-1">
+                Assigned To: <span className="text-red-500">*</span>
               </label>
               <select
+                id="assignedToId"
+                name="assignedToId"
+                value={tasks.assignedToId}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
+              >
+                <option value="">Select User</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.profile?.firstName || "Unnamed"} {user.profile?.lastName || ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Activity Type */}
+            <div>
+              <label htmlFor="activityTypeId" className="block text-sm font-semibold text-gray-700 mb-1">
+                Activity Type: <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="activityTypeId"
                 name="activityTypeId"
                 value={tasks.activityTypeId}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
               >
                 <option value="">Select Activity Type</option>
                 {activitiesTypes.map((activity) => (
@@ -279,51 +273,75 @@ function CreateLeadTask({ contactId, onClose }) {
               </select>
             </div>
 
-            <div className="mt-4">
-              <label className="block text-gray-700 font-medium mb-1">
+            {/* Subject */}
+            <div className="md:col-span-2">
+              <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">
+                Subject: <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={tasks.name}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-lg border-gray-300 focus:ring focus:ring-blue-300"
+                placeholder="Enter subject name..."
+                required
+              />
+            </div>
+
+            {/* Description */}
+            <div className="md:col-span-2">
+              <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">
                 Description:
               </label>
               <textarea
+                id="description"
                 name="description"
+                rows="4"
                 value={tasks.description}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                rows="4"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400"
                 placeholder="Enter task description..."
               />
             </div>
 
-            <div className="w-full md:w-[48%] mt-4">
-              <label className="block text-gray-700 font-medium mb-1">
-                Due Date:
+            {/* Due Date */}
+            <div className="md:col-span-2">
+              <label htmlFor="activityDate" className="block text-sm font-semibold text-gray-700 mb-1">
+                Due Date: <span className="text-red-500">*</span>
               </label>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <input
                   type="date"
+                  id="activityDate"
                   name="activityDate"
                   value={tasks.activityDate}
                   onChange={handleChange}
-                  className="px-4 py-2 w-full border rounded-lg focus:ring focus:ring-blue-300"
+                  className="px-4 py-2 w-full sm:w-auto border rounded-lg focus:ring focus:ring-blue-400 border-gray-300"
+                  required
                 />
                 <button
                   type="button"
                   onClick={() => clearDate("activityDate")}
-                  className="px-4 py-2 text-white bg-red-500 hover:bg-red-600 transition duration-200 rounded-lg"
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                 >
                   Clear
                 </button>
               </div>
             </div>
 
-            <div className="w-full md:w-[48%] mt-4">
-              <label className="block text-gray-700 font-medium mb-1">
+            {/* Outcome */}
+            <div>
+              <label htmlFor="outcomeId" className="block text-sm font-semibold text-gray-700 mb-1">
                 Outcome:
               </label>
               <select
+                id="outcomeId"
                 name="outcomeId"
                 value={tasks.outcomeId}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
                 <option value="">Select Outcome Type</option>
                 {outcomeTypes.map((outcome) => (
@@ -334,41 +352,59 @@ function CreateLeadTask({ contactId, onClose }) {
               </select>
             </div>
 
-            <div className="w-full md:w-[48%] mt-4">
-              <label className="block text-gray-700 font-medium mb-1">
-                Reminder:
+            {/* Notes */}
+            <div className="md:col-span-2">
+              <label htmlFor="notes" className="block text-sm font-semibold text-gray-700 mb-1">
+                Notes:
               </label>
-              <input
-                type="text"
+              <textarea
+                id="notes"
+                rows={3}
                 name="notes"
                 value={tasks.notes}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-                placeholder="Enter reminder details..."
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400"
+                placeholder="Enter notes..."
               />
             </div>
+          </div>
 
-            <div className="flex justify-between gap-4 pt-6">
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-1/2 bg-gray-500 text-white py-3 rounded-lg uppercase hover:bg-gray-600 transition"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="w-1/2 bg-blue-600 text-white py-3 rounded-lg uppercase hover:bg-blue-700 transition"
-              >
-                Save
-              </button>
-            </div>
+          {/* Form Buttons */}
+          <div className="flex flex-col md:flex-row justify-between gap-4 pt-8">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="w-full md:w-1/2 bg-gray-500 text-white py-3 rounded-lg uppercase hover:bg-gray-600 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="w-full md:w-1/2 bg-blue-600 text-white py-3 rounded-lg uppercase hover:bg-blue-700 transition"
+            >
+              Save
+            </button>
           </div>
         </form>
+
+        {/* Lead Details Sidebar */}
+        <div className="w-full lg:w-80 bg-blue-50 rounded-lg shadow-md p-6 h-fit">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Lead Details</h2>
+          <div className="space-y-3 text-gray-700">
+            <InfoRow label="Lead Name" value={tasks.company} />
+            <InfoRow label="Phone Number" value={tasks.phoneNumber} />
+            <InfoRow label="First Name" value={tasks.firstName} />
+            <InfoRow label="Last Name" value={tasks.lastName} />
+            <InfoRow label="Email" value={tasks.email} />
+            <InfoRow label="Address" value={tasks.address} />
+          </div>
+        </div>
       </div>
-      <ToastContainer />
     </div>
-  );
+    <ToastContainer />
+  </div>
+);
+
 }
 
 export default CreateLeadTask;

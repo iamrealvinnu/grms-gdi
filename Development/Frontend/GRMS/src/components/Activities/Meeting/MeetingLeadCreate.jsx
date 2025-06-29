@@ -5,46 +5,45 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams, useNavigate } from "react-router-dom";
 
-function MeetingCreate() {
-  const [meetingData, setMeetingData] = useState({
-    entityId: "",
-    entityTypeId: "",
-    notes: "",
-    participants: "",
-    location: "",
-    subject: "",
-    typeId: "",
-    initiationDate: "",
-    recipient: "",
-    duration: "",
-    createdById: "",
-  });
-  const [tableData, setTableData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { opportunityId, leadId } = useParams();
-  const navigate = useNavigate();
+function MeetingLeadCreate() {
+    const [meetingData, setMeetingData] = useState({
+        entityId: "",
+        entityTypeId: "",
+        notes: "",
+        participants: "",
+        location: "",
+        subject: "",
+        typeId: "",
+        initiationDate: "",
+        recipient: "",
+        duration: "",
+        createdById: "",
+      });
+      const [tableData, setTableData] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const { leadId } = useParams();
+      const navigate = useNavigate();
+    
+      useEffect(() => {
+        setLoading(true);
+        Promise.all([
+          fetchTableData(),
+          fetchCurrentUser(),
+          fetchLeadDetails(leadId),
+        ]).then(() => {
+          setLoading(false);
+        });
+      }, []);
+    
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setMeetingData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
+      };
 
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([
-      fetchTableData(),
-      fetchCurrentUser(),
-      fetchOpportunityDetails(),
-      fetchLeadDetails(leadId),
-    ]).then(() => {
-      setLoading(false);
-    });
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setMeetingData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  // Fetch reference data
+        // Fetch reference data
   const fetchTableData = async () => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -88,21 +87,21 @@ function MeetingCreate() {
         tableData.find((item) => item.name === "CommunicationTypes")
           ?.referenceItems || [];
 
-      const opportunityEntityTypes = entityTypes.find(
-        (entity) => entity.code === "Opportunity"
+      const leadEntityTypes = entityTypes.find(
+        (entity) => entity.code === "Lead"
       );
       const meetingCommunicationTypes = communicationTypes.find(
         (entity) => entity.code === "Online Meeting"
       );
 
-      if (opportunityEntityTypes) {
+      if (leadEntityTypes) {
         setMeetingData((prev) => ({
           ...prev,
-          entityTypeId: opportunityEntityTypes.id,
+          entityTypeId: leadEntityTypes.id,
         }));
       } else {
-        console.error("Opportunity entity type not found in table data.");
-        toast.error("Opportunity entity type not found in table data.");
+        console.error("Lead entity type not found in table data.");
+        toast.error("Lead entity type not found in table data.");
       }
 
       if (meetingCommunicationTypes) {
@@ -128,7 +127,7 @@ function MeetingCreate() {
         participants: meetingData.participants,
         subject: meetingData.subject,
         initiationDate: meetingData.initiationDate,
-        entityId: opportunityId,
+        entityId: leadId,
         entityTypeId: meetingData.entityTypeId,
         createdById: meetingData.createdById,
         location: meetingData.location,
@@ -153,40 +152,6 @@ function MeetingCreate() {
     }
   };
 
-  const fetchOpportunityDetails = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_URL
-        }/marketing/Opportunity/one/${opportunityId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const opportunityData = response.data?.data || response.data;
-      setMeetingData((prevData) => ({
-        ...prevData,
-        name: opportunityData.name,
-        statusId: opportunityData.statusId,
-        estimatedValue: opportunityData.estimatedValue,
-        stageId: opportunityData.stageId,
-        description: opportunityData.description,
-        productLineId: opportunityData.productLineId,
-        changedById: opportunityData.createdById,
-        leadId: opportunityData.leadId,
-        closeDate: opportunityData.closeDate
-          ? opportunityData.closeDate.split("T")[0]
-          : "",
-      }));
-      return opportunityData;
-    } catch (error) {
-      console.error("Error fetching opportunity details:", error);
-    }
-  };
-
   const fetchLeadDetails = async (leadId) => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -206,7 +171,7 @@ function MeetingCreate() {
         : "";
       setMeetingData((prevData) => ({
         ...prevData,
-        name: leadData.company || "Opportunity for " + leadData.company,
+        company: leadData.company || "",
         firstName: leadData.firstName || "",
         lastName: leadData.lastName || "",
         leadName: leadData.company || "",
@@ -227,10 +192,10 @@ function MeetingCreate() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-200 p-4 md:p-8">
+ <div className="min-h-screen bg-gray-200 p-4 md:p-8">
       <div className="mx-auto max-w-6xl">
         <h2 className="text-lg md:text-2xl font-bold mb-6 text-gray-800">
-          Meeting Schedule Form
+          Lead Meeting Schedule  Form
         </h2>
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
           <form
@@ -329,22 +294,10 @@ function MeetingCreate() {
           <div className="w-full lg:w-64 xl:w-72 mt-4 lg:mt-0">
             <div className="bg-blue-50 rounded-lg shadow-md p-4 h-full">
               <h2 className="text-xl md:text-lg font-semibold mb-4">
-                Opportunity Details
+                Lead Details
               </h2>
               <div>
-                <strong>Opportunity Name:</strong> {meetingData.name}
-              </div>
-              <div>
-                <strong>Description:</strong> {meetingData.description}
-              </div>
-              <div>
-                <strong>Estimated Value:</strong> ₹{meetingData.estimatedValue}
-              </div>
-              <div>
-                <strong>Close Date:</strong> {meetingData.closeDate}
-              </div>
-              <div>
-                <strong>Lead Name:</strong> {meetingData.leadName || "N/A"}
+                <strong>Lead Name:</strong> {meetingData.company || "N/A"}
               </div>
               <div>
                 <strong>Customer Name:</strong> {meetingData.firstName}{" "}
@@ -360,7 +313,7 @@ function MeetingCreate() {
       </div>
       <ToastContainer />
     </div>
-  );
+      )
 }
 
-export default MeetingCreate;
+export default MeetingLeadCreate

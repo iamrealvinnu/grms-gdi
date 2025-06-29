@@ -49,6 +49,11 @@ import ViewOpportunity from "./components/Leads/Opportunity/ViewOpportunity";
 import GetTasks from "./components/Activities/Task/GetTasks";
 import GetCommunications from "./components/Activities/GetCommunications";
 import CreateAccount from "./components/Account/CreateAccount";
+import CreateLeadTask from "./components/Activities/Task/CreateLeadTask";
+import ViewLeadData from "./components/Leads/ViewLeadData";
+import CallLeadCreate from "./components/Activities/Call/CallLeadCreate";
+import MeetingLeadCreate from "./components/Activities/Meeting/MeetingLeadCreate";
+import MailLeadCreate from "./components/Activities/Email/MailLeadCreate";
 
 function App() {
   return (
@@ -75,6 +80,7 @@ function App() {
         <Route path="/leadDetails" element={<LeadData />} />
         <Route path="/addLead" element={<AddLead />} />
         <Route path="/clientData/:leadId" element={<UpdateData />} />
+        <Route path="/viewleadData/:leadId" element={<ViewLeadData />} />
 
         {/* Opportunity Routes */}
         <Route path="/getAllOpportunity" element={<GetAllOpportunity />} />
@@ -106,17 +112,21 @@ function App() {
 
         {/* Task Routes */}
         <Route path="/createTask/:opportunityId/:leadId" element={<CreateTask />} />
+        <Route path="/createLeadTask/:leadId" element={<CreateLeadTask />} />
         <Route path="/updateTask/:id" element={<UpdateTask />} />
 
         {/* Call Routes */}
         <Route path="/createCall/:opportunityId/:leadId" element={<CallCreate />} />
+        <Route path="/createLeadCall/:leadId" element={<CallLeadCreate />} />
         
         {/* Email Routes */}
         <Route path="/createMail/:opportunityId/:leadId" element={<MailCreate />} />
+        <Route path="/createLeadMail/:leadId" element={<MailLeadCreate />} />
         <Route path="/createTemplate" element={<CreateTemplate />} />
 
         {/* Meeting Routes */}
         <Route path="/createMeeting/:opportunityId/:leadId" element={<MeetingCreate />} />
+        <Route path="/createLeadMeeting/:leadId" element={<MeetingLeadCreate />} />
 
       </Routes>
     </Router>
