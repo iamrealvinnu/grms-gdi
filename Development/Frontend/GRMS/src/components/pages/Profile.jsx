@@ -165,7 +165,7 @@ function Profile() {
                       name="firstName"
                       value={user.firstName}
                       onChange={handleChange}
-                      className="border-b border-gray-500 bg-transparent focus:outline-none focus:border-blue-600 w-full md:w-1/2"
+                      className="border px-2 py-2 rounded-lg border-gray-500 bg-transparent focus:outline-none focus:border-blue-600 w-full md:w-1/2"
                       placeholder="First Name"
                     />
                     <input
@@ -173,7 +173,7 @@ function Profile() {
                       name="lastName"
                       value={user.lastName}
                       onChange={handleChange}
-                      className="border-b border-gray-500 bg-transparent focus:outline-none focus:border-blue-600 w-full md:w-1/2"
+                      className="border px-2 py-2 rounded-lg border-gray-500 bg-transparent focus:outline-none focus:border-blue-600 w-full md:w-1/2"
                       placeholder="Last Name"
                     />
                   </div>
@@ -195,8 +195,9 @@ function Profile() {
                     type="email"
                     name="email"
                     value={user.email}
+                    readOnly
                     onChange={handleChange}
-                    className="border-b border-gray-500 bg-transparent focus:outline-none focus:border-blue-600"
+                    className="border px-2 py-2 rounded-lg border-gray-500 bg-transparent focus:outline-none focus:border-blue-600"
                   />
 
                 ) : (
@@ -214,7 +215,7 @@ function Profile() {
                     name="genderId"
                     value={user.genderId}
                     onChange={handleChange}
-                    className="border-b border-gray-500 bg-transparent focus:outline-none focus:border-blue-600"
+                    className="border px-2 py-2 rounded-lg border-gray-500 bg-transparent focus:outline-none focus:border-blue-600"
                   >
                     <option value="">Select</option>
                     {Object.entries(genderMap).map(([id, label]) => (
@@ -240,7 +241,7 @@ function Profile() {
                     name="phoneNumber"
                     value={user.phoneNumber}
                     onChange={handleChange}
-                    className="border-b border-gray-500 bg-transparent focus:outline-none focus:border-blue-600"
+                    className="border px-2 py-2 rounded-lg border-gray-500 bg-transparent focus:outline-none focus:border-blue-600"
                   />
 
                 ) : (
@@ -250,7 +251,7 @@ function Profile() {
             </div>
 
             {/* Static Fields (Optional) */}
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <span className="font-medium">Date Of Birth:</span>
               <span className="text-gray-700">01-01-1977</span>
             </div>
@@ -261,7 +262,7 @@ function Profile() {
                 Tirupur <br />
                 Coimbatore
               </span>
-            </div>
+            </div> */}
           </div>
 
           {/* Edit / Save / Cancel Buttons */}

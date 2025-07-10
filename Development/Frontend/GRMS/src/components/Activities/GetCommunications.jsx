@@ -122,12 +122,12 @@ function GetCommunications() {
       {/* Responsive layout container */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Call Section */}
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-1/3 order-2">
           <h5 className="text-md font-medium mb-2">Call</h5>
           {getCommunicationsByType("Phone").length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
               {getCommunicationsByType("Phone").map((communication) => (
-                <div key={communication.id} className="relative w-full p-4 border rounded shadow-md bg-white">
+                <div key={communication.id} className="relative w-full p-4 border rounded shadow-md bg-blue-200">
                   <div className="absolute top-2 right-2 flex space-x-2">
                     <button><FaEdit className="text-blue-500 hover:text-blue-700" /></button>
                     <button><FaTrash className="text-red-500 hover:text-red-700" /></button>
@@ -144,12 +144,12 @@ function GetCommunications() {
         </div>
 
         {/* Meeting Section */}
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-1/3 order-3">
           <h5 className="text-md font-medium mb-2">Meeting</h5>
           {getCommunicationsByType("Online Meeting").length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
               {getCommunicationsByType("Online Meeting").map((communication) => (
-                <div key={communication.id} className="relative w-full p-4 border rounded shadow-md bg-white">
+                <div key={communication.id} className="relative w-full p-4 border rounded shadow-md bg-green-200">
                   <div className="absolute top-2 right-2 flex space-x-2">
                     <button><FaEdit className="text-blue-500 hover:text-blue-700" /></button>
                     <button><FaTrash className="text-red-500 hover:text-red-700" /></button>
@@ -167,12 +167,12 @@ function GetCommunications() {
         </div>
 
         {/* Email Section */}
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-1/3 order-4 lg:order-2">
           <h5 className="text-md font-medium mb-2">Email</h5>
           {getCommunicationsByType("Email").length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
               {getCommunicationsByType("Email").map((communication) => (
-                <div key={communication.id} className="relative w-full p-4 border rounded shadow-md bg-white">
+                <div key={communication.id} className="relative w-full p-4 border rounded shadow-md bg-orange-200">
                   <div className="absolute top-2 right-2 flex space-x-2">
                     <button><FaEdit className="text-blue-500 hover:text-blue-700" /></button>
                     <button><FaTrash className="text-red-500 hover:text-red-700" /></button>
@@ -189,7 +189,7 @@ function GetCommunications() {
         </div>
 
         {/* Settings Section */}
-        <div className="w-full lg:w-1/3 p-3 bg-gray-300 rounded-md">
+        <div className="w-full lg:w-1/3 p-3 bg-gray-300 rounded-md order-1 lg:order-4">
           <div className="flex items-center justify-center mb-4">
             <IoSettings size={24} className="text-gray-700 mr-2" />
             <h5 className="text-lg font-semibold text-gray-800">Settings</h5>
@@ -197,28 +197,28 @@ function GetCommunications() {
           <p className="mb-2">Date Range</p>
           <div className="grid grid-cols-2 gap-2">
             <button
-              className={`py-2 px-4 rounded ${selectedFilter === "Last 7 Days" ? "bg-blue-500 text-white" : "bg-blue-100 text-blue-800"
+              className={`py-2 px-4 rounded ${selectedFilter === "Last 7 Days" ? "bg-blue-500 text-white" : ""
                 }`}
               onClick={() => setSelectedFilter("Last 7 Days")}
             >
               Last 7 Days
             </button>
             <button
-              className={`py-2 px-4 rounded ${selectedFilter === "Next 7 Days" ? "bg-green-500 text-white" : "bg-green-100 text-green-800"
+              className={`py-2 px-4 rounded ${selectedFilter === "Next 7 Days" ? "bg-green-500 text-white" : ""
                 }`}
               onClick={() => setSelectedFilter("Next 7 Days")}
             >
               Next 7 Days
             </button>
             <button
-              className={`py-2 px-4 rounded ${selectedFilter === "All Time" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800"
+              className={`py-2 px-4 rounded ${selectedFilter === "All Time" ? "bg-gray-700 text-white" : ""
                 }`}
               onClick={() => setSelectedFilter("All Time")}
             >
               All Time
             </button>
             <button
-              className={`py-2 px-4 rounded ${selectedFilter === "Last 30 Days" ? "bg-purple-600 text-white" : "bg-purple-100 text-purple-800"
+              className={`py-2 px-4 rounded ${selectedFilter === "Last 30 Days" ? "bg-purple-600 text-white" : ""
                 }`}
               onClick={() => setSelectedFilter("Last 30 Days")}
             >
