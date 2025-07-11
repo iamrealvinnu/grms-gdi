@@ -11,7 +11,6 @@ import React, { useEffect, useState } from 'react'; // Importing React and hooks
 import withAuth from '../withAuth'; // Higher-order component (HOC) for authentication
 import { jwtDecode } from 'jwt-decode'; // Library for decoding JWT tokens
 import { useNavigate } from 'react-router-dom';
-import ChatbotUI from "../CHATBOT/ChatbotUI";
 
 const Dashboard = () => {
   // State variables for storing user name, date, and day
@@ -86,9 +85,9 @@ const Dashboard = () => {
       </div>
 
        {/* Chatbot positioned at bottom-right */}
-       <div className="fixed bottom-4 right-4 z-50">
+       {/* <div className="fixed bottom-4 right-4 z-50">
         <ChatbotUI closeChat={toggleChat} isChatOpen={isChatOpen} userName={userName} />
-      </div>
+      </div> */}
     </div>
   );
 };
